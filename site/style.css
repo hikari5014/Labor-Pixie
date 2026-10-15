@@ -147,3 +147,8 @@ a.tile:hover, a.tile:focus-visible { border-color: var(--accent); }
 .release__head { font-size: 0.95em; margin: var(--space-3) 0 var(--space-1); }
 .release ul { margin: 0; padding-left: 1.3em; }
 .release__tech summary { color: var(--muted); font-size: 0.9em; }
+
+/* ---- v0.5：可增減的列 ---- */
+.rows { display: grid; gap: var(--space-3); }
+.row-item { display: grid; gap: var(--space-2); padding: var(--space-3); background: var(--sunken); }
+.row-item .btn { justify-self: start; }

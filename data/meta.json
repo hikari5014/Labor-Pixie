@@ -15,6 +15,7 @@
     "testcases/average-wage.json",
     "testcases/minimum-wage.json",
     "testcases/notice-period.json",
+    "testcases/overtime.json",
     "testcases/package-pay.json",
     "testcases/severance.json"
   ]

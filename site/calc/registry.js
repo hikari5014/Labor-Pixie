@@ -6,4 +6,5 @@ export const CALCULATORS = [
   { id: 'average-wage', title: '平均工資', summary: '資遣、退休、職災補償的計算基礎' },
   { id: 'severance', title: '資遣費（新舊制）', summary: '2005/7/1 前後年資自動分段，新制最高 6 個月' },
   { id: 'notice-period', title: '預告期間與謀職假', summary: '要提早幾天通知、沒通知要付多少預告工資' },
+  { id: 'overtime', title: '加班費試算', summary: '平日、休息日、國定假日、例假，含每月 46 小時檢查' },
 ];

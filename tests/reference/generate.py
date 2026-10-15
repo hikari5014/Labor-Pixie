@@ -187,7 +187,48 @@ def notice_cases():
     return {"id": "notice-period", "title": "預告期間與預告工資", "rule": "notice-period", "source": "勞動基準法第 16 條", "cases": out}
 
 
-GENERATORS = {"package-pay": package_cases, "severance": severance_cases, "average-wage": average_cases, "notice-period": notice_cases}
+# ---- 加班費（月薪制） ----
+def day_factor(t, h):
+    if t == "weekday":
+        return 1.34 * min(h, 2) + 1.67 * max(h - 2, 0), h
+    if t == "rest":
+        return 1.34 * min(h, 2) + 1.67 * min(max(h - 2, 0), 6) + 2.67 * max(h - 8, 0), h
+    if h <= 0:
+        return 0, 0
+    b = max(h - 8, 0)
+    f = 8 + 1.34 * min(b, 2) + 1.67 * max(b - 2, 0)
+    return f, (b if t == "holiday" else 0)
+
+
+def overtime(wage, days):
+    hourly = wage / 240
+    pays = [day_factor(d["type"], d["hours"]) for d in days]
+    count = sum(c for _, c in pays)
+    return {"total": ceil_money(sum(hourly * f for f, _ in pays)), "countHours": count, "over46": count > 46}
+
+
+def overtime_cases():
+    out = []
+
+    def add(name, wage, days, note=None):
+        out.append(case(name, {"date": "2026-10-15", "monthlyWage": wage, "days": days}, overtime(wage, days), note))
+
+    add("上課例子：月薪 36,000，平日加班 3 小時", 36000, [{"type": "weekday", "hours": 3}], "150×1.34×2＋150×1.67×1＝652.5")
+    add("上課例子：休息日上班 8 小時", 36000, [{"type": "rest", "hours": 8}], "150×1.34×2＋150×1.67×6＝1,905")
+    add("上課例子：休息日上班 10 小時", 36000, [{"type": "rest", "hours": 10}], "1,905＋150×2.67×2＝2,706")
+    add("上課例子：國定假日上班 8 小時，加給 1 日", 36000, [{"type": "holiday", "hours": 8}])
+    add("上課例子：國定假日只上 1 小時，仍以日計", 36000, [{"type": "holiday", "hours": 1}])
+    add("國定假日上 10 小時：超過 8 小時比照平日，2 小時計入 46 小時", 36000, [{"type": "holiday", "hours": 10}])
+    add("休息日只上 1 小時：照實際時數 1.34 倍", 36000, [{"type": "rest", "hours": 1}])
+    add("例假因天災出勤 8 小時：加倍並補休，不計入 46 小時", 36000, [{"type": "dayoff", "hours": 8}])
+    add("一個月平日 22 天各 2 小時：44 小時", 40000, [{"type": "weekday", "hours": 2}] * 22)
+    add("平日 20 天各 2 小時＋休息日 1 天 8 小時：48 小時超過上限", 40000, [{"type": "weekday", "hours": 2}] * 20 + [{"type": "rest", "hours": 8}])
+    add("月薪含固定津貼 31,000：平日 2.5 小時", 31000, [{"type": "weekday", "hours": 2.5}])
+    return {"id": "overtime", "title": "加班費（月薪制）", "rule": "overtime-rates",
+            "source": "勞動基準法第 24 條、第 32 條、第 39 條、第 40 條", "cases": out}
+
+
+GENERATORS = {"package-pay": package_cases, "severance": severance_cases, "average-wage": average_cases, "notice-period": notice_cases, "overtime": overtime_cases}
 
 if __name__ == "__main__":
     for name, gen in GENERATORS.items():
