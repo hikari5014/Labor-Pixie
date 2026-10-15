@@ -1,5 +1,6 @@
 """data/ 資料夾共用的小工具：路徑、讀寫 JSON、格式常數。只用 Python 內建功能。"""
 import json
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -35,3 +36,23 @@ def data_files(data_dir=DATA):
     """data/ 底下所有檔案（相對路徑、固定順序）。"""
     data_dir = Path(data_dir)
     return sorted(p for p in data_dir.rglob("*") if p.is_file())
+
+
+TAIPEI = timezone(timedelta(hours=8))
+
+
+def listed_files(data_dir=DATA):
+    """meta.json 的 files 清單應有的內容：meta.json 以外的所有資料檔。"""
+    data_dir = Path(data_dir)
+    return [p.relative_to(data_dir).as_posix() for p in data_files(data_dir) if p != data_dir / "meta.json"]
+
+
+def refresh_meta(bump=False, data_dir=DATA):
+    """更新 meta.json 的檔案清單；bump=True 時把資料版本改成今天（台灣日期）。回傳 meta。"""
+    path = Path(data_dir) / "meta.json"
+    meta = read_json(path)
+    meta["files"] = listed_files(data_dir)
+    if bump:
+        meta["data_version"] = datetime.now(TAIPEI).date().isoformat()
+    write_json(path, meta)
+    return meta

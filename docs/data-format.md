@@ -20,10 +20,22 @@
 ### meta.json
 
 ```json
-{ "format": "labor-pixie-data", "format_version": 1, "data_version": "2026-10-15" }
+{ "format": "labor-pixie-data", "format_version": 1, "data_version": "2026-10-15",
+  "files": ["laws/labor-standards-act.json", "rules/minimum-wage.json", "…"] }
 ```
 
-`data_version` 是資料最後變動的日期。自動抓法規時會自己更新；**人工改規則表時要手動改成當天**。
+- `data_version`：資料最後變動的日期。自動抓法規時會自己更新；人工改完資料執行 `python3 scripts/refresh_meta.py`。
+- `files`：meta.json 以外所有資料檔的清單（網站離線快取靠它預先下載），由同一支程式維護，檢查程式會比對。
+
+### 驗證範例（testcases/）
+
+```json
+{ "id": "annual-leave", "title": "…", "rule": "annual-leave", "source": "勞動基準法第 38 條",
+  "cases": [ { "name": "滿 1 年，7 日", "input": { "hireDate": "2025-01-15", "date": "2026-01-15" },
+               "expected": { "months": 12, "days": 7 } } ] }
+```
+
+每個試算器至少 10 組。`expected` 只列要檢查的欄位。收件方若自己實作同一個試算，可以用同一組範例確認兩邊算得一樣。
 
 ### 規則表（rules/）
 

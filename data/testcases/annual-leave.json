@@ -1,0 +1,196 @@
+{
+  "id": "annual-leave",
+  "title": "特休天數與未休折算（週年制）",
+  "rule": "annual-leave",
+  "source": "勞動基準法第 38 條",
+  "cases": [
+    {
+      "name": "滿 6 個月前一天，還沒有特休",
+      "input": {
+        "hireDate": "2026-01-15",
+        "date": "2026-07-14"
+      },
+      "expected": {
+        "months": 5,
+        "days": 0,
+        "next": {
+          "date": "2026-07-15",
+          "days": 3
+        }
+      }
+    },
+    {
+      "name": "滿 6 個月當天，3 日",
+      "input": {
+        "hireDate": "2026-01-15",
+        "date": "2026-07-15"
+      },
+      "expected": {
+        "months": 6,
+        "days": 3,
+        "periodStart": "2026-07-15"
+      }
+    },
+    {
+      "name": "滿 1 年，7 日",
+      "input": {
+        "hireDate": "2025-01-15",
+        "date": "2026-01-15"
+      },
+      "expected": {
+        "months": 12,
+        "days": 7,
+        "next": {
+          "date": "2027-01-15",
+          "days": 10
+        }
+      }
+    },
+    {
+      "name": "2 年 1 個月，10 日",
+      "input": {
+        "hireDate": "2024-01-15",
+        "date": "2026-03-01"
+      },
+      "expected": {
+        "months": 25,
+        "days": 10,
+        "periodStart": "2026-01-15"
+      }
+    },
+    {
+      "name": "滿 3 年，14 日",
+      "input": {
+        "hireDate": "2023-01-15",
+        "date": "2026-01-15"
+      },
+      "expected": {
+        "months": 36,
+        "days": 14,
+        "next": {
+          "date": "2028-01-15",
+          "days": 15
+        }
+      }
+    },
+    {
+      "name": "差一天滿 5 年，仍是 14 日",
+      "input": {
+        "hireDate": "2021-01-15",
+        "date": "2026-01-14"
+      },
+      "expected": {
+        "months": 59,
+        "days": 14
+      }
+    },
+    {
+      "name": "滿 5 年，15 日",
+      "input": {
+        "hireDate": "2021-01-15",
+        "date": "2026-01-15"
+      },
+      "expected": {
+        "months": 60,
+        "days": 15,
+        "next": {
+          "date": "2031-01-15",
+          "days": 16
+        }
+      }
+    },
+    {
+      "name": "滿 10 年，16 日",
+      "input": {
+        "hireDate": "2016-01-15",
+        "date": "2026-01-15"
+      },
+      "expected": {
+        "months": 120,
+        "days": 16
+      }
+    },
+    {
+      "name": "滿 16 年，22 日",
+      "input": {
+        "hireDate": "2010-01-15",
+        "date": "2026-01-15"
+      },
+      "expected": {
+        "months": 192,
+        "days": 22
+      }
+    },
+    {
+      "name": "滿 23 年，29 日",
+      "input": {
+        "hireDate": "2003-01-15",
+        "date": "2026-01-15"
+      },
+      "expected": {
+        "months": 276,
+        "days": 29
+      }
+    },
+    {
+      "name": "滿 24 年，30 日（上限）",
+      "input": {
+        "hireDate": "2002-01-15",
+        "date": "2026-01-15"
+      },
+      "expected": {
+        "months": 288,
+        "days": 30,
+        "next": null
+      }
+    },
+    {
+      "name": "滿 26 年仍是 30 日",
+      "input": {
+        "hireDate": "2000-01-15",
+        "date": "2026-01-15"
+      },
+      "expected": {
+        "months": 312,
+        "days": 30
+      }
+    },
+    {
+      "name": "月底到職：8/31 到職，2/28 滿 6 個月",
+      "input": {
+        "hireDate": "2025-08-31",
+        "date": "2026-02-28"
+      },
+      "expected": {
+        "months": 6,
+        "days": 3
+      }
+    },
+    {
+      "name": "未休 3 日折發：月薪 36,000 ÷ 30 × 3",
+      "input": {
+        "hireDate": "2024-01-15",
+        "date": "2026-03-01",
+        "monthlyWage": 36000,
+        "unusedDays": 3
+      },
+      "expected": {
+        "days": 10,
+        "payout": 3600
+      }
+    },
+    {
+      "name": "未休 2.5 日折發，無條件進位",
+      "input": {
+        "hireDate": "2024-01-15",
+        "date": "2026-03-01",
+        "monthlyWage": 31000,
+        "unusedDays": 2.5
+      },
+      "expected": {
+        "payout": 2584
+      },
+      "note": "31000 ÷ 30 × 2.5 = 2583.33"
+    }
+  ]
+}

@@ -15,42 +15,17 @@
 <div id="banner" class="banner" hidden></div>
 
 <header class="topbar">
-  <div class="topbar__title">勞資小精靈</div>
+  <a class="topbar__title" href="#/">勞資小精靈</a>
   <div class="topbar__sub">勞動法規，白話查、馬上算</div>
 </header>
 
-<main class="page">
-  <div class="seg" role="group" aria-label="選擇身分">
-    <button type="button" class="seg__btn" data-role="employer" aria-pressed="true">我是雇主</button>
-    <button type="button" class="seg__btn" data-role="worker" aria-pressed="false">我是勞工</button>
-  </div>
-  <p id="intro" class="muted">查清楚怎麼做才合規，算清楚該付多少。</p>
+<main id="view" class="page"></main>
 
-  <section class="tiles" aria-label="功能">
-    <div class="tile" aria-disabled="true"><b>查爭議</b><span class="pill">即將推出</span></div>
-    <div class="tile" aria-disabled="true"><b>算金額</b><span class="pill">即將推出</span></div>
-    <div class="tile" aria-disabled="true"><b id="tile-check">檢查公司</b><span class="pill">即將推出</span></div>
-    <div class="tile" aria-disabled="true"><b>看法條</b><span class="pill">即將推出</span></div>
-  </section>
-
-  <section class="panel">
-    <h2 class="section-title">目前最低工資</h2>
-    <p id="wage" class="muted">讀取中…</p>
-    <p id="wage-next" class="small" hidden></p>
-  </section>
-
-  <section class="panel">
-    <dl class="facts">
-      <dt>法規資料</dt><dd id="data-version">讀取中…</dd>
-      <dt>APP 版本</dt><dd id="app-version"></dd>
-    </dl>
-    <button type="button" id="check-update" class="btn btn--primary btn--block">檢查更新</button>
-    <p id="update-msg" class="small" role="status"></p>
-  </section>
-
-  <p class="small muted">本工具提供勞動法規資訊，不取代律師或勞動主管機關的意見。法規資料來自全國法規資料庫與勞動部公開資料。</p>
-  <p class="small"><a href="https://github.com/hikari5014/Labor-Pixie">GitHub 原始碼</a></p>
-</main>
+<footer class="footer small muted">
+  <a href="#/changelog">本版紀錄</a> ·
+  <a href="https://github.com/hikari5014/Labor-Pixie">原始碼</a>
+  <p>本工具提供勞動法規資訊，不取代律師或勞動主管機關的意見。法規資料來自全國法規資料庫與勞動部公開資料。</p>
+</footer>
 
 <script type="module" src="app.js"></script>
 </body>

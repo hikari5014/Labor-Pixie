@@ -45,12 +45,17 @@ jobs:
         run: |
           VERSION=$(python -c "import json;print(json.load(open('data/meta.json'))['data_version'])")
           TAG="data-$VERSION"
-          if gh release view "$TAG" >/dev/null 2>&1; then
-            echo "$TAG 已經發行過"
-            exit 0
-          fi
           python scripts/export_bundle.py dist
           python scripts/verify_bundle.py "dist/labor-bundle_$VERSION.zip"
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            if [ "${{ github.event_name }}" = "push" ]; then
+              # 同一天人工改了資料：覆蓋同一個發行版的檔案
+              gh release upload "$TAG" dist/labor-bundle_$VERSION.zip dist/labor-bundle_$VERSION.zip.sha256 --clobber
+            else
+              echo "$TAG 已經發行過"
+            fi
+            exit 0
+          fi
           gh release create "$TAG" dist/labor-bundle_$VERSION.zip dist/labor-bundle_$VERSION.zip.sha256 \
             --target "$(git rev-parse HEAD)" \
             --title "法規資料包 $VERSION" \

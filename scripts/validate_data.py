@@ -5,7 +5,7 @@ import sys
 from datetime import date
 from pathlib import Path
 
-from datalib import DATA, DATA_FORMAT, FORMAT_VERSION, data_files
+from datalib import DATA, DATA_FORMAT, FORMAT_VERSION, data_files, listed_files
 
 NAME_RE = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*\.json$")
 STATUSES = {"active", "pending", "repealed"}
@@ -21,8 +21,10 @@ def is_iso_date(value):
         return False
 
 
-def check_meta(obj):
+def check_meta(obj, data_dir):
     errors = []
+    if obj.get("files") != listed_files(data_dir):
+        errors.append("files 清單跟實際檔案不符，請執行 python scripts/refresh_meta.py")
     if obj.get("format") != DATA_FORMAT:
         errors.append(f"format 應為 {DATA_FORMAT}")
     if obj.get("format_version") != FORMAT_VERSION:
@@ -83,6 +85,20 @@ def check_law(obj, stem):
     return errors
 
 
+def check_testcases(obj, stem):
+    errors = []
+    if obj.get("id") != stem:
+        errors.append("id 要跟檔名相同")
+    cases = obj.get("cases")
+    if not isinstance(cases, list) or not cases:
+        return errors + ["cases 不能是空的"]
+    for i, case in enumerate(cases):
+        for key in ("name", "input", "expected"):
+            if key not in case:
+                errors.append(f"cases[{i}] 缺 {key}")
+    return errors
+
+
 def validate(data_dir=DATA):
     """回傳錯誤清單（空清單＝全部通過）。"""
     data_dir = Path(data_dir)
@@ -100,13 +116,15 @@ def validate(data_dir=DATA):
             errors.append(f"{rel}：不是合法的 JSON（{e}）")
             continue
         if rel == "meta.json":
-            found = check_meta(obj)
+            found = check_meta(obj, data_dir)
         elif rel.startswith("rules/"):
             found = check_rule(obj, path.stem)
         elif rel.startswith("laws/"):
             found = check_law(obj, path.stem)
+        elif rel.startswith("testcases/"):
+            found = check_testcases(obj, path.stem)
         else:
-            found = [] if rel.split("/")[0] in ("testcases", "interpretations", "faq", "topics") else ["不認得的資料夾"]
+            found = [] if rel.split("/")[0] in ("interpretations", "faq", "topics", "checklists") else ["不認得的資料夾"]
         errors.extend(f"{rel}：{msg}" for msg in found)
     return errors
 

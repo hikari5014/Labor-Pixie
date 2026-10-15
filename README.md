@@ -11,7 +11,7 @@
 - **檢查公司**：契約、工作規則、工時與薪資的合規檢查。
 - **雙視角**：同一份資料，雇主看到「怎麼做才合規」，勞工看到「該留哪些證據」。
 
-目前是 v0.1.0 骨架，發展順序見 [docs/roadmap.md](docs/roadmap.md)。
+網站：https://labor-pixie.vercel.app 。每一版的更新內容在 APP 的「本版紀錄」頁（資料來源 `site/changelog.json`），發展順序見 [docs/roadmap.md](docs/roadmap.md)。
 
 ## 法規資料
 
@@ -30,6 +30,7 @@ python3 scripts/validate_data.py              # 檢查 data/ 格式
 python3 -m unittest discover -s tests -t .    # Python 測試
 npm test                                      # 網頁測試
 python3 scripts/fetch_laws.py                 # 抓最新法規
+python3 scripts/refresh_meta.py               # 人工改完 data/ 後更新清單與資料版本
 python3 scripts/export_bundle.py              # 匯出法規資料包到 dist/
 sh -c "rm -rf site/data && cp -R data site/data && python3 -m http.server 8790 -d site"   # 本機預覽
 ```

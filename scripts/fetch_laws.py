@@ -9,9 +9,8 @@ import json
 import sys
 import urllib.request
 import zipfile
-from datetime import datetime, timedelta, timezone
 
-from datalib import DATA, read_json, write_json
+from datalib import DATA, refresh_meta, write_json
 
 SOURCES = {
     "law": "https://law.moj.gov.tw/api/ch/law/json",      # 法律（例：勞動基準法）
@@ -23,8 +22,6 @@ LAWS = [
     {"id": "labor-standards-act", "pcode": "N0030001", "source": "law"},
     {"id": "labor-standards-act-enforcement-rules", "pcode": "N0030002", "source": "order"},
 ]
-
-TAIPEI = timezone(timedelta(hours=8))
 
 
 def download_laws(url):
@@ -86,9 +83,7 @@ def main():
 
     changed = [law["id"] for law in results if write_json(DATA / "laws" / f"{law['id']}.json", law)]
     if changed:
-        meta = read_json(DATA / "meta.json")
-        meta["data_version"] = datetime.now(TAIPEI).date().isoformat()
-        write_json(DATA / "meta.json", meta)
+        meta = refresh_meta(bump=True)
         print("有更新：", "、".join(changed), "→ 資料版本", meta["data_version"])
     else:
         print("法規沒有變動")

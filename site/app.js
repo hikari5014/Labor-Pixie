@@ -1,13 +1,8 @@
-import { rocDate, money, daysBetween, todayTaipei, entryOn, nextEntry } from './format.js';
+import { h } from './lib/ui.js';
+import { clearCache } from './lib/data.js';
+import { ROUTES } from './routes.js';
 
-export const APP_VERSION = '0.1.0';
-const STALE_DAYS = 30; // 法規資料超過幾天沒更新就提醒
-
-const intro = {
-  employer: '查清楚怎麼做才合規，算清楚該付多少。',
-  worker: '查清楚自己的權益，知道該留哪些證據。',
-};
-const checkLabel = { employer: '檢查公司', worker: '準備證據' };
+export const APP_VERSION = '0.2.0';
 
 const $ = (id) => document.getElementById(id);
 
@@ -22,99 +17,101 @@ function store(key, value) {
 function showBanner(kind, text, action) {
   const b = $('banner');
   b.className = `banner banner--${kind}`;
-  b.textContent = text;
-  if (action) {
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = 'btn';
-    btn.textContent = action.label;
-    btn.addEventListener('click', action.onClick);
-    b.appendChild(btn);
-  }
+  b.replaceChildren(text);
+  if (action) b.append(h('button', { type: 'button', class: 'btn', onclick: action.onClick }, action.label));
   b.hidden = false;
 }
 
-function setRole(role) {
-  document.querySelectorAll('.seg__btn').forEach((btn) => {
-    btn.setAttribute('aria-pressed', String(btn.dataset.role === role));
-  });
-  $('intro').textContent = intro[role];
-  $('tile-check').textContent = checkLabel[role];
-  store('role', role);
-}
-
-async function getJSON(path) {
-  const res = await fetch(path);
-  if (!res.ok) throw new Error(`${path} ${res.status}`);
-  return res.json();
-}
-
-async function loadData() {
-  const today = todayTaipei();
-  try {
-    const meta = await getJSON('data/meta.json');
-    $('data-version').textContent = rocDate(meta.data_version);
-    if (daysBetween(meta.data_version, today) > STALE_DAYS) {
-      showBanner('update', `法規資料已超過 ${STALE_DAYS} 天沒有更新，內容可能過時。`);
-    }
-    const wage = await getJSON('data/rules/minimum-wage.json');
-    const now = entryOn(wage.entries, today);
-    $('wage').textContent = now
-      ? `月薪 ${money(now.monthly)} 元／時薪 ${money(now.hourly)} 元（${rocDate(now.effective_from)} 起）`
-      : '查無資料';
-    const next = nextEntry(wage.entries, today);
-    if (next) {
-      const status = next.status === 'pending' ? '尚未正式核定' : '已公告';
-      $('wage-next').textContent = `${rocDate(next.effective_from)} 起：月薪 ${money(next.monthly)} 元／時薪 ${money(next.hourly)} 元（${status}）`;
-      $('wage-next').hidden = false;
-    }
-  } catch (e) {
-    $('data-version').textContent = '讀取失敗';
-    $('wage').textContent = '讀取失敗，請連網後重新整理。';
-  }
-}
+// ---- 離線快取與更新 ----
+let registration = null;
 
 async function setupServiceWorker() {
-  if (!('serviceWorker' in navigator)) return null;
-  const reg = await navigator.serviceWorker.register('sw.js');
+  if (!('serviceWorker' in navigator)) return;
+  registration = await navigator.serviceWorker.register('sw.js');
   let reloading = false;
   navigator.serviceWorker.addEventListener('controllerchange', () => {
     if (!reloading) { reloading = true; location.reload(); }
   });
   const offerReload = () => showBanner('update', '有新版本可以使用。', {
     label: '重新載入',
-    onClick: () => reg.waiting && reg.waiting.postMessage('SKIP_WAITING'),
+    onClick: () => registration.waiting && registration.waiting.postMessage('SKIP_WAITING'),
   });
-  if (reg.waiting && navigator.serviceWorker.controller) offerReload();
-  reg.addEventListener('updatefound', () => {
-    const w = reg.installing;
+  if (registration.waiting && navigator.serviceWorker.controller) offerReload();
+  registration.addEventListener('updatefound', () => {
+    const w = registration.installing;
     w.addEventListener('statechange', () => {
       if (w.state === 'installed' && navigator.serviceWorker.controller) offerReload();
     });
   });
-  return reg;
 }
 
-async function checkUpdate(regPromise) {
-  const msg = $('update-msg');
-  if (!navigator.onLine) { msg.textContent = '目前沒有網路，請稍後再試。'; return; }
-  msg.textContent = '檢查中…';
-  const reg = await regPromise;
-  if (reg) await reg.update();
-  await loadData();
-  msg.textContent = reg && (reg.installing || reg.waiting) ? '找到新版本，下載完成後會提示重新載入。' : '已是最新版本。';
+function updateButton() {
+  const msg = h('p', { class: 'small', role: 'status' });
+  const btn = h('button', {
+    type: 'button',
+    class: 'btn btn--primary btn--block',
+    onclick: async () => {
+      if (!navigator.onLine) { msg.textContent = '目前沒有網路，請稍後再試。'; return; }
+      msg.textContent = '檢查中…';
+      if (registration) await registration.update();
+      clearCache();
+      msg.textContent = registration && (registration.installing || registration.waiting)
+        ? '找到新版本，下載完成後會提示重新載入。' : '已是最新版本。';
+    },
+  }, '檢查更新');
+  return h('div', {}, btn, msg);
+}
+
+// ---- 換頁 ----
+const ctx = {
+  version: APP_VERSION,
+  role: () => (store('role') === 'worker' ? 'worker' : 'employer'),
+  setRole: (r) => store('role', r),
+  rerender: () => route(),
+  updateButton,
+};
+
+async function route() {
+  const path = location.hash.replace(/^#/, '') || '/';
+  const parts = path.split('/').filter(Boolean);
+  const view = $('view');
+  let match = ROUTES.find((r) => r.path === `/${parts.join('/')}`);
+  let params = {};
+  if (!match) {
+    match = ROUTES.find((r) => r.prefix && path.startsWith(r.prefix));
+    if (match) params = { rest: path.slice(match.prefix.length) };
+  }
+  view.replaceChildren();
+  window.scrollTo(0, 0);
+  if (!match) {
+    view.append(h('p', {}, '找不到這一頁。'), h('a', { href: '#/' }, '回首頁'));
+    return;
+  }
+  document.title = match.title ? `${match.title}｜勞資小精靈` : '勞資小精靈';
+  try {
+    const mod = await match.load();
+    await mod.render(view, params, ctx);
+  } catch (e) {
+    view.replaceChildren(h('p', {}, '這一頁讀取失敗。沒有網路時，請先連網打開一次再離線使用。'), h('a', { href: '#/' }, '回首頁'));
+  }
+}
+
+function announceUpdate() {
+  const seen = store('seenVersion');
+  if (seen && seen !== APP_VERSION) {
+    showBanner('update', `已更新到 v${APP_VERSION}。`, { label: '看本版紀錄', onClick: () => { location.hash = '#/changelog'; $('banner').hidden = true; } });
+  }
+  store('seenVersion', APP_VERSION);
 }
 
 function init() {
-  $('app-version').textContent = `v${APP_VERSION}`;
-  document.querySelectorAll('.seg__btn').forEach((btn) => btn.addEventListener('click', () => setRole(btn.dataset.role)));
-  setRole(store('role') === 'worker' ? 'worker' : 'employer');
+  window.addEventListener('hashchange', route);
   if (!navigator.onLine) showBanner('offline', '離線中・使用手機裡存的資料');
   window.addEventListener('offline', () => showBanner('offline', '離線中・使用手機裡存的資料'));
   window.addEventListener('online', () => { $('banner').hidden = true; });
-  const regPromise = setupServiceWorker().catch(() => null);
-  $('check-update').addEventListener('click', () => checkUpdate(regPromise));
-  loadData();
+  announceUpdate();
+  setupServiceWorker().catch(() => {});
+  route();
 }
 
 init();

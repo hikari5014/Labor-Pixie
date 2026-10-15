@@ -1,0 +1,172 @@
+{
+  "id": "minimum-wage",
+  "title": "最低工資檢查",
+  "rule": "minimum-wage",
+  "source": "最低工資法第 5 條；勞動部歷年最低工資",
+  "cases": [
+    {
+      "name": "月薪 29,500，剛好等於 115 年最低工資",
+      "input": {
+        "payType": "monthly",
+        "amount": 29500,
+        "date": "2026-10-15"
+      },
+      "expected": {
+        "current": {
+          "threshold": 29500,
+          "ok": true,
+          "shortfall": 0
+        }
+      }
+    },
+    {
+      "name": "月薪少 1 元",
+      "input": {
+        "payType": "monthly",
+        "amount": 29499,
+        "date": "2026-10-15"
+      },
+      "expected": {
+        "current": {
+          "ok": false,
+          "shortfall": 1
+        }
+      }
+    },
+    {
+      "name": "時薪 196 剛好",
+      "input": {
+        "payType": "hourly",
+        "amount": 196,
+        "date": "2026-10-15"
+      },
+      "expected": {
+        "current": {
+          "threshold": 196,
+          "ok": true
+        }
+      }
+    },
+    {
+      "name": "時薪 195 不足",
+      "input": {
+        "payType": "hourly",
+        "amount": 195,
+        "date": "2026-10-15"
+      },
+      "expected": {
+        "current": {
+          "ok": false,
+          "shortfall": 1
+        }
+      }
+    },
+    {
+      "name": "114 年的 28,590 在當年合法",
+      "input": {
+        "payType": "monthly",
+        "amount": 28590,
+        "date": "2025-06-01"
+      },
+      "expected": {
+        "current": {
+          "threshold": 28590,
+          "ok": true
+        }
+      }
+    },
+    {
+      "name": "28,590 到 115/1/1 就不足 910 元",
+      "input": {
+        "payType": "monthly",
+        "amount": 28590,
+        "date": "2026-01-01"
+      },
+      "expected": {
+        "current": {
+          "threshold": 29500,
+          "ok": false,
+          "shortfall": 910
+        }
+      }
+    },
+    {
+      "name": "29,500 對 116 年擬調 30,900 不足 1,400",
+      "input": {
+        "payType": "monthly",
+        "amount": 29500,
+        "date": "2026-10-15"
+      },
+      "expected": {
+        "next": {
+          "threshold": 30900,
+          "ok": false,
+          "shortfall": 1400
+        }
+      }
+    },
+    {
+      "name": "月薪 31,000 兩年都合格",
+      "input": {
+        "payType": "monthly",
+        "amount": 31000,
+        "date": "2026-10-15"
+      },
+      "expected": {
+        "current": {
+          "ok": true
+        },
+        "next": {
+          "ok": true
+        }
+      }
+    },
+    {
+      "name": "時薪 200 對 116 年擬調 205 不足 5 元",
+      "input": {
+        "payType": "hourly",
+        "amount": 200,
+        "date": "2026-12-31"
+      },
+      "expected": {
+        "current": {
+          "ok": true
+        },
+        "next": {
+          "threshold": 205,
+          "ok": false,
+          "shortfall": 5
+        }
+      }
+    },
+    {
+      "name": "待核定的數字不拿來當現行標準",
+      "input": {
+        "payType": "monthly",
+        "amount": 29500,
+        "date": "2027-02-01"
+      },
+      "expected": {
+        "current": {
+          "threshold": 29500,
+          "ok": true
+        },
+        "next": null
+      }
+    },
+    {
+      "name": "114 年 12/31 時薪 190 合法",
+      "input": {
+        "payType": "hourly",
+        "amount": 190,
+        "date": "2025-12-31"
+      },
+      "expected": {
+        "current": {
+          "threshold": 190,
+          "ok": true
+        }
+      }
+    }
+  ]
+}

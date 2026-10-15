@@ -1,5 +1,17 @@
 {
   "format": "labor-pixie-data",
   "format_version": 1,
-  "data_version": "2026-10-15"
+  "data_version": "2026-10-15",
+  "files": [
+    "laws/labor-standards-act-enforcement-rules.json",
+    "laws/labor-standards-act.json",
+    "rules/annual-leave.json",
+    "rules/marriage-leave.json",
+    "rules/minimum-wage.json",
+    "rules/national-holidays.json",
+    "rules/notice-period.json",
+    "rules/overtime-rates.json",
+    "testcases/annual-leave.json",
+    "testcases/minimum-wage.json"
+  ]
 }
