@@ -10,4 +10,6 @@ export const ROUTES = [
   { path: '/calc/severance', title: '資遣費（新舊制）', load: () => import('./views/calc-severance.js') },
   { path: '/calc/notice-period', title: '預告期間與謀職假', load: () => import('./views/calc-notice-period.js') },
   { path: '/calc/overtime', title: '加班費試算', load: () => import('./views/calc-overtime.js') },
+  { path: '/laws', title: '看法條', load: () => import('./views/laws.js') },
+  { prefix: '/laws/', title: '看法條', load: () => import('./views/law.js') },
 ];

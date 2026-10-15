@@ -1,4 +1,5 @@
 // 畫面共用小元件。文字一律用 textContent 放入，不用 innerHTML，避免被塞程式。
+import { LAW_IDS, articleKey } from './laws.js';
 
 /** 建立元素：h('div', { class: 'panel' }, '文字', 子元素…) */
 export function h(tag, attrs = {}, ...children) {
@@ -66,10 +67,11 @@ export function formula(lines) {
     h('ol', {}, lines.map((l) => h('li', {}, l))));
 }
 
-/** 法條出處連結（全國法規資料庫） */
+/** 法條出處連結：有收錄的法規連到 APP 內的條文（離線也能看），其餘連到全國法規資料庫 */
 export function lawLink(pcode, articleNo, label) {
-  const flno = String(articleNo).replace(/[第條\s]/g, '');
-  return h('a', { href: `https://law.moj.gov.tw/LawClass/LawSingle.aspx?pcode=${pcode}&flno=${flno}`, target: '_blank', rel: 'noopener' }, label);
+  const key = articleKey(articleNo);
+  if (LAW_IDS[pcode]) return h('a', { href: `#/laws/${LAW_IDS[pcode]}/${key}` }, label);
+  return h('a', { href: `https://law.moj.gov.tw/LawClass/LawSingle.aspx?pcode=${pcode}&flno=${key}`, target: '_blank', rel: 'noopener' }, label);
 }
 
 /** 依據區塊 */
@@ -79,4 +81,18 @@ export function basis(...links) {
 
 export function disclaimer() {
   return h('p', { class: 'small muted' }, '試算結果僅供參考，不取代律師或勞動主管機關的意見；個案請以實際契約、紀錄與主管機關認定為準。');
+}
+
+/** 把文字中的關鍵字包成 <mark>（不用 innerHTML） */
+export function highlight(text, word) {
+  if (!word) return [text];
+  const parts = [];
+  let i = 0;
+  for (;;) {
+    const j = text.indexOf(word, i);
+    if (j < 0) { parts.push(text.slice(i)); break; }
+    parts.push(text.slice(i, j), h('mark', {}, word));
+    i = j + word.length;
+  }
+  return parts;
 }

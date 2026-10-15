@@ -6,6 +6,7 @@
 """
 import io
 import json
+import re
 import sys
 import urllib.request
 import zipfile
@@ -21,6 +22,16 @@ SOURCES = {
 LAWS = [
     {"id": "labor-standards-act", "pcode": "N0030001", "source": "law"},
     {"id": "labor-standards-act-enforcement-rules", "pcode": "N0030002", "source": "order"},
+    {"id": "leave-rules", "pcode": "N0030006", "source": "order"},
+    {"id": "labor-pension-act", "pcode": "N0030020", "source": "law"},
+    {"id": "minimum-wage-act", "pcode": "N0030028", "source": "law"},
+    {"id": "gender-equality-in-employment-act", "pcode": "N0030014", "source": "law"},
+    {"id": "occupational-safety-and-health-act", "pcode": "N0060001", "source": "law"},
+    {"id": "labor-incident-act", "pcode": "B0010064", "source": "law"},
+    {"id": "employment-insurance-act", "pcode": "N0050021", "source": "law"},
+    {"id": "employment-service-act", "pcode": "N0090001", "source": "law"},
+    {"id": "middle-aged-and-elderly-employment-act", "pcode": "N0090055", "source": "law"},
+    {"id": "commemoration-days-and-holidays-act", "pcode": "D0020095", "source": "law"},
 ]
 
 
@@ -58,7 +69,7 @@ def convert(raw, law_id, pcode):
             articles.append({"type": "article", "no": art["ArticleNo"].strip(), "text": text})
     return {
         "id": law_id,
-        "name": raw["LawName"],
+        "name": re.sub(r"（[\d.]+制定）$", "", raw["LawName"]),
         "pcode": pcode,
         "level": raw.get("LawLevel", ""),
         "url": raw["LawURL"],

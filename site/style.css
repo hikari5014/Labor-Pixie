@@ -152,3 +152,16 @@ a.tile:hover, a.tile:focus-visible { border-color: var(--accent); }
 .rows { display: grid; gap: var(--space-3); }
 .row-item { display: grid; gap: var(--space-2); padding: var(--space-3); background: var(--sunken); }
 .row-item .btn { justify-self: start; }
+
+/* ---- v0.6：看法條 ---- */
+.chips { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.chip { border: 1px solid var(--line-strong); border-radius: var(--radius-pill); background: var(--surface); color: var(--ink);
+        font: inherit; font-size: 0.85em; padding: var(--space-1) var(--space-3); min-height: 36px; cursor: pointer; }
+.chip:hover { border-color: var(--accent); color: var(--accent); }
+mark { background: var(--warn-soft); color: var(--ink); padding: 0 1px; }
+.law { display: grid; gap: var(--space-2); }
+.law__chapter { font-size: 1.05em; margin: var(--space-4) 0 0; padding-bottom: var(--space-1); border-bottom: 2px solid var(--accent); }
+.law__article { background: var(--surface); border: 1px solid var(--line); padding: var(--space-3) var(--space-4); scroll-margin-top: 60px; }
+.law__article h3 { font-size: 0.95em; margin: 0 0 var(--space-1); color: var(--accent); }
+.law__article p { margin: 0 0 var(--space-1); white-space: pre-wrap; }
+.law__article.is-target { border-color: var(--accent); border-left-width: 4px; }

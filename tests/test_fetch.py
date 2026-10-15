@@ -1,6 +1,6 @@
 import unittest
 
-from tests.helpers import ROOT  # noqa: F401  （設定 import 路徑）
+from tests.helpers import ROOT
 from fetch_laws import convert, find_by_pcode
 
 RAW = {
@@ -33,3 +33,14 @@ class FetchTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class LawListSyncTest(unittest.TestCase):
+    def test_site_law_ids_match_fetch_list(self):
+        import re
+        from fetch_laws import LAWS
+        text = (ROOT / "site" / "lib" / "laws.js").read_text(encoding="utf-8")
+        site = dict(re.findall(r"^\s+(\w+): '([a-z0-9-]+)',$", text, re.M))
+        self.assertEqual(site, {x["pcode"]: x["id"] for x in LAWS})
+        for x in LAWS:
+            self.assertTrue((ROOT / "data" / "laws" / f"{x['id']}.json").is_file(), x["id"])
