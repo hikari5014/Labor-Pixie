@@ -1,0 +1,123 @@
+{
+  "id": "bullying-deadline",
+  "title": "職場霸凌向主管機關申訴期限",
+  "source": "職業安全衛生法第 22-3 條",
+  "cases": [
+    {
+      "name": "行為終了 115/3/1，仍在職：3 年內",
+      "input": {
+        "endedOn": "2026-03-01"
+      },
+      "expected": {
+        "threeYears": "2029-02-28",
+        "afterLeaving": null,
+        "deadline": "2029-02-28"
+      }
+    },
+    {
+      "name": "行為終了後很快離職：3 年較長",
+      "input": {
+        "endedOn": "2026-03-01",
+        "leftOn": "2026-05-01"
+      },
+      "expected": {
+        "threeYears": "2029-02-28",
+        "afterLeaving": "2027-04-30",
+        "deadline": "2029-02-28"
+      }
+    },
+    {
+      "name": "離職很久以後：離職後 1 年較長",
+      "input": {
+        "endedOn": "2024-01-10",
+        "leftOn": "2026-06-30"
+      },
+      "expected": {
+        "threeYears": "2027-01-09",
+        "afterLeaving": "2027-06-29",
+        "deadline": "2027-06-29"
+      }
+    },
+    {
+      "name": "閏年 2/29 終了",
+      "input": {
+        "endedOn": "2024-02-29"
+      },
+      "expected": {
+        "threeYears": "2027-02-28",
+        "afterLeaving": null,
+        "deadline": "2027-02-28"
+      }
+    },
+    {
+      "name": "行為終了當天離職",
+      "input": {
+        "endedOn": "2026-07-15",
+        "leftOn": "2026-07-15"
+      },
+      "expected": {
+        "threeYears": "2029-07-14",
+        "afterLeaving": "2027-07-14",
+        "deadline": "2029-07-14"
+      }
+    },
+    {
+      "name": "115/7/1 新制施行當天",
+      "input": {
+        "endedOn": "2026-07-01"
+      },
+      "expected": {
+        "threeYears": "2029-06-30",
+        "afterLeaving": null,
+        "deadline": "2029-06-30"
+      }
+    },
+    {
+      "name": "離職後 1 年剛好等於 3 年的情況",
+      "input": {
+        "endedOn": "2025-01-01",
+        "leftOn": "2027-01-01"
+      },
+      "expected": {
+        "threeYears": "2027-12-31",
+        "afterLeaving": "2027-12-31",
+        "deadline": "2027-12-31"
+      }
+    },
+    {
+      "name": "月底離職",
+      "input": {
+        "endedOn": "2026-01-31",
+        "leftOn": "2026-01-31"
+      },
+      "expected": {
+        "threeYears": "2029-01-30",
+        "afterLeaving": "2027-01-30",
+        "deadline": "2029-01-30"
+      }
+    },
+    {
+      "name": "年底終了",
+      "input": {
+        "endedOn": "2026-12-31"
+      },
+      "expected": {
+        "threeYears": "2029-12-30",
+        "afterLeaving": null,
+        "deadline": "2029-12-30"
+      }
+    },
+    {
+      "name": "多年後離職",
+      "input": {
+        "endedOn": "2026-08-15",
+        "leftOn": "2030-03-31"
+      },
+      "expected": {
+        "threeYears": "2029-08-14",
+        "afterLeaving": "2031-03-30",
+        "deadline": "2031-03-30"
+      }
+    }
+  ]
+}

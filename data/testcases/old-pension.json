@@ -1,0 +1,148 @@
+{
+  "id": "old-pension",
+  "title": "舊制退休金基數",
+  "source": "勞動基準法第 55 條",
+  "cases": [
+    {
+      "name": "舊制年資剛好 10 年：20 個基數",
+      "input": {
+        "from": "1995-07-01",
+        "to": "2005-06-30",
+        "avgWage": 40000
+      },
+      "expected": {
+        "years": 10,
+        "bases": 20,
+        "capped": false,
+        "amount": 800000
+      }
+    },
+    {
+      "name": "舊制年資 10 年 3 個月：未滿半年以半年計",
+      "input": {
+        "from": "1995-04-01",
+        "to": "2005-06-30",
+        "avgWage": 40000
+      },
+      "expected": {
+        "years": 10.5,
+        "bases": 21.0,
+        "capped": false,
+        "amount": 840000
+      }
+    },
+    {
+      "name": "舊制年資 10 年 7 個月：滿半年以一年計",
+      "input": {
+        "from": "1994-12-01",
+        "to": "2005-06-30",
+        "avgWage": 40000
+      },
+      "expected": {
+        "years": 11,
+        "bases": 22,
+        "capped": false,
+        "amount": 880000
+      }
+    },
+    {
+      "name": "剛好 15 年：30 個基數",
+      "input": {
+        "from": "1990-07-01",
+        "to": "2005-06-30",
+        "avgWage": 45000
+      },
+      "expected": {
+        "years": 15,
+        "bases": 30,
+        "capped": false,
+        "amount": 1350000
+      }
+    },
+    {
+      "name": "16 年：前 15 年 30 個、之後 1 個",
+      "input": {
+        "from": "1989-07-01",
+        "to": "2005-06-30",
+        "avgWage": 45000
+      },
+      "expected": {
+        "years": 16,
+        "bases": 31,
+        "capped": false,
+        "amount": 1395000
+      }
+    },
+    {
+      "name": "30 年：45 個基數",
+      "input": {
+        "from": "1975-07-01",
+        "to": "2005-06-30",
+        "avgWage": 50000
+      },
+      "expected": {
+        "years": 30,
+        "bases": 45,
+        "capped": false,
+        "amount": 2250000
+      }
+    },
+    {
+      "name": "35 年：最高 45 個基數",
+      "input": {
+        "from": "1971-07-01",
+        "to": "2006-06-30",
+        "avgWage": 50000
+      },
+      "expected": {
+        "years": 35,
+        "bases": 45,
+        "capped": true,
+        "amount": 2250000
+      }
+    },
+    {
+      "name": "選擇繼續適用舊制，做到 2026 年",
+      "input": {
+        "from": "1990-03-01",
+        "to": "2026-02-28",
+        "avgWage": 60000
+      },
+      "expected": {
+        "years": 36,
+        "bases": 45,
+        "capped": true,
+        "amount": 2700000
+      }
+    },
+    {
+      "name": "因執行職務致身心障礙被強制退休：加給 20%",
+      "input": {
+        "from": "1995-07-01",
+        "to": "2005-06-30",
+        "avgWage": 40000,
+        "disabilityOnDuty": true
+      },
+      "expected": {
+        "years": 10,
+        "bases": 24.0,
+        "capped": false,
+        "amount": 960000
+      }
+    },
+    {
+      "name": "15 年 2 個月：超過的部分以半年計",
+      "input": {
+        "from": "1990-05-01",
+        "to": "2005-06-30",
+        "avgWage": 45000
+      },
+      "expected": {
+        "years": 15.5,
+        "bases": 30.5,
+        "capped": false,
+        "amount": 1372500
+      }
+    }
+  ]
+}

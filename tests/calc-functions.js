@@ -6,6 +6,10 @@ import { averageWage, severance, noticePeriod } from '../site/calc/severance.js'
 import { overtimePay } from '../site/calc/overtime.js';
 import { fixedTermCheck, probationPlan } from '../site/calc/contracts.js';
 import { leaveDeduction } from '../site/calc/sick-leave.js';
+import { compLeave } from '../site/calc/comp-leave.js';
+import { hourlyHoliday } from '../site/calc/hourly-holiday.js';
+import { oldPension } from '../site/calc/pension.js';
+import { authorityDeadline } from '../site/calc/bullying.js';
 
 export const CALC_FUNCTIONS = {
   'annual-leave': annualLeave,
@@ -18,4 +22,8 @@ export const CALC_FUNCTIONS = {
   'fixed-term': fixedTermCheck,
   probation: probationPlan,
   'sick-leave': leaveDeduction,
+  'comp-leave': compLeave,
+  'hourly-holiday': hourlyHoliday,
+  'old-pension': oldPension,
+  'bullying-deadline': authorityDeadline,
 };

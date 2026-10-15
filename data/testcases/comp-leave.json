@@ -1,0 +1,209 @@
+{
+  "id": "comp-leave",
+  "title": "加班補休換算與到期折發",
+  "rule": "overtime-rates",
+  "source": "勞動基準法第 32-1 條、第 24 條",
+  "cases": [
+    {
+      "name": "平日加班 3 小時都沒補休：照加班費折發",
+      "input": {
+        "date": "2026-10-15",
+        "monthlyWage": 36000,
+        "days": [
+          {
+            "type": "weekday",
+            "hours": 3,
+            "used": 0
+          }
+        ]
+      },
+      "expected": {
+        "compHours": 3,
+        "unusedHours": 3,
+        "payout": 653
+      }
+    },
+    {
+      "name": "平日加班 3 小時已補休 3 小時：不用折發",
+      "input": {
+        "date": "2026-10-15",
+        "monthlyWage": 36000,
+        "days": [
+          {
+            "type": "weekday",
+            "hours": 3,
+            "used": 3
+          }
+        ]
+      },
+      "expected": {
+        "compHours": 3,
+        "unusedHours": 0,
+        "payout": 0
+      }
+    },
+    {
+      "name": "平日加班 3 小時補休 1 小時：未休 2 小時以較晚時數計",
+      "input": {
+        "date": "2026-10-15",
+        "monthlyWage": 36000,
+        "days": [
+          {
+            "type": "weekday",
+            "hours": 3,
+            "used": 1
+          }
+        ]
+      },
+      "expected": {
+        "compHours": 3,
+        "unusedHours": 2,
+        "payout": 452
+      },
+      "note": "未休的視為第 2～3 小時：150×1.34＋150×1.67"
+    },
+    {
+      "name": "休息日 8 小時全未休",
+      "input": {
+        "date": "2026-10-15",
+        "monthlyWage": 36000,
+        "days": [
+          {
+            "type": "rest",
+            "hours": 8,
+            "used": 0
+          }
+        ]
+      },
+      "expected": {
+        "compHours": 8,
+        "unusedHours": 8,
+        "payout": 1905
+      }
+    },
+    {
+      "name": "休息日 10 小時補休 8 小時：未休的是第 9～10 小時",
+      "input": {
+        "date": "2026-10-15",
+        "monthlyWage": 36000,
+        "days": [
+          {
+            "type": "rest",
+            "hours": 10,
+            "used": 8
+          }
+        ]
+      },
+      "expected": {
+        "compHours": 10,
+        "unusedHours": 2,
+        "payout": 801
+      }
+    },
+    {
+      "name": "多天合計",
+      "input": {
+        "date": "2026-10-15",
+        "monthlyWage": 40000,
+        "days": [
+          {
+            "type": "weekday",
+            "hours": 2,
+            "used": 2
+          },
+          {
+            "type": "weekday",
+            "hours": 4,
+            "used": 1
+          },
+          {
+            "type": "rest",
+            "hours": 4,
+            "used": 0
+          }
+        ]
+      },
+      "expected": {
+        "compHours": 10,
+        "unusedHours": 7,
+        "payout": 1784
+      }
+    },
+    {
+      "name": "休息日 1 小時未休",
+      "input": {
+        "date": "2026-10-15",
+        "monthlyWage": 30000,
+        "days": [
+          {
+            "type": "rest",
+            "hours": 1,
+            "used": 0
+          }
+        ]
+      },
+      "expected": {
+        "compHours": 1,
+        "unusedHours": 1,
+        "payout": 168
+      }
+    },
+    {
+      "name": "補休時數多填時以加班時數為上限",
+      "input": {
+        "date": "2026-10-15",
+        "monthlyWage": 36000,
+        "days": [
+          {
+            "type": "weekday",
+            "hours": 2,
+            "used": 5
+          }
+        ]
+      },
+      "expected": {
+        "compHours": 2,
+        "unusedHours": 0,
+        "payout": 0
+      }
+    },
+    {
+      "name": "月薪 31,000 平日 2.5 小時未休",
+      "input": {
+        "date": "2026-10-15",
+        "monthlyWage": 31000,
+        "days": [
+          {
+            "type": "weekday",
+            "hours": 2.5,
+            "used": 0
+          }
+        ]
+      },
+      "expected": {
+        "compHours": 2.5,
+        "unusedHours": 2.5,
+        "payout": 455
+      }
+    },
+    {
+      "name": "休息日 12 小時補休 4 小時",
+      "input": {
+        "date": "2026-10-15",
+        "monthlyWage": 45000,
+        "days": [
+          {
+            "type": "rest",
+            "hours": 12,
+            "used": 4
+          }
+        ]
+      },
+      "expected": {
+        "compHours": 12,
+        "unusedHours": 8,
+        "payout": 3255
+      }
+    }
+  ]
+}

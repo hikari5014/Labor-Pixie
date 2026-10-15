@@ -11,4 +11,9 @@ export const CALCULATORS = [
   { id: 'fixed-term', title: '定期契約檢查', summary: '切段簽約會不會變成不定期契約、年資要不要合併' },
   { id: 'probation', title: '試用期時程', summary: '試用期最後一天、內部確認日、什麼時候起要預告' },
   { id: 'sick-leave', title: '病假、事假與全勤獎金', summary: '病假工資折半、全勤獎金最多能扣多少（115 年新制）' },
+  { id: 'comp-leave', title: '加班補休換算與到期折發', summary: '補休沒休完時要折發多少' },
+  { id: 'hourly-holiday', title: '時薪人員國定假日', summary: '依是否為約定上班日算出國定假日工資' },
+  { id: 'old-pension', title: '舊制退休金基數', summary: '2005/7/1 前年資的退休金，最高 45 個基數' },
+  { id: 'bullying', title: '職場霸凌申訴期限', summary: '公司內部時程與向主管機關申訴的最晚日期' },
+  { id: 'contract-check', title: '勞動契約條款檢查', summary: '一份契約逐項對照有沒有寫、寫得清不清楚' },
 ];

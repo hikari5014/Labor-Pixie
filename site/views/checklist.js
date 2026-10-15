@@ -1,7 +1,7 @@
 import { h, pageHead, field, alertBox, lawLink } from '../lib/ui.js';
 import { getJSON } from '../lib/data.js';
 
-const KEY = 'audit';
+let KEY = 'audit';
 
 function load() {
   try { return JSON.parse(localStorage.getItem(KEY) || '{}'); } catch (e) { return {}; }
@@ -10,9 +10,17 @@ function save(state) {
   try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) { /* 存不了就只在這次有效 */ }
 }
 
-export async function render(root) {
-  const list = await getJSON('data/checklists/company-audit.json');
+const INTRO = {
+  'company-audit': ['公司體檢清單', '逐項自評：沒有、有但內容不對、對但沒落實、有做但沒紀錄、完整。目標是「正確＋落實＋有紀錄」。'],
+  'contract-terms': ['勞動契約條款檢查', '拿一份勞動契約逐項對照：有沒有寫、寫得清不清楚。'],
+};
+
+export async function render(root, params) {
+  const id = (params && params.rest) || 'company-audit';
+  KEY = id === 'company-audit' ? 'audit' : `check-${id}`;
+  const list = await getJSON(`data/checklists/${id}.json`);
   const state = load();
+  const hasSize = list.groups.some((g) => g.items.some((it) => it.min_employees));
   const size = field({ label: '公司員工人數', unit: '人', min: 1, value: state.size || '' });
   const summary = h('div', { class: 'result', 'aria-live': 'polite' });
   const groups = h('div', { class: 'checklist' });
@@ -41,22 +49,23 @@ export async function render(root) {
           select));
       }
     }
-    const bad = counts.missing + counts.wrong;
+    const bad = ['missing', 'wrong', 'unclear'].reduce((n, k) => n + (counts[k] || 0), 0);
+    const mid = ['not-done', 'no-record'].reduce((n, k) => n + (counts[k] || 0), 0);
     summary.replaceChildren(...[
       h('div', { class: 'result-row result-row--main' }, h('span', {}, '完整'), h('b', {}, `${counts.ok} / ${total} 項`)),
       ...list.states.filter((s) => s.id !== 'ok').map((s) => h('div', { class: 'result-row' }, h('span', {}, s.name), h('b', {}, `${counts[s.id]} 項`))),
       unanswered ? h('div', { class: 'result-row' }, h('span', {}, '還沒填'), h('b', {}, `${unanswered} 項`)) : null,
-      bad ? alertBox('crit', `先處理 ${bad} 項「沒有」或「內容不對」`, '錯的制度反而會變成對公司不利的證據。')
-        : counts['not-done'] + counts['no-record'] ? alertBox('warn', '再補上落實與紀錄', '做了但沒有紀錄，發生爭議時一樣拿不出證據。')
+      bad ? alertBox('crit', `先處理 ${bad} 項沒有或不清楚的`, '沒寫或寫錯的條款，發生爭議時反而會對公司不利。')
+        : mid ? alertBox('warn', '再補上落實與紀錄', '做了但沒有紀錄，發生爭議時一樣拿不出證據。')
           : !unanswered ? alertBox('good', '全部完整', '記得每年至少檢查一次，法規修正時也要更新。') : null,
     ].filter(Boolean));
   }
 
   size.input.addEventListener('input', () => { state.size = size.input.value; save(state); draw(); });
   root.append(
-    pageHead('公司體檢清單', '逐項自評：沒有、有但內容不對、對但沒落實、有做但沒紀錄、完整。目標是「正確＋落實＋有紀錄」。'),
+    pageHead(...(INTRO[id] || [list.title, list.note])),
     h('div', { class: 'calc' },
-      h('section', { class: 'panel form-grid' }, size.el, h('p', { class: 'small muted' }, '填的內容只存在這台裝置，不會上傳。')),
+      h('section', { class: 'panel form-grid' }, hasSize ? size.el : null, h('p', { class: 'small muted' }, '填的內容只存在這台裝置，不會上傳。')),
       h('section', { class: 'panel' }, h('h2', { class: 'section-title' }, '結果'), summary)),
     h('section', { class: 'panel' }, groups),
     h('div', { class: 'actions' },

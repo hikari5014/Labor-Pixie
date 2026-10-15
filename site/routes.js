@@ -24,4 +24,11 @@ export const ROUTES = [
   { path: '/search', title: '搜尋', load: () => import('./views/search.js') },
   { prefix: '/cases/', title: '看案例', load: () => import('./views/case.js') },
   { prefix: '/search/', title: '搜尋', load: () => import('./views/search.js') },
+  { path: '/quick', title: '速查表', load: () => import('./views/quick.js') },
+  { path: '/calc/comp-leave', title: '加班補休換算與到期折發', load: () => import('./views/calc-comp-leave.js') },
+  { path: '/calc/hourly-holiday', title: '時薪人員國定假日', load: () => import('./views/calc-hourly-holiday.js') },
+  { path: '/calc/old-pension', title: '舊制退休金基數', load: () => import('./views/calc-old-pension.js') },
+  { path: '/calc/bullying', title: '職場霸凌申訴期限', load: () => import('./views/calc-bullying.js') },
+  { path: '/calc/contract-check', title: '勞動契約條款檢查', load: () => import('./views/checklist.js').then((m) => ({ render: (root, params, ctx) => m.render(root, { rest: 'contract-terms' }, ctx) })) },
+  { prefix: '/check/', title: '檢查清單', load: () => import('./views/checklist.js') },
 ];

@@ -348,7 +348,137 @@ def leave_cases():
     return {"id": "sick-leave", "title": "病假、事假與全勤獎金", "source": "勞工請假規則第 4、7、9、9-1 條", "cases": out}
 
 
-GENERATORS = {"package-pay": package_cases, "severance": severance_cases, "average-wage": average_cases, "notice-period": notice_cases, "overtime": overtime_cases, "fixed-term": fixed_term_cases, "probation": probation_cases, "sick-leave": leave_cases}
+# ---- 補休換算與到期折發 ----
+def seg(type_, a, b):
+    tiers = [(0, 2, 1.34), (2, 8, 1.67), (8, 12, 2.67)] if type_ == "rest" else [(0, 2, 1.34), (2, 4, 1.67)]
+    return sum(r * max(0, min(max(b, lo), hi) - min(max(a, lo), hi)) for lo, hi, r in tiers)
+
+
+def comp_leave(wage, days):
+    hourly = wage / 240
+    total = 0
+    unused = 0
+    for d in days:
+        used = min(max(d.get("used", 0), 0), d["hours"])
+        unused += d["hours"] - used
+        total += hourly * seg(d["type"], used, d["hours"])
+    return {"compHours": sum(d["hours"] for d in days), "unusedHours": unused, "payout": ceil_money(total)}
+
+
+def comp_cases():
+    out = []
+
+    def add(name, wage, days, note=None):
+        out.append(case(name, {"date": "2026-10-15", "monthlyWage": wage, "days": days}, comp_leave(wage, days), note))
+
+    add("平日加班 3 小時都沒補休：照加班費折發", 36000, [{"type": "weekday", "hours": 3, "used": 0}])
+    add("平日加班 3 小時已補休 3 小時：不用折發", 36000, [{"type": "weekday", "hours": 3, "used": 3}])
+    add("平日加班 3 小時補休 1 小時：未休 2 小時以較晚時數計", 36000, [{"type": "weekday", "hours": 3, "used": 1}],
+        "未休的視為第 2～3 小時：150×1.34＋150×1.67")
+    add("休息日 8 小時全未休", 36000, [{"type": "rest", "hours": 8, "used": 0}])
+    add("休息日 10 小時補休 8 小時：未休的是第 9～10 小時", 36000, [{"type": "rest", "hours": 10, "used": 8}])
+    add("多天合計", 40000, [{"type": "weekday", "hours": 2, "used": 2}, {"type": "weekday", "hours": 4, "used": 1}, {"type": "rest", "hours": 4, "used": 0}])
+    add("休息日 1 小時未休", 30000, [{"type": "rest", "hours": 1, "used": 0}])
+    add("補休時數多填時以加班時數為上限", 36000, [{"type": "weekday", "hours": 2, "used": 5}])
+    add("月薪 31,000 平日 2.5 小時未休", 31000, [{"type": "weekday", "hours": 2.5, "used": 0}])
+    add("休息日 12 小時補休 4 小時", 45000, [{"type": "rest", "hours": 12, "used": 4}])
+    return {"id": "comp-leave", "title": "加班補休換算與到期折發", "rule": "overtime-rates",
+            "source": "勞動基準法第 32-1 條、第 24 條", "cases": out}
+
+
+# ---- 時薪人員國定假日 ----
+def hourly_holiday(wage, daily, scheduled, worked):
+    day = wage * daily
+    if scheduled:
+        if not worked:
+            return {"pay": ceil_money(day), "basis": "paid-off"}
+        return {"pay": ceil_money(day * 2 + wage * max(0, worked - daily)), "basis": "double"}
+    if not worked:
+        return {"pay": 0, "basis": "none"}
+    return {"pay": ceil_money(wage * worked * 2), "basis": "double-unscheduled"}
+
+
+def hourly_cases():
+    out = []
+    for name, wage, daily, sch, worked in [
+        ("原約定上班日遇國定假日，放假：工資照給 8 小時", 196, 8, True, 0),
+        ("原約定上班日，出勤 8 小時：加倍", 196, 8, True, 8),
+        ("原約定上班日，只上 4 小時：仍以整日加倍", 196, 8, True, 4),
+        ("每天約定 4 小時的部分工時，放假照給 4 小時", 200, 4, True, 0),
+        ("每天約定 4 小時，出勤 4 小時：4 小時 × 2", 200, 4, True, 4),
+        ("每天約定 3 小時，國定假日上 3 小時", 196, 3, True, 3),
+        ("不是約定上班日，沒上班：不用給", 196, 8, False, 0),
+        ("不是約定上班日，被要求上 5 小時：兩倍", 196, 8, False, 5),
+        ("約定 8 小時，出勤 10 小時：超過部分另計", 196, 8, True, 10),
+        ("時薪 250，約定 6 小時，放假照給", 250, 6, True, 0),
+    ]:
+        out.append(case(name, {"hourlyWage": wage, "dailyHours": daily, "scheduled": sch, "workedHours": worked},
+                        hourly_holiday(wage, daily, sch, worked)))
+    return {"id": "hourly-holiday", "title": "時薪人員國定假日", "source": "勞動基準法第 37、39 條；勞動部〈國定假日應依法給假給薪〉", "cases": out}
+
+
+# ---- 舊制退休金 ----
+def pension(frm, to, wage, disabled=False):
+    m, d = tenure(frm, to)
+    full, rest = m // 12, m % 12
+    years = full if (rest == 0 and d == 0) else full + (1 if rest >= 6 else 0.5)
+    raw = 2 * min(years, 15) + max(years - 15, 0)
+    bases = min(45, raw) * (1.2 if disabled else 1)
+    return {"years": years, "bases": round(bases, 10), "capped": raw > 45, "amount": ceil_money(wage * bases)}
+
+
+def pension_cases():
+    out = []
+    for name, frm, to, wage, dis in [
+        ("舊制年資剛好 10 年：20 個基數", "1995-07-01", "2005-06-30", 40000, False),
+        ("舊制年資 10 年 3 個月：未滿半年以半年計", "1995-04-01", "2005-06-30", 40000, False),
+        ("舊制年資 10 年 7 個月：滿半年以一年計", "1994-12-01", "2005-06-30", 40000, False),
+        ("剛好 15 年：30 個基數", "1990-07-01", "2005-06-30", 45000, False),
+        ("16 年：前 15 年 30 個、之後 1 個", "1989-07-01", "2005-06-30", 45000, False),
+        ("30 年：45 個基數", "1975-07-01", "2005-06-30", 50000, False),
+        ("35 年：最高 45 個基數", "1971-07-01", "2006-06-30", 50000, False),
+        ("選擇繼續適用舊制，做到 2026 年", "1990-03-01", "2026-02-28", 60000, False),
+        ("因執行職務致身心障礙被強制退休：加給 20%", "1995-07-01", "2005-06-30", 40000, True),
+        ("15 年 2 個月：超過的部分以半年計", "1990-05-01", "2005-06-30", 45000, False),
+    ]:
+        inp = {"from": frm, "to": to, "avgWage": wage}
+        if dis:
+            inp["disabilityOnDuty"] = True
+        out.append(case(name, inp, pension(frm, to, wage, dis)))
+    return {"id": "old-pension", "title": "舊制退休金基數", "source": "勞動基準法第 55 條", "cases": out}
+
+
+# ---- 職場霸凌：向主管機關申訴期限 ----
+def authority(ended, left=None):
+    three = anniversary(D(ended), 36) - dt.timedelta(1)
+    after = (anniversary(D(left), 12) - dt.timedelta(1)) if left else None
+    return {"threeYears": three.isoformat(), "afterLeaving": after.isoformat() if after else None,
+            "deadline": (after if after and after > three else three).isoformat()}
+
+
+def bullying_cases():
+    out = []
+    for name, ended, left in [
+        ("行為終了 115/3/1，仍在職：3 年內", "2026-03-01", None),
+        ("行為終了後很快離職：3 年較長", "2026-03-01", "2026-05-01"),
+        ("離職很久以後：離職後 1 年較長", "2024-01-10", "2026-06-30"),
+        ("閏年 2/29 終了", "2024-02-29", None),
+        ("行為終了當天離職", "2026-07-15", "2026-07-15"),
+        ("115/7/1 新制施行當天", "2026-07-01", None),
+        ("離職後 1 年剛好等於 3 年的情況", "2025-01-01", "2027-01-01"),
+        ("月底離職", "2026-01-31", "2026-01-31"),
+        ("年底終了", "2026-12-31", None),
+        ("多年後離職", "2026-08-15", "2030-03-31"),
+    ]:
+        inp = {"endedOn": ended}
+        if left:
+            inp["leftOn"] = left
+        out.append(case(name, inp, authority(ended, left)))
+    return {"id": "bullying-deadline", "title": "職場霸凌向主管機關申訴期限", "source": "職業安全衛生法第 22-3 條", "cases": out}
+
+
+GENERATORS = {"package-pay": package_cases, "severance": severance_cases, "average-wage": average_cases, "notice-period": notice_cases, "overtime": overtime_cases, "fixed-term": fixed_term_cases, "probation": probation_cases, "sick-leave": leave_cases, "comp-leave": comp_cases, "hourly-holiday": hourly_cases,
+              "old-pension": pension_cases, "bullying-deadline": bullying_cases}
 
 if __name__ == "__main__":
     for name, gen in GENERATORS.items():

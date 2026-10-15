@@ -2,7 +2,7 @@ import { h } from './lib/ui.js';
 import { clearCache } from './lib/data.js';
 import { ROUTES } from './routes.js';
 
-export const APP_VERSION = '1.2.0';
+export const APP_VERSION = '1.3.0';
 
 const $ = (id) => document.getElementById(id);
 

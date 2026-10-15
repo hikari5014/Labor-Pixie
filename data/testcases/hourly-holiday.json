@@ -1,0 +1,137 @@
+{
+  "id": "hourly-holiday",
+  "title": "時薪人員國定假日",
+  "source": "勞動基準法第 37、39 條；勞動部〈國定假日應依法給假給薪〉",
+  "cases": [
+    {
+      "name": "原約定上班日遇國定假日，放假：工資照給 8 小時",
+      "input": {
+        "hourlyWage": 196,
+        "dailyHours": 8,
+        "scheduled": true,
+        "workedHours": 0
+      },
+      "expected": {
+        "pay": 1568,
+        "basis": "paid-off"
+      }
+    },
+    {
+      "name": "原約定上班日，出勤 8 小時：加倍",
+      "input": {
+        "hourlyWage": 196,
+        "dailyHours": 8,
+        "scheduled": true,
+        "workedHours": 8
+      },
+      "expected": {
+        "pay": 3136,
+        "basis": "double"
+      }
+    },
+    {
+      "name": "原約定上班日，只上 4 小時：仍以整日加倍",
+      "input": {
+        "hourlyWage": 196,
+        "dailyHours": 8,
+        "scheduled": true,
+        "workedHours": 4
+      },
+      "expected": {
+        "pay": 3136,
+        "basis": "double"
+      }
+    },
+    {
+      "name": "每天約定 4 小時的部分工時，放假照給 4 小時",
+      "input": {
+        "hourlyWage": 200,
+        "dailyHours": 4,
+        "scheduled": true,
+        "workedHours": 0
+      },
+      "expected": {
+        "pay": 800,
+        "basis": "paid-off"
+      }
+    },
+    {
+      "name": "每天約定 4 小時，出勤 4 小時：4 小時 × 2",
+      "input": {
+        "hourlyWage": 200,
+        "dailyHours": 4,
+        "scheduled": true,
+        "workedHours": 4
+      },
+      "expected": {
+        "pay": 1600,
+        "basis": "double"
+      }
+    },
+    {
+      "name": "每天約定 3 小時，國定假日上 3 小時",
+      "input": {
+        "hourlyWage": 196,
+        "dailyHours": 3,
+        "scheduled": true,
+        "workedHours": 3
+      },
+      "expected": {
+        "pay": 1176,
+        "basis": "double"
+      }
+    },
+    {
+      "name": "不是約定上班日，沒上班：不用給",
+      "input": {
+        "hourlyWage": 196,
+        "dailyHours": 8,
+        "scheduled": false,
+        "workedHours": 0
+      },
+      "expected": {
+        "pay": 0,
+        "basis": "none"
+      }
+    },
+    {
+      "name": "不是約定上班日，被要求上 5 小時：兩倍",
+      "input": {
+        "hourlyWage": 196,
+        "dailyHours": 8,
+        "scheduled": false,
+        "workedHours": 5
+      },
+      "expected": {
+        "pay": 1960,
+        "basis": "double-unscheduled"
+      }
+    },
+    {
+      "name": "約定 8 小時，出勤 10 小時：超過部分另計",
+      "input": {
+        "hourlyWage": 196,
+        "dailyHours": 8,
+        "scheduled": true,
+        "workedHours": 10
+      },
+      "expected": {
+        "pay": 3528,
+        "basis": "double"
+      }
+    },
+    {
+      "name": "時薪 250，約定 6 小時，放假照給",
+      "input": {
+        "hourlyWage": 250,
+        "dailyHours": 6,
+        "scheduled": true,
+        "workedHours": 0
+      },
+      "expected": {
+        "pay": 1500,
+        "basis": "paid-off"
+      }
+    }
+  ]
+}
