@@ -3,6 +3,7 @@
   "format_version": 1,
   "data_version": "2026-10-15",
   "files": [
+    "checklists/company-audit.json",
     "laws/commemoration-days-and-holidays-act.json",
     "laws/employment-insurance-act.json",
     "laws/employment-service-act.json",
@@ -31,6 +32,7 @@
     "testcases/overtime.json",
     "testcases/package-pay.json",
     "testcases/probation.json",
-    "testcases/severance.json"
+    "testcases/severance.json",
+    "testcases/sick-leave.json"
   ]
 }

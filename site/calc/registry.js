@@ -10,4 +10,5 @@ export const CALCULATORS = [
   { id: 'separation', title: '離職時的四件事', summary: '非自願離職證明、預告、資遣費、資遣通報，依離職情況分開判斷' },
   { id: 'fixed-term', title: '定期契約檢查', summary: '切段簽約會不會變成不定期契約、年資要不要合併' },
   { id: 'probation', title: '試用期時程', summary: '試用期最後一天、內部確認日、什麼時候起要預告' },
+  { id: 'sick-leave', title: '病假、事假與全勤獎金', summary: '病假工資折半、全勤獎金最多能扣多少（115 年新制）' },
 ];

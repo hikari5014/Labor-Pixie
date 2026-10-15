@@ -99,6 +99,21 @@ def check_testcases(obj, stem):
     return errors
 
 
+def check_checklist(obj, stem):
+    errors = [] if obj.get("id") == stem else ["id 要跟檔名相同"]
+    if not obj.get("states"):
+        errors.append("缺 states")
+    seen = set()
+    for g in obj.get("groups", []):
+        for item in g.get("items", []):
+            if item.get("id") in seen:
+                errors.append(f"項目 id 重複：{item.get('id')}")
+            seen.add(item.get("id"))
+            if not item.get("title") or not item.get("basis"):
+                errors.append(f"{item.get('id')} 缺 title 或 basis")
+    return errors
+
+
 def validate(data_dir=DATA):
     """回傳錯誤清單（空清單＝全部通過）。"""
     data_dir = Path(data_dir)
@@ -121,10 +136,12 @@ def validate(data_dir=DATA):
             found = check_rule(obj, path.stem)
         elif rel.startswith("laws/"):
             found = check_law(obj, path.stem)
+        elif rel.startswith("checklists/"):
+            found = check_checklist(obj, path.stem)
         elif rel.startswith("testcases/"):
             found = check_testcases(obj, path.stem)
         else:
-            found = [] if rel.split("/")[0] in ("interpretations", "faq", "topics", "checklists") else ["不認得的資料夾"]
+            found = [] if rel.split("/")[0] in ("interpretations", "faq", "topics") else ["不認得的資料夾"]
         errors.extend(f"{rel}：{msg}" for msg in found)
     return errors
 

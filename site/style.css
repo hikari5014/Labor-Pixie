@@ -173,3 +173,19 @@ mark { background: var(--warn-soft); color: var(--ink); padding: 0 1px; }
 .obligation--none { border-color: var(--line-strong); background: var(--sunken); }
 .obligation--warn { border-color: var(--warn); background: var(--warn-soft); }
 .notes { margin: 0; padding-left: 1.3em; }
+
+/* ---- v0.8：體檢清單 ---- */
+.checklist { display: grid; gap: var(--space-2); }
+.checklist .section-title { margin-top: var(--space-3); }
+.check-item { display: grid; gap: var(--space-1); padding: var(--space-3); border: 1px solid var(--line); border-left-width: 4px; background: var(--surface); }
+.check-item .pill { margin-left: var(--space-2); }
+.check-item--missing, .check-item--wrong { border-left-color: var(--crit); }
+.check-item--not-done, .check-item--no-record { border-left-color: var(--warn); }
+.check-item--ok { border-left-color: var(--good); }
+.actions { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+
+@media print {
+  .topbar, .footer, .banner, .actions, .back, .seg { display: none !important; }
+  body { background: #fff; }
+  .panel, .check-item { break-inside: avoid; }
+}

@@ -5,6 +5,7 @@ import { packagePay } from '../site/calc/package-pay.js';
 import { averageWage, severance, noticePeriod } from '../site/calc/severance.js';
 import { overtimePay } from '../site/calc/overtime.js';
 import { fixedTermCheck, probationPlan } from '../site/calc/contracts.js';
+import { leaveDeduction } from '../site/calc/sick-leave.js';
 
 export const CALC_FUNCTIONS = {
   'annual-leave': annualLeave,
@@ -16,4 +17,5 @@ export const CALC_FUNCTIONS = {
   overtime: overtimePay,
   'fixed-term': fixedTermCheck,
   probation: probationPlan,
+  'sick-leave': leaveDeduction,
 };

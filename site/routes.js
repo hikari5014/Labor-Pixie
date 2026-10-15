@@ -15,4 +15,6 @@ export const ROUTES = [
   { path: '/calc/separation', title: '離職時的四件事', load: () => import('./views/separation.js') },
   { path: '/calc/fixed-term', title: '定期契約檢查', load: () => import('./views/calc-fixed-term.js') },
   { path: '/calc/probation', title: '試用期時程', load: () => import('./views/calc-probation.js') },
+  { path: '/calc/sick-leave', title: '病假、事假與全勤獎金', load: () => import('./views/calc-sick-leave.js') },
+  { path: '/check', title: '公司體檢清單', load: () => import('./views/checklist.js') },
 ];

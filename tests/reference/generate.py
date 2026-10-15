@@ -306,7 +306,49 @@ def probation_cases():
     return {"id": "probation", "title": "試用期時程", "source": "勞動基準法第 16 條；勞動部〈試用期間終止契約〉", "cases": out}
 
 
-GENERATORS = {"package-pay": package_cases, "severance": severance_cases, "average-wage": average_cases, "notice-period": notice_cases, "overtime": overtime_cases, "fixed-term": fixed_term_cases, "probation": probation_cases}
+# ---- 病假、事假與全勤獎金 ----
+def floor_money(x):
+    return math.floor(round(x * 1e6) / 1e6)
+
+
+def leave(kind, days, wage, bonus=0, used=0):
+    daily = wage / 30
+    r = {"halfPayDays": 0, "unpaidDays": 0, "bonusDeduction": 0}
+    if kind in ("sick", "miscarriage"):
+        half = min(days, max(0, 30 - used))
+        r.update(halfPayDays=half, unpaidDays=days - half, wageDeduction=floor_money(daily * 0.5 * half + daily * (days - half)),
+                 yearTotal=used + days, protected=used + days <= 10)
+        if kind == "sick":
+            r.update(bonusRule="proportional", bonusDeduction=min(bonus, floor_money(bonus / 30 * days)))
+        else:
+            r["bonusRule"] = "none"
+    else:
+        r.update(unpaidDays=days, wageDeduction=floor_money(daily * days), bonusRule="none" if kind == "family-care" else "company")
+    return r
+
+
+def leave_cases():
+    out = []
+
+    def add(name, kind, days, wage, bonus=0, used=0, note=None):
+        inp = {"leaveType": kind, "days": days, "monthlyWage": wage, "attendanceBonus": bonus, "usedThisYear": used}
+        out.append(case(name, inp, leave(kind, days, wage, bonus, used), note))
+
+    add("上課例子：全勤 3,000，請 1 日病假最多扣 100", "sick", 1, 30000, 3000)
+    add("病假 2 日：工資折半、全勤按比例扣", "sick", 2, 36000, 2000)
+    add("病假半天", "sick", 0.5, 30000, 3000)
+    add("今年已請 28 日，再請 3 日：2 日半薪、1 日要改用其他假", "sick", 3, 30000, 1000, used=28)
+    add("今年已請 30 日：這次都沒有半薪", "sick", 2, 30000, 1000, used=30)
+    add("今年累計 10 日內：受不利處分保護", "sick", 3, 32000, 0, used=7)
+    add("今年累計超過 10 日：仍不能只看天數考核", "sick", 3, 32000, 0, used=8)
+    add("全勤獎金很少：扣款不超過獎金本身", "sick", 31, 30000, 500, used=0, note="最多扣到全勤獎金 500 元")
+    add("妊娠未滿 3 個月流產請病假：不扣全勤", "miscarriage", 5, 30000, 2000)
+    add("照顧家人的事假：不給薪，但不扣全勤", "family-care", 1, 30000, 3000)
+    add("一般事假：不給薪，全勤依公司規定", "personal", 1, 30000, 3000)
+    return {"id": "sick-leave", "title": "病假、事假與全勤獎金", "source": "勞工請假規則第 4、7、9、9-1 條", "cases": out}
+
+
+GENERATORS = {"package-pay": package_cases, "severance": severance_cases, "average-wage": average_cases, "notice-period": notice_cases, "overtime": overtime_cases, "fixed-term": fixed_term_cases, "probation": probation_cases, "sick-leave": leave_cases}
 
 if __name__ == "__main__":
     for name, gen in GENERATORS.items():

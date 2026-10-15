@@ -1,0 +1,213 @@
+{
+  "id": "sick-leave",
+  "title": "病假、事假與全勤獎金",
+  "source": "勞工請假規則第 4、7、9、9-1 條",
+  "cases": [
+    {
+      "name": "上課例子：全勤 3,000，請 1 日病假最多扣 100",
+      "input": {
+        "leaveType": "sick",
+        "days": 1,
+        "monthlyWage": 30000,
+        "attendanceBonus": 3000,
+        "usedThisYear": 0
+      },
+      "expected": {
+        "halfPayDays": 1,
+        "unpaidDays": 0,
+        "bonusDeduction": 100,
+        "wageDeduction": 500,
+        "yearTotal": 1,
+        "protected": true,
+        "bonusRule": "proportional"
+      }
+    },
+    {
+      "name": "病假 2 日：工資折半、全勤按比例扣",
+      "input": {
+        "leaveType": "sick",
+        "days": 2,
+        "monthlyWage": 36000,
+        "attendanceBonus": 2000,
+        "usedThisYear": 0
+      },
+      "expected": {
+        "halfPayDays": 2,
+        "unpaidDays": 0,
+        "bonusDeduction": 133,
+        "wageDeduction": 1200,
+        "yearTotal": 2,
+        "protected": true,
+        "bonusRule": "proportional"
+      }
+    },
+    {
+      "name": "病假半天",
+      "input": {
+        "leaveType": "sick",
+        "days": 0.5,
+        "monthlyWage": 30000,
+        "attendanceBonus": 3000,
+        "usedThisYear": 0
+      },
+      "expected": {
+        "halfPayDays": 0.5,
+        "unpaidDays": 0.0,
+        "bonusDeduction": 50,
+        "wageDeduction": 250,
+        "yearTotal": 0.5,
+        "protected": true,
+        "bonusRule": "proportional"
+      }
+    },
+    {
+      "name": "今年已請 28 日，再請 3 日：2 日半薪、1 日要改用其他假",
+      "input": {
+        "leaveType": "sick",
+        "days": 3,
+        "monthlyWage": 30000,
+        "attendanceBonus": 1000,
+        "usedThisYear": 28
+      },
+      "expected": {
+        "halfPayDays": 2,
+        "unpaidDays": 1,
+        "bonusDeduction": 100,
+        "wageDeduction": 2000,
+        "yearTotal": 31,
+        "protected": false,
+        "bonusRule": "proportional"
+      }
+    },
+    {
+      "name": "今年已請 30 日：這次都沒有半薪",
+      "input": {
+        "leaveType": "sick",
+        "days": 2,
+        "monthlyWage": 30000,
+        "attendanceBonus": 1000,
+        "usedThisYear": 30
+      },
+      "expected": {
+        "halfPayDays": 0,
+        "unpaidDays": 2,
+        "bonusDeduction": 66,
+        "wageDeduction": 2000,
+        "yearTotal": 32,
+        "protected": false,
+        "bonusRule": "proportional"
+      }
+    },
+    {
+      "name": "今年累計 10 日內：受不利處分保護",
+      "input": {
+        "leaveType": "sick",
+        "days": 3,
+        "monthlyWage": 32000,
+        "attendanceBonus": 0,
+        "usedThisYear": 7
+      },
+      "expected": {
+        "halfPayDays": 3,
+        "unpaidDays": 0,
+        "bonusDeduction": 0,
+        "wageDeduction": 1600,
+        "yearTotal": 10,
+        "protected": true,
+        "bonusRule": "proportional"
+      }
+    },
+    {
+      "name": "今年累計超過 10 日：仍不能只看天數考核",
+      "input": {
+        "leaveType": "sick",
+        "days": 3,
+        "monthlyWage": 32000,
+        "attendanceBonus": 0,
+        "usedThisYear": 8
+      },
+      "expected": {
+        "halfPayDays": 3,
+        "unpaidDays": 0,
+        "bonusDeduction": 0,
+        "wageDeduction": 1600,
+        "yearTotal": 11,
+        "protected": false,
+        "bonusRule": "proportional"
+      }
+    },
+    {
+      "name": "全勤獎金很少：扣款不超過獎金本身",
+      "input": {
+        "leaveType": "sick",
+        "days": 31,
+        "monthlyWage": 30000,
+        "attendanceBonus": 500,
+        "usedThisYear": 0
+      },
+      "expected": {
+        "halfPayDays": 30,
+        "unpaidDays": 1,
+        "bonusDeduction": 500,
+        "wageDeduction": 16000,
+        "yearTotal": 31,
+        "protected": false,
+        "bonusRule": "proportional"
+      },
+      "note": "最多扣到全勤獎金 500 元"
+    },
+    {
+      "name": "妊娠未滿 3 個月流產請病假：不扣全勤",
+      "input": {
+        "leaveType": "miscarriage",
+        "days": 5,
+        "monthlyWage": 30000,
+        "attendanceBonus": 2000,
+        "usedThisYear": 0
+      },
+      "expected": {
+        "halfPayDays": 5,
+        "unpaidDays": 0,
+        "bonusDeduction": 0,
+        "wageDeduction": 2500,
+        "yearTotal": 5,
+        "protected": true,
+        "bonusRule": "none"
+      }
+    },
+    {
+      "name": "照顧家人的事假：不給薪，但不扣全勤",
+      "input": {
+        "leaveType": "family-care",
+        "days": 1,
+        "monthlyWage": 30000,
+        "attendanceBonus": 3000,
+        "usedThisYear": 0
+      },
+      "expected": {
+        "halfPayDays": 0,
+        "unpaidDays": 1,
+        "bonusDeduction": 0,
+        "wageDeduction": 1000,
+        "bonusRule": "none"
+      }
+    },
+    {
+      "name": "一般事假：不給薪，全勤依公司規定",
+      "input": {
+        "leaveType": "personal",
+        "days": 1,
+        "monthlyWage": 30000,
+        "attendanceBonus": 3000,
+        "usedThisYear": 0
+      },
+      "expected": {
+        "halfPayDays": 0,
+        "unpaidDays": 1,
+        "bonusDeduction": 0,
+        "wageDeduction": 1000,
+        "bonusRule": "company"
+      }
+    }
+  ]
+}
