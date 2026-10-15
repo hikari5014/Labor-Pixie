@@ -12,6 +12,7 @@
     "rules/notice-period.json",
     "rules/overtime-rates.json",
     "testcases/annual-leave.json",
-    "testcases/minimum-wage.json"
+    "testcases/minimum-wage.json",
+    "testcases/package-pay.json"
   ]
 }

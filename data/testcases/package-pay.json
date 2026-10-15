@@ -1,0 +1,250 @@
+{
+  "id": "package-pay",
+  "title": "統包薪資反推與多退少補",
+  "rules": [
+    "overtime-rates",
+    "minimum-wage"
+  ],
+  "source": "勞動基準法第 24 條；最低工資法第 5 條",
+  "cases": [
+    {
+      "name": "上課示範：月薪 6 萬、平日前 2 小時 22 小時＋第 3–4 小時 22 小時",
+      "input": {
+        "total": 60000,
+        "date": "2026-10-15",
+        "hours": {
+          "weekday12": 22,
+          "weekday34": 22
+        }
+      },
+      "expected": {
+        "base": 47025,
+        "fixedOvertime": 12975,
+        "plannedHours": 44,
+        "hoursOk": true,
+        "minWageOk": true
+      },
+      "note": "時薪約 195.94 元。課堂把加權時數取整為 70 小時、時薪取 196 元，金額略有差異"
+    },
+    {
+      "name": "保守估算：加權時數多抓 3.78 小時（湊成 70）",
+      "input": {
+        "total": 60000,
+        "date": "2026-10-15",
+        "hours": {
+          "weekday12": 22,
+          "weekday34": 22
+        },
+        "buffer": 3.78
+      },
+      "expected": {
+        "base": 46451,
+        "fixedOvertime": 13549,
+        "plannedHours": 44,
+        "hoursOk": true,
+        "minWageOk": true
+      }
+    },
+    {
+      "name": "月薪 4 萬、平日前 2 小時 20 小時",
+      "input": {
+        "total": 40000,
+        "date": "2026-10-15",
+        "hours": {
+          "weekday12": 20
+        }
+      },
+      "expected": {
+        "base": 35982,
+        "fixedOvertime": 4018,
+        "plannedHours": 20,
+        "hoursOk": true,
+        "minWageOk": true
+      }
+    },
+    {
+      "name": "拆完底薪低於最低工資",
+      "input": {
+        "total": 32000,
+        "date": "2026-10-15",
+        "hours": {
+          "weekday12": 20,
+          "weekday34": 20
+        }
+      },
+      "expected": {
+        "base": 25582,
+        "fixedOvertime": 6418,
+        "plannedHours": 40,
+        "hoursOk": true,
+        "minWageOk": false
+      },
+      "note": "底薪約 25,583 元，低於 29,500"
+    },
+    {
+      "name": "預估加班 48 小時，超過每月 46 小時",
+      "input": {
+        "total": 60000,
+        "date": "2026-10-15",
+        "hours": {
+          "weekday12": 22,
+          "weekday34": 22,
+          "rest12": 4
+        }
+      },
+      "expected": {
+        "base": 46216,
+        "fixedOvertime": 13784,
+        "plannedHours": 48,
+        "hoursOk": false,
+        "minWageOk": true
+      }
+    },
+    {
+      "name": "休息日加班：前 2 小時 8 小時、第 3–8 小時 24 小時",
+      "input": {
+        "total": 45000,
+        "date": "2026-10-15",
+        "hours": {
+          "rest12": 8,
+          "rest38": 24
+        }
+      },
+      "expected": {
+        "base": 37138,
+        "fixedOvertime": 7862,
+        "plannedHours": 32,
+        "hoursOk": true,
+        "minWageOk": true
+      }
+    },
+    {
+      "name": "沒有加班：全部都是底薪",
+      "input": {
+        "total": 30000,
+        "date": "2026-10-15",
+        "hours": {}
+      },
+      "expected": {
+        "base": 30000,
+        "fixedOvertime": 0,
+        "plannedHours": 0,
+        "hoursOk": true,
+        "minWageOk": true
+      }
+    },
+    {
+      "name": "114 年：底薪對照當年最低工資 28,590",
+      "input": {
+        "total": 33000,
+        "date": "2025-06-01",
+        "hours": {
+          "weekday12": 20
+        }
+      },
+      "expected": {
+        "base": 29685,
+        "fixedOvertime": 3315,
+        "plannedHours": 20,
+        "hoursOk": true,
+        "minWageOk": true
+      }
+    },
+    {
+      "name": "當月實際加班較少：固定加班費照付，不補",
+      "input": {
+        "total": 40000,
+        "date": "2026-10-15",
+        "hours": {
+          "weekday12": 20
+        },
+        "actual": {
+          "weekday12": 10
+        }
+      },
+      "expected": {
+        "base": 35982,
+        "fixedOvertime": 4018,
+        "plannedHours": 20,
+        "hoursOk": true,
+        "minWageOk": true,
+        "legalOvertime": 2009,
+        "topUp": 0,
+        "actualHours": 10
+      }
+    },
+    {
+      "name": "當月實際加班較多：要補差額",
+      "input": {
+        "total": 40000,
+        "date": "2026-10-15",
+        "hours": {
+          "weekday12": 20
+        },
+        "actual": {
+          "weekday12": 20,
+          "weekday34": 10
+        }
+      },
+      "expected": {
+        "base": 35982,
+        "fixedOvertime": 4018,
+        "plannedHours": 20,
+        "hoursOk": true,
+        "minWageOk": true,
+        "legalOvertime": 6522,
+        "topUp": 2504,
+        "actualHours": 30
+      }
+    },
+    {
+      "name": "實際有休息日第 9 小時以後的加班",
+      "input": {
+        "total": 50000,
+        "date": "2026-10-15",
+        "hours": {
+          "weekday12": 20
+        },
+        "actual": {
+          "weekday12": 10,
+          "rest12": 2,
+          "rest38": 6,
+          "rest912": 2
+        }
+      },
+      "expected": {
+        "base": 44977,
+        "fixedOvertime": 5023,
+        "plannedHours": 20,
+        "hoursOk": true,
+        "minWageOk": true,
+        "legalOvertime": 5893,
+        "topUp": 870,
+        "actualHours": 20
+      }
+    },
+    {
+      "name": "實際時數剛好等於預估：不用補",
+      "input": {
+        "total": 40000,
+        "date": "2026-10-15",
+        "hours": {
+          "weekday12": 20
+        },
+        "actual": {
+          "weekday12": 20
+        }
+      },
+      "expected": {
+        "base": 35982,
+        "fixedOvertime": 4018,
+        "plannedHours": 20,
+        "hoursOk": true,
+        "minWageOk": true,
+        "legalOvertime": 4018,
+        "topUp": 0,
+        "actualHours": 20
+      }
+    }
+  ]
+}
