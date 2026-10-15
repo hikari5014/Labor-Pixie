@@ -1,0 +1,44 @@
+{
+  "id": "fixed-term-contracts",
+  "title": "定期契約的種類與期限",
+  "note": "繼續性工作應為不定期契約。前後契約合計超過 90 日、間斷不超過 30 日，視為不定期契約（特定性、季節性除外）。間隔未滿 3 個月，年資合併計算。",
+  "entries": [
+    {
+      "effective_from": "2019-05-15",
+      "status": "active",
+      "kinds": [
+        {
+          "id": "temporary",
+          "name": "臨時性",
+          "max_months": 6,
+          "conversion_applies": true
+        },
+        {
+          "id": "short",
+          "name": "短期性",
+          "max_months": 6,
+          "conversion_applies": true
+        },
+        {
+          "id": "seasonal",
+          "name": "季節性",
+          "max_months": 9,
+          "conversion_applies": false
+        },
+        {
+          "id": "specific",
+          "name": "特定性",
+          "report_over_months": 12,
+          "conversion_applies": false
+        }
+      ],
+      "conversion_total_days": 90,
+      "conversion_max_gap_days": 30,
+      "seniority_merge_months": 3,
+      "elderly_age": 65,
+      "source": "勞動基準法第 9、10 條；施行細則第 6 條；中高齡者及高齡者就業促進法第 28 條",
+      "source_url": "https://law.moj.gov.tw/LawClass/LawSingle.aspx?pcode=N0030001&flno=9",
+      "checked_on": "2026-10-15"
+    }
+  ]
+}

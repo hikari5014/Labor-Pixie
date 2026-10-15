@@ -16,17 +16,21 @@
     "laws/minimum-wage-act.json",
     "laws/occupational-safety-and-health-act.json",
     "rules/annual-leave.json",
+    "rules/fixed-term-contracts.json",
     "rules/marriage-leave.json",
     "rules/minimum-wage.json",
     "rules/national-holidays.json",
     "rules/notice-period.json",
     "rules/overtime-rates.json",
+    "rules/separation-obligations.json",
     "testcases/annual-leave.json",
     "testcases/average-wage.json",
+    "testcases/fixed-term.json",
     "testcases/minimum-wage.json",
     "testcases/notice-period.json",
     "testcases/overtime.json",
     "testcases/package-pay.json",
+    "testcases/probation.json",
     "testcases/severance.json"
   ]
 }

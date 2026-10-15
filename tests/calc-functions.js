@@ -4,6 +4,7 @@ import { checkMinimumWage } from '../site/calc/minimum-wage.js';
 import { packagePay } from '../site/calc/package-pay.js';
 import { averageWage, severance, noticePeriod } from '../site/calc/severance.js';
 import { overtimePay } from '../site/calc/overtime.js';
+import { fixedTermCheck, probationPlan } from '../site/calc/contracts.js';
 
 export const CALC_FUNCTIONS = {
   'annual-leave': annualLeave,
@@ -13,4 +14,6 @@ export const CALC_FUNCTIONS = {
   severance,
   'notice-period': noticePeriod,
   overtime: overtimePay,
+  'fixed-term': fixedTermCheck,
+  probation: probationPlan,
 };

@@ -1,0 +1,250 @@
+{
+  "id": "fixed-term",
+  "title": "定期契約檢查",
+  "rule": "fixed-term-contracts",
+  "source": "勞動基準法第 9、10 條；施行細則第 6 條",
+  "cases": [
+    {
+      "name": "課堂狀況一：間隔 29 天、合計超過 90 天 → 不定期契約",
+      "input": {
+        "kind": "short",
+        "a": {
+          "start": "2026-01-01",
+          "end": "2026-03-31"
+        },
+        "b": {
+          "start": "2026-04-30",
+          "end": "2026-10-31"
+        }
+      },
+      "expected": {
+        "daysA": 90,
+        "overLimit": false,
+        "needsReport": false,
+        "totalDays": 275,
+        "gapDays": 29,
+        "seniorityMerged": true,
+        "converted": true
+      }
+    },
+    {
+      "name": "課堂狀況二：間隔 2 個月 → 仍是定期，但年資合併",
+      "input": {
+        "kind": "short",
+        "a": {
+          "start": "2026-01-01",
+          "end": "2026-03-31"
+        },
+        "b": {
+          "start": "2026-06-01",
+          "end": "2026-10-31"
+        }
+      },
+      "expected": {
+        "daysA": 90,
+        "overLimit": false,
+        "needsReport": false,
+        "totalDays": 243,
+        "gapDays": 61,
+        "seniorityMerged": true,
+        "converted": false
+      }
+    },
+    {
+      "name": "課堂狀況三：間隔 3 個月以上 → 不合併年資",
+      "input": {
+        "kind": "short",
+        "a": {
+          "start": "2026-01-01",
+          "end": "2026-03-31"
+        },
+        "b": {
+          "start": "2026-07-01",
+          "end": "2026-10-31"
+        }
+      },
+      "expected": {
+        "daysA": 90,
+        "overLimit": false,
+        "needsReport": false,
+        "totalDays": 213,
+        "gapDays": 91,
+        "seniorityMerged": false,
+        "converted": false
+      }
+    },
+    {
+      "name": "間斷剛好 30 日仍算未超過 30 日",
+      "input": {
+        "kind": "temporary",
+        "a": {
+          "start": "2026-01-01",
+          "end": "2026-03-31"
+        },
+        "b": {
+          "start": "2026-05-01",
+          "end": "2026-06-30"
+        }
+      },
+      "expected": {
+        "daysA": 90,
+        "overLimit": false,
+        "needsReport": false,
+        "totalDays": 151,
+        "gapDays": 30,
+        "seniorityMerged": true,
+        "converted": true
+      }
+    },
+    {
+      "name": "間斷 31 日不會變成不定期",
+      "input": {
+        "kind": "temporary",
+        "a": {
+          "start": "2026-01-01",
+          "end": "2026-03-31"
+        },
+        "b": {
+          "start": "2026-05-02",
+          "end": "2026-06-30"
+        }
+      },
+      "expected": {
+        "daysA": 90,
+        "overLimit": false,
+        "needsReport": false,
+        "totalDays": 150,
+        "gapDays": 31,
+        "seniorityMerged": true,
+        "converted": false
+      }
+    },
+    {
+      "name": "前後合計剛好 90 日不會變成不定期",
+      "input": {
+        "kind": "short",
+        "a": {
+          "start": "2026-01-01",
+          "end": "2026-01-30"
+        },
+        "b": {
+          "start": "2026-02-01",
+          "end": "2026-04-01"
+        }
+      },
+      "expected": {
+        "daysA": 30,
+        "overLimit": false,
+        "needsReport": false,
+        "totalDays": 90,
+        "gapDays": 1,
+        "seniorityMerged": true,
+        "converted": false
+      }
+    },
+    {
+      "name": "季節性工作不適用「視為不定期」",
+      "input": {
+        "kind": "seasonal",
+        "a": {
+          "start": "2026-01-01",
+          "end": "2026-03-31"
+        },
+        "b": {
+          "start": "2026-04-10",
+          "end": "2026-08-31"
+        }
+      },
+      "expected": {
+        "daysA": 90,
+        "overLimit": false,
+        "needsReport": false,
+        "totalDays": 234,
+        "gapDays": 9,
+        "seniorityMerged": true,
+        "converted": false
+      }
+    },
+    {
+      "name": "期滿後繼續工作、雇主沒反對 → 不定期",
+      "input": {
+        "kind": "temporary",
+        "a": {
+          "start": "2026-01-01",
+          "end": "2026-03-31"
+        },
+        "continued": true
+      },
+      "expected": {
+        "daysA": 90,
+        "overLimit": false,
+        "needsReport": false,
+        "converted": true
+      }
+    },
+    {
+      "name": "臨時性超過 6 個月",
+      "input": {
+        "kind": "temporary",
+        "a": {
+          "start": "2026-01-01",
+          "end": "2026-07-01"
+        }
+      },
+      "expected": {
+        "daysA": 182,
+        "overLimit": true,
+        "needsReport": false,
+        "converted": false
+      }
+    },
+    {
+      "name": "短期性剛好 6 個月不超過",
+      "input": {
+        "kind": "short",
+        "a": {
+          "start": "2026-01-01",
+          "end": "2026-06-30"
+        }
+      },
+      "expected": {
+        "daysA": 181,
+        "overLimit": false,
+        "needsReport": false,
+        "converted": false
+      }
+    },
+    {
+      "name": "特定性超過 1 年要報主管機關核備",
+      "input": {
+        "kind": "specific",
+        "a": {
+          "start": "2026-01-01",
+          "end": "2027-03-31"
+        }
+      },
+      "expected": {
+        "daysA": 455,
+        "overLimit": false,
+        "needsReport": true,
+        "converted": false
+      }
+    },
+    {
+      "name": "季節性 9 個月內",
+      "input": {
+        "kind": "seasonal",
+        "a": {
+          "start": "2026-02-01",
+          "end": "2026-10-31"
+        }
+      },
+      "expected": {
+        "daysA": 273,
+        "overLimit": false,
+        "needsReport": false,
+        "converted": false
+      }
+    }
+  ]
+}

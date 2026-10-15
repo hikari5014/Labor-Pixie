@@ -32,3 +32,14 @@ for (const file of readdirSync(dir).filter((f) => f.endsWith('.json'))) {
     for (const c of tc.cases) subset(fn(c.input, rule), c.expected, c.name);
   });
 }
+
+test('試用期時程與預告期間的「滿 3 個月」一致', async () => {
+  const { probationPlan } = await import('../site/calc/contracts.js');
+  const { noticePeriod } = await import('../site/calc/severance.js');
+  const rule = load(new URL('../data/rules/notice-period.json', import.meta.url));
+  for (const hireDate of ['2026-01-01', '2026-01-31', '2025-11-30', '2024-02-29', '2026-07-16']) {
+    const p = probationPlan({ hireDate, probationDays: 80 });
+    assert.equal(noticePeriod({ hireDate, endDate: p.lastNoNotice }, rule).days, 0, `${hireDate} 最後不用預告日`);
+    assert.equal(noticePeriod({ hireDate, endDate: p.completesThreeMonths }, rule).days, 10, `${hireDate} 滿 3 個月`);
+  }
+});

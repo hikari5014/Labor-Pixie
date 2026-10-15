@@ -228,7 +228,85 @@ def overtime_cases():
             "source": "勞動基準法第 24 條、第 32 條、第 39 條、第 40 條", "cases": out}
 
 
-GENERATORS = {"package-pay": package_cases, "severance": severance_cases, "average-wage": average_cases, "notice-period": notice_cases, "overtime": overtime_cases}
+# ---- 定期契約檢查 ----
+KINDS = {"temporary": (6, None, True), "short": (6, None, True), "seasonal": (9, None, False), "specific": (None, 12, False)}
+
+
+def fixed_term(kind, a, b=None, continued=False):
+    max_m, report_m, applies = KINDS[kind]
+    after = D(a[1]) + dt.timedelta(1)
+    days_a = (D(a[1]) - D(a[0])).days + 1
+    r = {"daysA": days_a, "overLimit": bool(max_m) and after > anniversary(D(a[0]), max_m),
+         "needsReport": bool(report_m) and after > anniversary(D(a[0]), report_m)}
+    converted = bool(continued and applies)
+    if b:
+        days_b = (D(b[1]) - D(b[0])).days + 1
+        gap = (D(b[0]) - D(a[1])).days - 1
+        r.update(totalDays=days_a + days_b, gapDays=gap, seniorityMerged=D(b[0]) < anniversary(after, 3))
+        if applies and days_a + days_b > 90 and gap <= 30:
+            converted = True
+    r["converted"] = converted
+    return r
+
+
+def fixed_term_cases():
+    out = []
+
+    def add(name, kind, a, b=None, continued=False, note=None):
+        inp = {"kind": kind, "a": {"start": a[0], "end": a[1]}}
+        if b:
+            inp["b"] = {"start": b[0], "end": b[1]}
+        if continued:
+            inp["continued"] = True
+        out.append(case(name, inp, fixed_term(kind, a, b, continued), note))
+
+    add("課堂狀況一：間隔 29 天、合計超過 90 天 → 不定期契約", "short", ("2026-01-01", "2026-03-31"), ("2026-04-30", "2026-10-31"))
+    add("課堂狀況二：間隔 2 個月 → 仍是定期，但年資合併", "short", ("2026-01-01", "2026-03-31"), ("2026-06-01", "2026-10-31"))
+    add("課堂狀況三：間隔 3 個月以上 → 不合併年資", "short", ("2026-01-01", "2026-03-31"), ("2026-07-01", "2026-10-31"))
+    add("間斷剛好 30 日仍算未超過 30 日", "temporary", ("2026-01-01", "2026-03-31"), ("2026-05-01", "2026-06-30"))
+    add("間斷 31 日不會變成不定期", "temporary", ("2026-01-01", "2026-03-31"), ("2026-05-02", "2026-06-30"))
+    add("前後合計剛好 90 日不會變成不定期", "short", ("2026-01-01", "2026-01-30"), ("2026-02-01", "2026-04-01"))
+    add("季節性工作不適用「視為不定期」", "seasonal", ("2026-01-01", "2026-03-31"), ("2026-04-10", "2026-08-31"))
+    add("期滿後繼續工作、雇主沒反對 → 不定期", "temporary", ("2026-01-01", "2026-03-31"), continued=True)
+    add("臨時性超過 6 個月", "temporary", ("2026-01-01", "2026-07-01"))
+    add("短期性剛好 6 個月不超過", "short", ("2026-01-01", "2026-06-30"))
+    add("特定性超過 1 年要報主管機關核備", "specific", ("2026-01-01", "2027-03-31"))
+    add("季節性 9 個月內", "seasonal", ("2026-02-01", "2026-10-31"))
+    return {"id": "fixed-term", "title": "定期契約檢查", "rule": "fixed-term-contracts",
+            "source": "勞動基準法第 9、10 條；施行細則第 6 條", "cases": out}
+
+
+# ---- 試用期時程 ----
+def probation(hire, days):
+    h = D(hire)
+    end = h + dt.timedelta(days - 1)
+    three = anniversary(h, 3) - dt.timedelta(1)
+    c1, c2 = end - dt.timedelta(20), end - dt.timedelta(10)
+    after = end >= three
+    return {"end": end.isoformat(), "completesThreeMonths": three.isoformat(), "lastNoNotice": (three - dt.timedelta(1)).isoformat(),
+            "check1": c1.isoformat() if c1 > h else None, "check2": c2.isoformat() if c2 > h else None,
+            "endsAfterThreeMonths": after, "noticeBy": (end - dt.timedelta(10)).isoformat() if after else None}
+
+
+def probation_cases():
+    out = []
+    for name, hire, days in [
+        ("80 天試用：第 60、70 天內部確認，仍在 3 個月內", "2026-01-05", 80),
+        ("90 天試用：1/1 到職做到 3/31 已滿 3 個月，要預告", "2026-01-01", 90),
+        ("89 天試用：做到 3/30 還沒滿 3 個月", "2026-01-01", 89),
+        ("45 天試用", "2026-03-01", 45),
+        ("6 個月試用（181 天）", "2026-01-01", 181),
+        ("月底到職 1/31：做到 4/29 以前終止不用預告", "2026-01-31", 60),
+        ("月底到職 11/30 跨年", "2025-11-30", 90),
+        ("閏年 2 月到職", "2024-02-29", 80),
+        ("試用很短（15 天），沒有內部確認點", "2026-04-01", 15),
+        ("試用 100 天", "2026-07-01", 100),
+    ]:
+        out.append(case(name, {"hireDate": hire, "probationDays": days}, probation(hire, days)))
+    return {"id": "probation", "title": "試用期時程", "source": "勞動基準法第 16 條；勞動部〈試用期間終止契約〉", "cases": out}
+
+
+GENERATORS = {"package-pay": package_cases, "severance": severance_cases, "average-wage": average_cases, "notice-period": notice_cases, "overtime": overtime_cases, "fixed-term": fixed_term_cases, "probation": probation_cases}
 
 if __name__ == "__main__":
     for name, gen in GENERATORS.items():

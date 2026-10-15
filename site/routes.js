@@ -2,7 +2,7 @@
 export const ROUTES = [
   { path: '/', load: () => import('./views/home.js') },
   { path: '/changelog', title: '本版紀錄', load: () => import('./views/changelog.js') },
-  { path: '/calc', title: '算金額', load: () => import('./views/calc-list.js') },
+  { path: '/calc', title: '算金額與檢查', load: () => import('./views/calc-list.js') },
   { path: '/calc/annual-leave', title: '特休天數與未休折算', load: () => import('./views/calc-annual-leave.js') },
   { path: '/calc/package-pay', title: '統包薪資反推與多退少補', load: () => import('./views/calc-package-pay.js') },
   { path: '/calc/minimum-wage', title: '最低工資檢查', load: () => import('./views/calc-minimum-wage.js') },
@@ -12,4 +12,7 @@ export const ROUTES = [
   { path: '/calc/overtime', title: '加班費試算', load: () => import('./views/calc-overtime.js') },
   { path: '/laws', title: '看法條', load: () => import('./views/laws.js') },
   { prefix: '/laws/', title: '看法條', load: () => import('./views/law.js') },
+  { path: '/calc/separation', title: '離職時的四件事', load: () => import('./views/separation.js') },
+  { path: '/calc/fixed-term', title: '定期契約檢查', load: () => import('./views/calc-fixed-term.js') },
+  { path: '/calc/probation', title: '試用期時程', load: () => import('./views/calc-probation.js') },
 ];

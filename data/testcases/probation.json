@@ -1,0 +1,167 @@
+{
+  "id": "probation",
+  "title": "試用期時程",
+  "source": "勞動基準法第 16 條；勞動部〈試用期間終止契約〉",
+  "cases": [
+    {
+      "name": "80 天試用：第 60、70 天內部確認，仍在 3 個月內",
+      "input": {
+        "hireDate": "2026-01-05",
+        "probationDays": 80
+      },
+      "expected": {
+        "end": "2026-03-25",
+        "completesThreeMonths": "2026-04-04",
+        "lastNoNotice": "2026-04-03",
+        "check1": "2026-03-05",
+        "check2": "2026-03-15",
+        "endsAfterThreeMonths": false,
+        "noticeBy": null
+      }
+    },
+    {
+      "name": "90 天試用：1/1 到職做到 3/31 已滿 3 個月，要預告",
+      "input": {
+        "hireDate": "2026-01-01",
+        "probationDays": 90
+      },
+      "expected": {
+        "end": "2026-03-31",
+        "completesThreeMonths": "2026-03-31",
+        "lastNoNotice": "2026-03-30",
+        "check1": "2026-03-11",
+        "check2": "2026-03-21",
+        "endsAfterThreeMonths": true,
+        "noticeBy": "2026-03-21"
+      }
+    },
+    {
+      "name": "89 天試用：做到 3/30 還沒滿 3 個月",
+      "input": {
+        "hireDate": "2026-01-01",
+        "probationDays": 89
+      },
+      "expected": {
+        "end": "2026-03-30",
+        "completesThreeMonths": "2026-03-31",
+        "lastNoNotice": "2026-03-30",
+        "check1": "2026-03-10",
+        "check2": "2026-03-20",
+        "endsAfterThreeMonths": false,
+        "noticeBy": null
+      }
+    },
+    {
+      "name": "45 天試用",
+      "input": {
+        "hireDate": "2026-03-01",
+        "probationDays": 45
+      },
+      "expected": {
+        "end": "2026-04-14",
+        "completesThreeMonths": "2026-05-31",
+        "lastNoNotice": "2026-05-30",
+        "check1": "2026-03-25",
+        "check2": "2026-04-04",
+        "endsAfterThreeMonths": false,
+        "noticeBy": null
+      }
+    },
+    {
+      "name": "6 個月試用（181 天）",
+      "input": {
+        "hireDate": "2026-01-01",
+        "probationDays": 181
+      },
+      "expected": {
+        "end": "2026-06-30",
+        "completesThreeMonths": "2026-03-31",
+        "lastNoNotice": "2026-03-30",
+        "check1": "2026-06-10",
+        "check2": "2026-06-20",
+        "endsAfterThreeMonths": true,
+        "noticeBy": "2026-06-20"
+      }
+    },
+    {
+      "name": "月底到職 1/31：做到 4/29 以前終止不用預告",
+      "input": {
+        "hireDate": "2026-01-31",
+        "probationDays": 60
+      },
+      "expected": {
+        "end": "2026-03-31",
+        "completesThreeMonths": "2026-04-30",
+        "lastNoNotice": "2026-04-29",
+        "check1": "2026-03-11",
+        "check2": "2026-03-21",
+        "endsAfterThreeMonths": false,
+        "noticeBy": null
+      }
+    },
+    {
+      "name": "月底到職 11/30 跨年",
+      "input": {
+        "hireDate": "2025-11-30",
+        "probationDays": 90
+      },
+      "expected": {
+        "end": "2026-02-27",
+        "completesThreeMonths": "2026-02-28",
+        "lastNoNotice": "2026-02-27",
+        "check1": "2026-02-07",
+        "check2": "2026-02-17",
+        "endsAfterThreeMonths": false,
+        "noticeBy": null
+      }
+    },
+    {
+      "name": "閏年 2 月到職",
+      "input": {
+        "hireDate": "2024-02-29",
+        "probationDays": 80
+      },
+      "expected": {
+        "end": "2024-05-18",
+        "completesThreeMonths": "2024-05-28",
+        "lastNoNotice": "2024-05-27",
+        "check1": "2024-04-28",
+        "check2": "2024-05-08",
+        "endsAfterThreeMonths": false,
+        "noticeBy": null
+      }
+    },
+    {
+      "name": "試用很短（15 天），沒有內部確認點",
+      "input": {
+        "hireDate": "2026-04-01",
+        "probationDays": 15
+      },
+      "expected": {
+        "end": "2026-04-15",
+        "completesThreeMonths": "2026-06-30",
+        "lastNoNotice": "2026-06-29",
+        "check1": null,
+        "check2": "2026-04-05",
+        "endsAfterThreeMonths": false,
+        "noticeBy": null
+      }
+    },
+    {
+      "name": "試用 100 天",
+      "input": {
+        "hireDate": "2026-07-01",
+        "probationDays": 100
+      },
+      "expected": {
+        "end": "2026-10-08",
+        "completesThreeMonths": "2026-09-30",
+        "lastNoNotice": "2026-09-29",
+        "check1": "2026-09-18",
+        "check2": "2026-09-28",
+        "endsAfterThreeMonths": true,
+        "noticeBy": "2026-09-28"
+      }
+    }
+  ]
+}
