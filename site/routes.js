@@ -20,4 +20,8 @@ export const ROUTES = [
   { path: '/topics', title: '查爭議', load: () => import('./views/topics.js') },
   { prefix: '/topics/', title: '查爭議', load: () => import('./views/topic.js') },
   { path: '/about', title: '關於與免責', load: () => import('./views/about.js') },
+  { path: '/cases', title: '看案例', load: () => import('./views/cases.js') },
+  { path: '/search', title: '搜尋', load: () => import('./views/search.js') },
+  { prefix: '/cases/', title: '看案例', load: () => import('./views/case.js') },
+  { prefix: '/search/', title: '搜尋', load: () => import('./views/search.js') },
 ];

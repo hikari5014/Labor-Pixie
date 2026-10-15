@@ -129,10 +129,31 @@ def check_topic(obj, stem):
     return errors
 
 
+CASE_FIELDS = ("id", "title", "story", "issue", "law", "employer", "worker", "source_type")
+
+
+def check_cases(obj, stem, seen):
+    errors = [] if obj.get("id") == stem else ["id 要跟檔名相同"]
+    if not obj.get("cases"):
+        return errors + ["cases 不能是空的"]
+    for case in obj["cases"]:
+        cid = case.get("id")
+        for key in CASE_FIELDS:
+            if not case.get(key):
+                errors.append(f"{cid} 缺 {key}")
+        if not case.get("laws") and not case.get("refs"):
+            errors.append(f"{cid} 要有法條（laws）或主管機關出處（refs）")
+        if cid in seen:
+            errors.append(f"案例 id 重複：{cid}")
+        seen.add(cid)
+    return errors
+
+
 def validate(data_dir=DATA):
     """回傳錯誤清單（空清單＝全部通過）。"""
     data_dir = Path(data_dir)
     errors = []
+    case_ids = set()
     if not (data_dir / "meta.json").is_file():
         errors.append("meta.json：找不到")
     for path in data_files(data_dir):
@@ -153,6 +174,8 @@ def validate(data_dir=DATA):
             found = check_law(obj, path.stem)
         elif rel.startswith("checklists/"):
             found = check_checklist(obj, path.stem)
+        elif rel.startswith("cases/"):
+            found = check_cases(obj, path.stem, case_ids)
         elif rel.startswith("topics/"):
             found = check_topic(obj, path.stem)
         elif rel.startswith("testcases/"):

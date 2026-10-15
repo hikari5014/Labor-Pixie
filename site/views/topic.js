@@ -1,5 +1,6 @@
 import { h, alertBox, lawLink } from '../lib/ui.js';
 import { getJSON } from '../lib/data.js';
+import { loadCases } from '../lib/content.js';
 import { CALCULATORS } from '../calc/registry.js';
 import { rocDate } from '../format.js';
 
@@ -13,7 +14,8 @@ function refItem(ref) {
 }
 
 export async function render(root, params, ctx) {
-  const t = await getJSON(`data/topics/${params.rest}.json`);
+  const [t, cases] = await Promise.all([getJSON(`data/topics/${params.rest}.json`), loadCases()]);
+  const relCases = cases.filter((x) => x.case.topics.includes(t.id));
   const employer = h('section', { class: 'panel' }, h('h2', { class: 'section-title' }, '雇主：怎麼做才合規'), bullets(t.employer));
   const worker = h('section', { class: 'panel' }, h('h2', { class: 'section-title' }, '勞工：該留哪些證據、下一步'), bullets(t.worker));
   const calcs = t.calcs.map((id) => CALCULATORS.find((c) => c.id === id)).filter(Boolean);
@@ -35,6 +37,8 @@ export async function render(root, params, ctx) {
     ...(ctx.role() === 'employer' ? [employer, worker] : [worker, employer]),
     calcs.length ? h('section', { class: 'panel' }, h('h2', { class: 'section-title' }, '相關試算'),
       h('div', { class: 'list' }, calcs.map((c) => h('a', { class: 'list-item', href: `#/calc/${c.id}` }, h('b', {}, c.title), h('span', { class: 'muted small' }, c.summary))))) : null,
+    relCases.length ? h('section', { class: 'panel' }, h('h2', { class: 'section-title' }, '相關案例'),
+      h('div', { class: 'list' }, relCases.map(({ case: c }) => h('a', { class: 'list-item', href: `#/cases/${c.id}` }, h('b', {}, c.title), h('span', { class: 'muted small' }, c.issue))))) : null,
     h('section', { class: 'panel small' }, h('b', {}, '資料來源'), h('ul', { class: 'notes' }, t.sources.map(refItem)),
       h('p', { class: 'muted' }, `最後查證：${rocDate(t.checked_on)}。內容以法條與主管機關公開資料改寫，不代表主管機關立場。`)),
     alertBox('info', '本頁提供資訊，不取代律師或勞動主管機關的意見', '個案可以洽詢地方勞工局，或申請勞資爭議調解。'),

@@ -24,14 +24,20 @@ export function render(root, params, ctx) {
   const wageNext = h('p', { class: 'small', hidden: true });
   const dataVersion = h('dd', {}, '讀取中…');
 
+  const q = h('input', { class: 'input', type: 'search', placeholder: '搜尋：加班、試用期、資遣費…', 'aria-label': '全站搜尋' });
+  const searchBox = h('form', { class: 'home-search', role: 'search', onsubmit: (e) => { e.preventDefault(); location.hash = `#/search/${encodeURIComponent(q.value.trim())}`; } },
+    q, h('button', { type: 'submit', class: 'btn' }, '搜尋'));
+
   root.append(
+    searchBox,
     seg,
     h('p', { class: 'muted' }, intro[role]),
     h('section', { class: 'tiles', 'aria-label': '功能' },
       tile('查爭議', '#/topics', '加班、試用期、年終、霸凌…'),
       tile('算金額', '#/calc', '加班費、資遣費、試用期、離職…'),
       role === 'employer' ? tile('檢查公司', '#/check', '27 項制度與紀錄自我檢查') : tile('準備證據', '#/topics', '依爭議看該留哪些證據'),
-      tile('看法條', '#/laws', '勞基法等 12 部法規，可搜尋')),
+      tile('看法條', '#/laws', '勞基法等 12 部法規，可搜尋'),
+      tile('看案例', '#/cases', '41 個常見情境：怎麼看、怎麼做')),
     h('section', { class: 'panel' }, h('h2', { class: 'section-title' }, '目前最低工資'), wage, wageNext),
     h('section', { class: 'panel' },
       h('dl', { class: 'facts' },
