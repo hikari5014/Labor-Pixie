@@ -66,3 +66,12 @@ class ValidateTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class FormValidateTest(ValidateTest):
+    def test_unknown_placeholder_rejected(self):
+        path = self.data / "forms" / "leave-deferral.json"
+        obj = json.loads(path.read_text(encoding="utf-8"))
+        obj["sections"][0]["paragraphs"].append("{{nope}}")
+        path.write_text(json.dumps(obj, ensure_ascii=False), encoding="utf-8")
+        self.assertTrue(any("nope" in e for e in validate(self.data)))

@@ -80,7 +80,9 @@ export function basis(...links) {
 }
 
 export function disclaimer() {
-  return h('p', { class: 'small muted' }, '試算結果僅供參考，不取代律師或勞動主管機關的意見；個案請以實際契約、紀錄與主管機關認定為準。');
+  return h('div', {},
+    h('p', { class: 'small muted' }, '試算結果僅供參考，不取代律師或勞動主管機關的意見；個案請以實際契約、紀錄與主管機關認定為準。'),
+    h('div', { class: 'actions disclaimer-actions' }, h('button', { type: 'button', class: 'btn', onclick: () => window.print() }, '列印這一頁')));
 }
 
 /** 把文字中的關鍵字包成 <mark>（不用 innerHTML） */

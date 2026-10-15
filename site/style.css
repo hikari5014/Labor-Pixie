@@ -211,3 +211,21 @@ mark { background: var(--warn-soft); color: var(--ink); padding: 0 1px; }
 .table { width: 100%; border-collapse: collapse; }
 .table th, .table td { text-align: left; vertical-align: top; padding: var(--space-2); border-bottom: 1px solid var(--line); }
 .table th { white-space: nowrap; color: var(--muted); font-weight: 700; }
+
+/* ---- v1.4：表單範本與列印 ---- */
+.doc { background: var(--surface); border: 1px solid var(--line); padding: var(--space-5); color: #000; font-size: 15px; }
+.doc__title { text-align: center; font-size: 1.3em; margin: 0 0 var(--space-4); }
+.doc h3 { font-size: 1em; margin: var(--space-4) 0 var(--space-2); }
+.doc p { margin: 0 0 var(--space-2); }
+.doc__table { width: 100%; border-collapse: collapse; margin-top: var(--space-3); font-size: 0.85em; }
+.doc__table th, .doc__table td { border: 1px solid #000; padding: 2px 6px; text-align: left; }
+.doc__table tr.is-weekend td { background: #eee; }
+.doc__signs { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: var(--space-4); margin-top: var(--space-5); }
+.doc__sign { border-top: 1px solid #000; padding-top: var(--space-1); font-size: 0.85em; min-height: 48px; }
+
+@media print {
+  .no-print, .page-head, .disclaimer-actions { display: none !important; }
+  .calc { display: block; }
+  .doc { border: 0; padding: 0; }
+  .page { max-width: none; padding: 0; }
+}

@@ -31,4 +31,6 @@ export const ROUTES = [
   { path: '/calc/bullying', title: '職場霸凌申訴期限', load: () => import('./views/calc-bullying.js') },
   { path: '/calc/contract-check', title: '勞動契約條款檢查', load: () => import('./views/checklist.js').then((m) => ({ render: (root, params, ctx) => m.render(root, { rest: 'contract-terms' }, ctx) })) },
   { prefix: '/check/', title: '檢查清單', load: () => import('./views/checklist.js') },
+  { path: '/forms', title: '表單範本', load: () => import('./views/forms.js') },
+  { prefix: '/forms/', title: '表單範本', load: () => import('./views/form.js') },
 ];

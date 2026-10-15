@@ -149,6 +149,21 @@ def check_cases(obj, stem, seen):
     return errors
 
 
+def check_form(obj, stem):
+    import re as _re
+    errors = [] if obj.get("id") == stem else ["id 要跟檔名相同"]
+    for key in ("title", "purpose", "basis", "fields", "sections", "signatures"):
+        if not obj.get(key):
+            errors.append(f"缺 {key}")
+    field_ids = {x["id"] for x in obj.get("fields", [])}
+    for sec in obj.get("sections", []):
+        for text in [sec.get("heading", "")] + sec.get("paragraphs", []):
+            for name in _re.findall(r"{{(\w+)}}", text):
+                if name not in field_ids:
+                    errors.append(f"範本用了沒有定義的欄位 {{{{{name}}}}}")
+    return errors
+
+
 def validate(data_dir=DATA):
     """回傳錯誤清單（空清單＝全部通過）。"""
     data_dir = Path(data_dir)
@@ -176,6 +191,8 @@ def validate(data_dir=DATA):
             found = check_checklist(obj, path.stem)
         elif rel.startswith("cases/"):
             found = check_cases(obj, path.stem, case_ids)
+        elif rel.startswith("forms/"):
+            found = check_form(obj, path.stem)
         elif rel.startswith("topics/"):
             found = check_topic(obj, path.stem)
         elif rel.startswith("testcases/"):
