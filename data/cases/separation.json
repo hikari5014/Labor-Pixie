@@ -35,7 +35,9 @@
           "勞工退休金條例第 12 條"
         ]
       ],
-      "topics": [],
+      "topics": [
+        "reduced-hours"
+      ],
       "calcs": [
         "severance",
         "separation"

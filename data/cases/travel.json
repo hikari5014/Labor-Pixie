@@ -29,7 +29,9 @@
           "施行細則第 18 條"
         ]
       ],
-      "topics": [],
+      "topics": [
+        "business-travel"
+      ],
       "calcs": [
         "overtime"
       ],
@@ -65,7 +67,9 @@
           "勞動基準法第 32 條"
         ]
       ],
-      "topics": [],
+      "topics": [
+        "business-travel"
+      ],
       "calcs": [
         "overtime"
       ],
@@ -101,7 +105,9 @@
           "勞動基準法第 32 條"
         ]
       ],
-      "topics": [],
+      "topics": [
+        "business-travel"
+      ],
       "calcs": [
         "overtime"
       ],
@@ -136,7 +142,9 @@
           "勞動基準法第 32-1 條"
         ]
       ],
-      "topics": [],
+      "topics": [
+        "business-travel"
+      ],
       "calcs": [],
       "source_type": "scenario",
       "practice": [

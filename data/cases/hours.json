@@ -152,7 +152,8 @@
         ]
       ],
       "topics": [
-        "overtime-records"
+        "overtime-records",
+        "worker-status"
       ],
       "calcs": [],
       "source_type": "scenario"

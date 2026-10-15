@@ -33,7 +33,9 @@
           "第 13 條"
         ]
       ],
-      "topics": [],
+      "topics": [
+        "occupational-injury"
+      ],
       "calcs": [],
       "source_type": "scenario"
     },
@@ -61,7 +63,10 @@
           "勞工請假規則第 4 條"
         ]
       ],
-      "topics": [],
+      "topics": [
+        "occupational-injury",
+        "sick-leave-2026"
+      ],
       "calcs": [
         "sick-leave"
       ],
@@ -98,7 +103,8 @@
         ]
       ],
       "topics": [
-        "workplace-bullying"
+        "workplace-bullying",
+        "occupational-injury"
       ],
       "calcs": [],
       "source_type": "scenario"

@@ -34,7 +34,9 @@
           "勞動基準法第 2 條"
         ]
       ],
-      "topics": [],
+      "topics": [
+        "wage-definition"
+      ],
       "calcs": [
         "overtime"
       ],
@@ -69,7 +71,9 @@
           "勞動事件法第 37 條"
         ]
       ],
-      "topics": [],
+      "topics": [
+        "wage-definition"
+      ],
       "calcs": [
         "overtime",
         "average-wage"
@@ -107,7 +111,9 @@
           "勞動事件法第 37 條"
         ]
       ],
-      "topics": [],
+      "topics": [
+        "wage-definition"
+      ],
       "calcs": [],
       "source_type": "scenario"
     },
@@ -143,7 +149,8 @@
         ]
       ],
       "topics": [
-        "year-end-bonus"
+        "year-end-bonus",
+        "wage-definition"
       ],
       "calcs": [
         "average-wage"
@@ -245,7 +252,8 @@
         ]
       ],
       "topics": [
-        "year-end-bonus"
+        "year-end-bonus",
+        "wage-definition"
       ],
       "calcs": [],
       "source_type": "scenario"
@@ -281,7 +289,9 @@
           "最低工資法第 5 條"
         ]
       ],
-      "topics": [],
+      "topics": [
+        "pay-structure-change"
+      ],
       "calcs": [
         "sick-leave"
       ],
@@ -319,7 +329,10 @@
           "勞動事件法第 37 條"
         ]
       ],
-      "topics": [],
+      "topics": [
+        "wage-definition",
+        "pay-structure-change"
+      ],
       "calcs": [],
       "source_type": "scenario",
       "practice": [

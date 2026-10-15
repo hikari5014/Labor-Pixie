@@ -33,7 +33,7 @@ export function render(root, params, ctx) {
     seg,
     h('p', { class: 'muted' }, intro[role]),
     h('section', { class: 'tiles', 'aria-label': '功能' },
-      tile('查爭議', '#/topics', '加班、試用期、年終、霸凌…'),
+      tile('查爭議', '#/topics', '18 張主題卡：加班、試用、年終、職災…'),
       tile('算金額', '#/calc', '加班費、資遣費、試用期、離職…'),
       role === 'employer' ? tile('檢查公司', '#/check', '27 項制度與紀錄自我檢查') : tile('準備證據', '#/topics', '依爭議看該留哪些證據'),
       tile('看法條', '#/laws', '勞基法等 12 部法規，可搜尋'),

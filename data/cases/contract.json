@@ -33,7 +33,8 @@
         ]
       ],
       "topics": [
-        "age-65"
+        "age-65",
+        "worker-status"
       ],
       "calcs": [],
       "source_type": "scenario"

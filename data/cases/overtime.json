@@ -103,7 +103,9 @@
           "第 37 條"
         ]
       ],
-      "topics": [],
+      "topics": [
+        "part-time"
+      ],
       "calcs": [
         "overtime"
       ],
@@ -193,7 +195,9 @@
         "因颱風無法出勤時，公司不能記曠工或扣全勤。"
       ],
       "laws": [],
-      "topics": [],
+      "topics": [
+        "typhoon"
+      ],
       "calcs": [],
       "source_type": "scenario",
       "refs": [
