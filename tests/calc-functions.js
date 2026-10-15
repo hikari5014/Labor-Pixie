@@ -2,9 +2,13 @@
 import { annualLeave } from '../site/calc/annual-leave.js';
 import { checkMinimumWage } from '../site/calc/minimum-wage.js';
 import { packagePay } from '../site/calc/package-pay.js';
+import { averageWage, severance, noticePeriod } from '../site/calc/severance.js';
 
 export const CALC_FUNCTIONS = {
   'annual-leave': annualLeave,
   'minimum-wage': checkMinimumWage,
   'package-pay': packagePay,
+  'average-wage': averageWage,
+  severance,
+  'notice-period': noticePeriod,
 };

@@ -1,6 +1,6 @@
 // 離線快取：網站外殼先用快取；data/ 先上網拿最新，沒網路才用快取。
 // 安裝時把網站檔案（SHELL）和 data/meta.json 列出的所有資料檔一起存下來，離線也能用每個功能。
-const VERSION = '0.3.0';
+const VERSION = '0.4.0';
 const CACHE = `labor-pixie-${VERSION}`;
 const SHELL = [
   './',
@@ -27,6 +27,10 @@ const SHELL = [
   'views/calc-annual-leave.js',
   'views/calc-minimum-wage.js',
   'views/calc-package-pay.js',
+  'calc/severance.js',
+  'views/calc-average-wage.js',
+  'views/calc-severance.js',
+  'views/calc-notice-period.js',
 ];
 
 async function precache() {

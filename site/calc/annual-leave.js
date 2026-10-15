@@ -1,5 +1,5 @@
 // K4 特別休假天數與未休折算（週年制）。純計算，不碰畫面。
-import { addMonths, completedMonths, ceilMoney, entryOn } from '../format.js';
+import { anniversary, completedMonths, ceilMoney, entryOn } from '../format.js';
 
 /** 依年資月數算出特休天數 */
 export function leaveDaysFor(months, entry) {
@@ -15,8 +15,8 @@ export function leaveDaysFor(months, entry) {
 /** 本期特休從哪一天開始（最近一次滿足門檻的日子） */
 function periodStart(hireDate, months) {
   if (months < 6) return null;
-  if (months < 12) return addMonths(hireDate, 6);
-  return addMonths(hireDate, Math.floor(months / 12) * 12);
+  if (months < 12) return anniversary(hireDate, 6);
+  return anniversary(hireDate, Math.floor(months / 12) * 12);
 }
 
 /**
@@ -33,7 +33,7 @@ export function annualLeave(input, rule) {
   let next = null;
   for (let i = 0; i < 40 && !next; i += 1, nextMonths += 12) {
     const d = leaveDaysFor(nextMonths, entry);
-    if (d !== days) next = { date: addMonths(hireDate, nextMonths), days: d };
+    if (d !== days) next = { date: anniversary(hireDate, nextMonths), days: d };
   }
   const result = { months, days, periodStart: periodStart(hireDate, months), next };
   if (input.monthlyWage > 0 && input.unusedDays > 0) {

@@ -1,0 +1,163 @@
+{
+  "id": "average-wage",
+  "title": "平均工資",
+  "source": "勞動基準法第 2 條第 4 款；施行細則第 2 條",
+  "cases": [
+    {
+      "name": "月薪 36,000，做滿半年以上",
+      "input": {
+        "eventDate": "2026-10-15",
+        "hireDate": "2020-01-01",
+        "wages": 216000
+      },
+      "expected": {
+        "periodStart": "2026-04-15",
+        "days": 183,
+        "daily": 1180.3278688525,
+        "monthly": 35409.8360655738,
+        "floorApplied": false
+      }
+    },
+    {
+      "name": "事由發生當日不算：期間到前一天",
+      "input": {
+        "eventDate": "2026-07-01",
+        "hireDate": "2020-01-01",
+        "wages": 180000
+      },
+      "expected": {
+        "periodStart": "2026-01-01",
+        "days": 181,
+        "daily": 994.4751381215,
+        "monthly": 29834.2541436464,
+        "floorApplied": false
+      }
+    },
+    {
+      "name": "到職未滿 6 個月：以實際工作期間計",
+      "input": {
+        "eventDate": "2026-05-01",
+        "hireDate": "2026-02-01",
+        "wages": 90000
+      },
+      "expected": {
+        "periodStart": "2026-02-01",
+        "days": 89,
+        "daily": 1011.2359550562,
+        "monthly": 30337.0786516854,
+        "floorApplied": false
+      }
+    },
+    {
+      "name": "期間內請普通傷病假 10 日不計入",
+      "input": {
+        "eventDate": "2026-10-15",
+        "hireDate": "2020-01-01",
+        "wages": 210000,
+        "excludedDays": 10
+      },
+      "expected": {
+        "periodStart": "2026-04-15",
+        "days": 173,
+        "daily": 1213.8728323699,
+        "monthly": 36416.1849710983,
+        "floorApplied": false
+      }
+    },
+    {
+      "name": "留職停薪 30 日不計入",
+      "input": {
+        "eventDate": "2026-10-15",
+        "hireDate": "2020-01-01",
+        "wages": 180000,
+        "excludedDays": 30
+      },
+      "expected": {
+        "periodStart": "2026-04-15",
+        "days": 153,
+        "daily": 1176.4705882353,
+        "monthly": 35294.1176470588,
+        "floorApplied": false
+      }
+    },
+    {
+      "name": "按日計酬，未觸及六成下限",
+      "input": {
+        "eventDate": "2026-10-15",
+        "hireDate": "2020-01-01",
+        "wages": 150000,
+        "byDay": true,
+        "workDays": 130
+      },
+      "expected": {
+        "periodStart": "2026-04-15",
+        "days": 183,
+        "daily": 819.6721311475,
+        "monthly": 24590.1639344262,
+        "floorApplied": false
+      }
+    },
+    {
+      "name": "按日計酬，實際工作日少，適用六成下限",
+      "input": {
+        "eventDate": "2026-10-15",
+        "hireDate": "2020-01-01",
+        "wages": 60000,
+        "byDay": true,
+        "workDays": 40
+      },
+      "expected": {
+        "periodStart": "2026-04-15",
+        "days": 183,
+        "daily": 900.0,
+        "monthly": 27000.0,
+        "floorApplied": true
+      }
+    },
+    {
+      "name": "月薪有加班費變動",
+      "input": {
+        "eventDate": "2026-03-01",
+        "hireDate": "2018-05-01",
+        "wages": 228640
+      },
+      "expected": {
+        "periodStart": "2025-09-01",
+        "days": 181,
+        "daily": 1263.2044198895,
+        "monthly": 37896.1325966851,
+        "floorApplied": false
+      }
+    },
+    {
+      "name": "跨閏年 2 月",
+      "input": {
+        "eventDate": "2024-08-01",
+        "hireDate": "2010-01-01",
+        "wages": 200000
+      },
+      "expected": {
+        "periodStart": "2024-02-01",
+        "days": 182,
+        "daily": 1098.9010989011,
+        "monthly": 32967.032967033,
+        "floorApplied": false
+      }
+    },
+    {
+      "name": "月底事由：8/31 往前 6 個月",
+      "input": {
+        "eventDate": "2026-08-31",
+        "hireDate": "2010-01-01",
+        "wages": 210000
+      },
+      "expected": {
+        "periodStart": "2026-02-28",
+        "days": 184,
+        "daily": 1141.3043478261,
+        "monthly": 34239.1304347826,
+        "floorApplied": false
+      }
+    }
+  ]
+}

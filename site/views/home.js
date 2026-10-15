@@ -29,7 +29,7 @@ export function render(root, params, ctx) {
     h('p', { class: 'muted' }, intro[role]),
     h('section', { class: 'tiles', 'aria-label': '功能' },
       tile('查爭議'),
-      tile('算金額', '#/calc', '統包薪資、特休、最低工資…'),
+      tile('算金額', '#/calc', '資遣費、統包薪資、特休…'),
       tile(role === 'employer' ? '檢查公司' : '準備證據'),
       tile('看法條')),
     h('section', { class: 'panel' }, h('h2', { class: 'section-title' }, '目前最低工資'), wage, wageNext),

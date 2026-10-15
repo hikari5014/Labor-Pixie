@@ -1,0 +1,192 @@
+{
+  "id": "severance",
+  "title": "資遣費（新舊制）",
+  "source": "勞動基準法第 17 條；勞工退休金條例第 12 條；勞動部〈資遣費給付標準〉",
+  "cases": [
+    {
+      "name": "勞動部範例：年資 3 年 6 個月 15 天、平均工資 30,000（新制）",
+      "input": {
+        "hireDate": "2020-01-01",
+        "endDate": "2023-07-15",
+        "avgWage": 30000
+      },
+      "expected": {
+        "base": 1.7708333333,
+        "amount": 53125,
+        "newPart": {
+          "months": 42,
+          "days": 15
+        }
+      },
+      "note": "勞動部〈資遣費給付標準〉公式 30,000×1/2×(3+6.5/12)≈53,124.9"
+    },
+    {
+      "name": "新制滿 1 年",
+      "input": {
+        "hireDate": "2025-01-01",
+        "endDate": "2025-12-31",
+        "avgWage": 36000
+      },
+      "expected": {
+        "base": 0.5,
+        "amount": 18000
+      }
+    },
+    {
+      "name": "新制未滿 1 年：5 個月 10 天",
+      "input": {
+        "hireDate": "2026-01-01",
+        "endDate": "2026-06-10",
+        "avgWage": 30000
+      },
+      "expected": {
+        "base": 0.2222222222,
+        "amount": 6667
+      }
+    },
+    {
+      "name": "試用 2 個月就資遣也要給（按比例）",
+      "input": {
+        "hireDate": "2026-08-01",
+        "endDate": "2026-09-30",
+        "avgWage": 32000
+      },
+      "expected": {
+        "base": 0.0833333333,
+        "amount": 2667
+      }
+    },
+    {
+      "name": "新制上限 6 個月：年資 15 年",
+      "input": {
+        "hireDate": "2010-01-01",
+        "endDate": "2024-12-31",
+        "avgWage": 50000
+      },
+      "expected": {
+        "base": 6.0,
+        "amount": 300000,
+        "newPart": {
+          "capped": true
+        }
+      }
+    },
+    {
+      "name": "新制剛好 12 年＝6 個月",
+      "input": {
+        "hireDate": "2014-01-01",
+        "endDate": "2025-12-31",
+        "avgWage": 40000
+      },
+      "expected": {
+        "base": 6.0,
+        "amount": 240000
+      }
+    },
+    {
+      "name": "跨新舊制：2000/3/1 到職，2026/10/15 資遣",
+      "input": {
+        "hireDate": "2000-03-01",
+        "endDate": "2026-10-15",
+        "avgWage": 45000
+      },
+      "expected": {
+        "base": 11.3333333333,
+        "amount": 510000,
+        "oldPart": {
+          "to": "2005-06-30",
+          "months": 64,
+          "days": 0
+        }
+      }
+    },
+    {
+      "name": "舊制剩餘天數未滿 1 個月以 1 個月計",
+      "input": {
+        "hireDate": "2003-06-20",
+        "endDate": "2006-06-30",
+        "avgWage": 30000
+      },
+      "expected": {
+        "base": 2.5833333333,
+        "amount": 77500,
+        "oldPart": {
+          "months": 24,
+          "days": 11
+        }
+      }
+    },
+    {
+      "name": "選擇繼續適用舊制：全部年資照第 17 條（無上限）",
+      "input": {
+        "hireDate": "1995-01-01",
+        "endDate": "2026-10-15",
+        "avgWage": 40000,
+        "keepOld": true
+      },
+      "expected": {
+        "base": 31.8333333333,
+        "amount": 1273334,
+        "newPart": null
+      }
+    },
+    {
+      "name": "2005/7/1 當天到職，全部是新制",
+      "input": {
+        "hireDate": "2005-07-01",
+        "endDate": "2008-06-30",
+        "avgWage": 30000
+      },
+      "expected": {
+        "base": 1.5,
+        "amount": 45000,
+        "oldPart": null
+      }
+    },
+    {
+      "name": "2005 年以前就離職，全部是舊制",
+      "input": {
+        "hireDate": "2001-01-01",
+        "endDate": "2004-12-31",
+        "avgWage": 28000
+      },
+      "expected": {
+        "base": 4.0,
+        "amount": 112000,
+        "newPart": null
+      }
+    },
+    {
+      "name": "月底到職：1/31 到職做到 2/27，未滿 1 個月",
+      "input": {
+        "hireDate": "2026-01-31",
+        "endDate": "2026-02-27",
+        "avgWage": 30000
+      },
+      "expected": {
+        "base": 0.0388888889,
+        "amount": 1167,
+        "newPart": {
+          "months": 0,
+          "days": 28
+        }
+      }
+    },
+    {
+      "name": "月底到職：1/31 到職做到 2/28，剛好 1 個月",
+      "input": {
+        "hireDate": "2026-01-31",
+        "endDate": "2026-02-28",
+        "avgWage": 30000
+      },
+      "expected": {
+        "base": 0.0416666667,
+        "amount": 1250,
+        "newPart": {
+          "months": 1,
+          "days": 0
+        }
+      }
+    }
+  ]
+}

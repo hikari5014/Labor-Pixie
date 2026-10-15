@@ -6,4 +6,7 @@ export const ROUTES = [
   { path: '/calc/annual-leave', title: '特休天數與未休折算', load: () => import('./views/calc-annual-leave.js') },
   { path: '/calc/package-pay', title: '統包薪資反推與多退少補', load: () => import('./views/calc-package-pay.js') },
   { path: '/calc/minimum-wage', title: '最低工資檢查', load: () => import('./views/calc-minimum-wage.js') },
+  { path: '/calc/average-wage', title: '平均工資', load: () => import('./views/calc-average-wage.js') },
+  { path: '/calc/severance', title: '資遣費（新舊制）', load: () => import('./views/calc-severance.js') },
+  { path: '/calc/notice-period', title: '預告期間與謀職假', load: () => import('./views/calc-notice-period.js') },
 ];

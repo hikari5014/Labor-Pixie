@@ -36,11 +36,20 @@ export function addMonths(iso, n) {
   return `${String(ty).padStart(4, '0')}-${String(tm).padStart(2, '0')}-${String(Math.min(d, last)).padStart(2, '0')}`;
 }
 
-/** 從 start 到 end 已經「滿」幾個月（到 start 加 n 個月那天就算滿 n 個月） */
+/**
+ * 從 start 起算滿 n 個月後的「下一天」（民法第 121、123 條）：
+ * 有對應日就是對應日；沒有對應日（例 1/31 起算 1 個月，2 月沒有 31 日）期間到月底結束，下一天是次月 1 日。
+ */
+export function anniversary(start, n) {
+  const clamped = addMonths(start, n);
+  return clamped.slice(8) === start.slice(8) ? clamped : addDays(clamped, 1);
+}
+
+/** 從 start 到 end 已經「滿」幾個月（到 anniversary(start, n) 那天就算滿 n 個月） */
 export function completedMonths(start, end) {
   if (end < start) return 0;
   let n = Math.max(0, (Number(end.slice(0, 4)) - Number(start.slice(0, 4))) * 12 + Number(end.slice(5, 7)) - Number(start.slice(5, 7)) - 1);
-  while (addMonths(start, n + 1) <= end) n += 1;
+  while (anniversary(start, n + 1) <= end) n += 1;
   return n;
 }
 

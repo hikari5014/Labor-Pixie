@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { rocDate, money, daysBetween, todayTaipei, entryOn, nextEntry, addMonths, completedMonths, ceilMoney, isDate } from '../site/format.js';
+import { rocDate, money, daysBetween, todayTaipei, entryOn, nextEntry, addMonths, anniversary, completedMonths, ceilMoney, isDate } from '../site/format.js';
 
 const wage = JSON.parse(readFileSync(new URL('../data/rules/minimum-wage.json', import.meta.url)));
 
@@ -33,10 +33,20 @@ test('加月數：月底取最後一天', () => {
   assert.equal(addMonths('2026-12-01', 1), '2027-01-01');
 });
 
+test('週年日：沒有對應日時是次月 1 日', () => {
+  assert.equal(anniversary('2026-01-31', 1), '2026-03-01');
+  assert.equal(anniversary('2024-01-31', 1), '2024-03-01');
+  assert.equal(anniversary('2026-01-15', 1), '2026-02-15');
+  assert.equal(anniversary('2024-02-29', 12), '2025-03-01');
+});
+
 test('滿幾個月', () => {
   assert.equal(completedMonths('2026-01-15', '2026-07-14'), 5);
   assert.equal(completedMonths('2026-01-15', '2026-07-15'), 6);
-  assert.equal(completedMonths('2025-08-31', '2026-02-28'), 6);
+  assert.equal(completedMonths('2025-08-31', '2026-02-28'), 5);
+  assert.equal(completedMonths('2025-08-31', '2026-03-01'), 6);
+  assert.equal(completedMonths('2026-01-31', '2026-02-28'), 0);
+  assert.equal(completedMonths('2026-01-31', '2026-03-01'), 1);
   assert.equal(completedMonths('2026-05-01', '2026-04-01'), 0);
 });
 
