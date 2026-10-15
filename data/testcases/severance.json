@@ -13,6 +13,7 @@
       "expected": {
         "base": 1.7708333333,
         "amount": 53125,
+        "retirementEligible": false,
         "newPart": {
           "months": 42,
           "days": 15
@@ -29,7 +30,8 @@
       },
       "expected": {
         "base": 0.5,
-        "amount": 18000
+        "amount": 18000,
+        "retirementEligible": false
       }
     },
     {
@@ -41,7 +43,8 @@
       },
       "expected": {
         "base": 0.2222222222,
-        "amount": 6667
+        "amount": 6667,
+        "retirementEligible": false
       }
     },
     {
@@ -53,7 +56,8 @@
       },
       "expected": {
         "base": 0.0833333333,
-        "amount": 2667
+        "amount": 2667,
+        "retirementEligible": false
       }
     },
     {
@@ -66,6 +70,7 @@
       "expected": {
         "base": 6.0,
         "amount": 300000,
+        "retirementEligible": false,
         "newPart": {
           "capped": true
         }
@@ -80,11 +85,12 @@
       },
       "expected": {
         "base": 6.0,
-        "amount": 240000
+        "amount": 240000,
+        "retirementEligible": false
       }
     },
     {
-      "name": "跨新舊制：2000/3/1 到職，2026/10/15 資遣",
+      "name": "跨新舊制：2000/3/1 到職，2026/10/15 資遣（年資 26 年，已符合退休條件）",
       "input": {
         "hireDate": "2000-03-01",
         "endDate": "2026-10-15",
@@ -93,11 +99,41 @@
       "expected": {
         "base": 11.3333333333,
         "amount": 510000,
+        "retirementEligible": true,
         "oldPart": {
           "to": "2005-06-30",
           "months": 64,
           "days": 0
         }
+      },
+      "note": "勞動部資遣費試算表：年資超過 25 年應改給舊制退休金，新制資遣費 270,000 元與本工具相同"
+    },
+    {
+      "name": "跨新舊制、年資 20 年、滿 56 歲：符合工作 15 年以上滿 55 歲",
+      "input": {
+        "hireDate": "2004-01-01",
+        "endDate": "2024-03-31",
+        "avgWage": 40000,
+        "birthDate": "1968-01-01"
+      },
+      "expected": {
+        "base": 7.5,
+        "amount": 300000,
+        "retirementEligible": true
+      }
+    },
+    {
+      "name": "跨新舊制、年資 13 年、50 歲：還不符合退休條件",
+      "input": {
+        "hireDate": "2004-01-01",
+        "endDate": "2016-12-31",
+        "avgWage": 40000,
+        "birthDate": "1966-06-01"
+      },
+      "expected": {
+        "base": 7.25,
+        "amount": 290000,
+        "retirementEligible": false
       }
     },
     {
@@ -110,6 +146,7 @@
       "expected": {
         "base": 2.5833333333,
         "amount": 77500,
+        "retirementEligible": false,
         "oldPart": {
           "months": 24,
           "days": 11
@@ -127,6 +164,7 @@
       "expected": {
         "base": 31.8333333333,
         "amount": 1273334,
+        "retirementEligible": true,
         "newPart": null
       }
     },
@@ -140,6 +178,7 @@
       "expected": {
         "base": 1.5,
         "amount": 45000,
+        "retirementEligible": false,
         "oldPart": null
       }
     },
@@ -153,6 +192,7 @@
       "expected": {
         "base": 4.0,
         "amount": 112000,
+        "retirementEligible": false,
         "newPart": null
       }
     },
@@ -166,6 +206,7 @@
       "expected": {
         "base": 0.0388888889,
         "amount": 1167,
+        "retirementEligible": false,
         "newPart": {
           "months": 0,
           "days": 28
@@ -182,6 +223,7 @@
       "expected": {
         "base": 0.0416666667,
         "amount": 1250,
+        "retirementEligible": false,
         "newPart": {
           "months": 1,
           "days": 0

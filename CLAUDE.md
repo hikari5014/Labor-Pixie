@@ -43,4 +43,5 @@
   - `npm test`
 - 本機預覽：`sh -c "rm -rf site/data && cp -R data site/data && python3 -m http.server 8790 -d site"`，或預覽面板的 `labor-pixie`。
 - 驗證範例由 `tests/reference/generate.py`（Python 另外實作一次）產生，改了範例或規則後執行它；測試會比對 JS 與 Python 結果。能取得官方算例的（例：勞動部資遣費範例）要收進範例。
-- 主題卡與體檢清單的內容用法條與主管機關資料自己改寫；判決字號未核對原文要標 `verified: false`。
+- 主題卡、案例、體檢清單、表單範本的內容用法條與主管機關資料自己改寫；判決要到司法院裁判書系統核對原文並附連結（`verified: true`），未核對的標 `verified: false`。查不到法源的實務看法放 `practice` 欄位，畫面標「實務見解，非法定結論」。
+- 查核結果記錄在 `docs/verification.md`；有對應勞動部線上試算（calcr2.mol.gov.tw）的試算器，改了算法要重新比對。

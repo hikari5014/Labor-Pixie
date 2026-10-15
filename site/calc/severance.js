@@ -71,7 +71,19 @@ export function severance(input) {
     }
   }
   const base = (oldPart ? oldPart.base : 0) + (newPart ? newPart.base : 0);
-  return { oldPart, newPart, base, amount: ceilMoney(avgWage * base) };
+  return { oldPart, newPart, base, amount: ceilMoney(avgWage * base), retirementEligible: oldPart ? retirementEligible(input) : false };
+}
+
+/**
+ * 是否已符合自請退休條件（勞基法第 53 條）：工作 25 年以上；或 15 年以上滿 55 歲；或 10 年以上滿 60 歲。
+ * 符合時，舊制年資要改依退休金計給，不是資遣費（勞動部資遣費試算表的做法）。birthDate 沒填時只看 25 年。
+ */
+export function retirementEligible(input) {
+  const years = tenure(input.hireDate, input.endDate).months / 12;
+  if (years >= 25) return true;
+  if (!input.birthDate) return false;
+  const age = completedMonths(input.birthDate, addDays(input.endDate, 1)) / 12;
+  return (years >= 15 && age >= 55) || (years >= 10 && age >= 60);
 }
 
 /**

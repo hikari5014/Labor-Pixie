@@ -17,6 +17,7 @@ export async function render(root) {
     out.append(resultRow('舊制年資', `${yearsMonths(res.months)}${res.days ? ` ${res.days} 日` : ''}`), resultRow('計算用年資', `${res.years} 年`),
       resultRow('退休金基數', `${res.bases} 個`, true));
     if (res.capped) out.append(alertBox('info', '已達最高 45 個基數'));
+    if (from.input.value < '1984-08-01') out.append(alertBox('warn', '年資起算日早於 73/8/1', '勞基法自 73/8/1 起施行（各行業適用日不同）。適用勞基法以前的年資，依當時的法令或公司規定另計，本工具沒有處理，請用勞動部的舊制退休金試算表核對。'));
     if (num(avg.input) > 0) out.append(resultRow('舊制退休金', `${money(res.amount)} 元`, true));
     out.append(alertBox('info', '要在退休之日起 30 日內給付', '無法一次發給時，要報經主管機關核定才能分期。'),
       formula([

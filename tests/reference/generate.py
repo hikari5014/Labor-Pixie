@@ -75,7 +75,17 @@ def new_years(m, d):
     return m // 12 + ((m % 12) + d / 30) / 12
 
 
-def severance(hire, end, wage, keep_old=False):
+def eligible(hire, end, birth=None):
+    years = tenure(hire, end)[0] / 12
+    if years >= 25:
+        return True
+    if not birth:
+        return False
+    age = tenure(birth, end)[0] / 12
+    return (years >= 15 and age >= 55) or (years >= 10 and age >= 60)
+
+
+def severance(hire, end, wage, keep_old=False, birth=None):
     old = new = 0.0
     if keep_old:
         old = old_base(*tenure(hire, end))
@@ -85,17 +95,19 @@ def severance(hire, end, wage, keep_old=False):
         if end >= NEW_START:
             new = min(6, new_years(*tenure(max(hire, NEW_START), end)) * 0.5)
     base = old + new
-    return {"base": round(base, 10), "amount": ceil_money(wage * base)}
+    return {"base": round(base, 10), "amount": ceil_money(wage * base), "retirementEligible": bool(old) and eligible(hire, end, birth)}
 
 
 def severance_cases():
     out = []
 
-    def add(name, hire, end, wage, keep_old=False, extra=None, note=None):
+    def add(name, hire, end, wage, keep_old=False, extra=None, note=None, birth=None):
         inp = {"hireDate": hire, "endDate": end, "avgWage": wage}
         if keep_old:
             inp["keepOld"] = True
-        out.append(case(name, inp, severance(hire, end, wage, keep_old) | (extra or {}), note))
+        if birth:
+            inp["birthDate"] = birth
+        out.append(case(name, inp, severance(hire, end, wage, keep_old, birth) | (extra or {}), note))
 
     add("勞動部範例：年資 3 年 6 個月 15 天、平均工資 30,000（新制）", "2020-01-01", "2023-07-15", 30000,
         extra={"newPart": {"months": 42, "days": 15}}, note="勞動部〈資遣費給付標準〉公式 30,000×1/2×(3+6.5/12)≈53,124.9")
@@ -104,8 +116,11 @@ def severance_cases():
     add("試用 2 個月就資遣也要給（按比例）", "2026-08-01", "2026-09-30", 32000)
     add("新制上限 6 個月：年資 15 年", "2010-01-01", "2024-12-31", 50000, extra={"newPart": {"capped": True}})
     add("新制剛好 12 年＝6 個月", "2014-01-01", "2025-12-31", 40000)
-    add("跨新舊制：2000/3/1 到職，2026/10/15 資遣", "2000-03-01", "2026-10-15", 45000,
-        extra={"oldPart": {"to": "2005-06-30", "months": 64, "days": 0}})
+    add("跨新舊制：2000/3/1 到職，2026/10/15 資遣（年資 26 年，已符合退休條件）", "2000-03-01", "2026-10-15", 45000,
+        extra={"oldPart": {"to": "2005-06-30", "months": 64, "days": 0}},
+        note="勞動部資遣費試算表：年資超過 25 年應改給舊制退休金，新制資遣費 270,000 元與本工具相同")
+    add("跨新舊制、年資 20 年、滿 56 歲：符合工作 15 年以上滿 55 歲", "2004-01-01", "2024-03-31", 40000, birth="1968-01-01")
+    add("跨新舊制、年資 13 年、50 歲：還不符合退休條件", "2004-01-01", "2016-12-31", 40000, birth="1966-06-01")
     add("舊制剩餘天數未滿 1 個月以 1 個月計", "2003-06-20", "2006-06-30", 30000, extra={"oldPart": {"months": 24, "days": 11}})
     add("選擇繼續適用舊制：全部年資照第 17 條（無上限）", "1995-01-01", "2026-10-15", 40000, keep_old=True, extra={"newPart": None})
     add("2005/7/1 當天到職，全部是新制", "2005-07-01", "2008-06-30", 30000, extra={"oldPart": None})
@@ -224,6 +239,9 @@ def overtime_cases():
     add("一個月平日 22 天各 2 小時：44 小時", 40000, [{"type": "weekday", "hours": 2}] * 22)
     add("平日 20 天各 2 小時＋休息日 1 天 8 小時：48 小時超過上限", 40000, [{"type": "weekday", "hours": 2}] * 20 + [{"type": "rest", "hours": 8}])
     add("月薪含固定津貼 31,000：平日 2.5 小時", 31000, [{"type": "weekday", "hours": 2.5}])
+    add("勞動部算例：月薪 30,000，平日 3 小時、休息日 6 小時、國定假日 8 小時", 30000,
+        [{"type": "weekday", "hours": 3}, {"type": "rest", "hours": 6}, {"type": "holiday", "hours": 8}],
+        "勞動部加班費試算系統以 4/3、5/3 計得 2,708.33 元；本工具以 1.34、1.67 計，略高、不會短付")
     return {"id": "overtime", "title": "加班費（月薪制）", "rule": "overtime-rates",
             "source": "勞動基準法第 24 條、第 32 條、第 39 條、第 40 條", "cases": out}
 

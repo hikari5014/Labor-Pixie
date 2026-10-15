@@ -368,6 +368,33 @@
         "countHours": 2.5,
         "over46": false
       }
+    },
+    {
+      "name": "勞動部算例：月薪 30,000，平日 3 小時、休息日 6 小時、國定假日 8 小時",
+      "input": {
+        "date": "2026-10-15",
+        "monthlyWage": 30000,
+        "days": [
+          {
+            "type": "weekday",
+            "hours": 3
+          },
+          {
+            "type": "rest",
+            "hours": 6
+          },
+          {
+            "type": "holiday",
+            "hours": 8
+          }
+        ]
+      },
+      "expected": {
+        "total": 2714,
+        "countHours": 9,
+        "over46": false
+      },
+      "note": "勞動部加班費試算系統以 4/3、5/3 計得 2,708.33 元；本工具以 1.34、1.67 計，略高、不會短付"
     }
   ]
 }
