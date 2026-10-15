@@ -12,7 +12,7 @@
 ## 技術（不要加大型框架）
 - PWA：`site/` 是純 HTML＋CSS＋原生 JavaScript（ES module），不用任何 npm 套件或 CDN。
 - 資料工具：`scripts/` 是 Python，只用內建功能（`make_icons.py` 例外，用 Pillow，只在開發電腦跑）。
-- 部署：Vercel 專案 `labor-pixie`（Hikari YK's projects），建置只做「把 `data/` 複製到 `site/data/`」（`vercel.json`）。**目前推到 GitHub 不會自動部署**（Vercel 沒收到 GitHub 通知），推送後要用 Vercel 連接器的 create_deployment 指定 commit 部署到 production，或請使用者在 Vercel 專案設定重新連接 GitHub。
+- 部署：Vercel 專案 `labor-pixie`（Hikari YK's projects），建置只做「把 `data/` 複製到 `site/data/`」（`vercel.json`）。推到 `main` 就自動部署到正式網址（2026-10-15 使用者在 GitHub 開放 Vercel 權限並重新連接後已恢復）。推送後確認 Vercel 有新部署；若沒有，先檢查 GitHub 的 Vercel 權限是否包含本專案。
 - 網站結構：`site/routes.js` 網址對應畫面；`site/views/` 畫面；`site/calc/` 純計算（可測試）；`site/lib/` 共用元件與資料讀取。
 - 排程：`.github/workflows/data.yml` 每天台灣 03:00 抓法規、資料變動時發行資料包；`ci.yml` 每次推送跑測試。
 
