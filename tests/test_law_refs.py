@@ -19,7 +19,7 @@ def refs():
     for f in (ROOT / "site").rglob("*.js"):
         for pcode, no in re.findall(r"lawLink\('(\w+)', '([\d-]+)'", f.read_text(encoding="utf-8")):
             out.append((f.name, pcode, no))
-    for f in list((ROOT / "data" / "rules").glob("*.json")) + list((ROOT / "data" / "checklists").glob("*.json")):
+    for f in list((ROOT / "data" / "rules").glob("*.json")) + list((ROOT / "data" / "checklists").glob("*.json")) + list((ROOT / "data" / "topics").glob("*.json")):
         text = f.read_text(encoding="utf-8")
         for pcode, no in re.findall(r'\[\s*"([A-Z]\d{7})",\s*"([\d-]+)"', text):
             out.append((f.name, pcode, no))

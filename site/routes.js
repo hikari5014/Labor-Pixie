@@ -17,4 +17,6 @@ export const ROUTES = [
   { path: '/calc/probation', title: '試用期時程', load: () => import('./views/calc-probation.js') },
   { path: '/calc/sick-leave', title: '病假、事假與全勤獎金', load: () => import('./views/calc-sick-leave.js') },
   { path: '/check', title: '公司體檢清單', load: () => import('./views/checklist.js') },
+  { path: '/topics', title: '查爭議', load: () => import('./views/topics.js') },
+  { prefix: '/topics/', title: '查爭議', load: () => import('./views/topic.js') },
 ];

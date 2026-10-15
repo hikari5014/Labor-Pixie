@@ -114,6 +114,21 @@ def check_checklist(obj, stem):
     return errors
 
 
+def check_topic(obj, stem):
+    errors = [] if obj.get("id") == stem else ["id 要跟檔名相同"]
+    for key in ("title", "question", "summary", "laws", "employer", "worker", "sources", "checked_on"):
+        if not obj.get(key):
+            errors.append(f"缺 {key}")
+    for d in obj.get("disputes", []):
+        if len(d.get("positions", [])) < 2:
+            errors.append("見解不一的題目至少要列兩種看法")
+        for pos in d.get("positions", []):
+            for ref in pos.get("refs", []):
+                if "verified" not in ref:
+                    errors.append(f"判決 {ref.get('label')} 要標 verified（是否已核對原文）")
+    return errors
+
+
 def validate(data_dir=DATA):
     """回傳錯誤清單（空清單＝全部通過）。"""
     data_dir = Path(data_dir)
@@ -138,10 +153,12 @@ def validate(data_dir=DATA):
             found = check_law(obj, path.stem)
         elif rel.startswith("checklists/"):
             found = check_checklist(obj, path.stem)
+        elif rel.startswith("topics/"):
+            found = check_topic(obj, path.stem)
         elif rel.startswith("testcases/"):
             found = check_testcases(obj, path.stem)
         else:
-            found = [] if rel.split("/")[0] in ("interpretations", "faq", "topics") else ["不認得的資料夾"]
+            found = [] if rel.split("/")[0] in ("interpretations", "faq") else ["不認得的資料夾"]
         errors.extend(f"{rel}：{msg}" for msg in found)
     return errors
 

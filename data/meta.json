@@ -33,6 +33,14 @@
     "testcases/package-pay.json",
     "testcases/probation.json",
     "testcases/severance.json",
-    "testcases/sick-leave.json"
+    "testcases/sick-leave.json",
+    "topics/age-65.json",
+    "topics/annual-leave.json",
+    "topics/overtime-records.json",
+    "topics/package-pay.json",
+    "topics/probation.json",
+    "topics/transfer.json",
+    "topics/workplace-bullying.json",
+    "topics/year-end-bonus.json"
   ]
 }

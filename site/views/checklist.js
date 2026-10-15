@@ -42,14 +42,14 @@ export async function render(root) {
       }
     }
     const bad = counts.missing + counts.wrong;
-    summary.replaceChildren(
+    summary.replaceChildren(...[
       h('div', { class: 'result-row result-row--main' }, h('span', {}, '完整'), h('b', {}, `${counts.ok} / ${total} 項`)),
       ...list.states.filter((s) => s.id !== 'ok').map((s) => h('div', { class: 'result-row' }, h('span', {}, s.name), h('b', {}, `${counts[s.id]} 項`))),
       unanswered ? h('div', { class: 'result-row' }, h('span', {}, '還沒填'), h('b', {}, `${unanswered} 項`)) : null,
       bad ? alertBox('crit', `先處理 ${bad} 項「沒有」或「內容不對」`, '錯的制度反而會變成對公司不利的證據。')
         : counts['not-done'] + counts['no-record'] ? alertBox('warn', '再補上落實與紀錄', '做了但沒有紀錄，發生爭議時一樣拿不出證據。')
           : !unanswered ? alertBox('good', '全部完整', '記得每年至少檢查一次，法規修正時也要更新。') : null,
-    );
+    ].filter(Boolean));
   }
 
   size.input.addEventListener('input', () => { state.size = size.input.value; save(state); draw(); });

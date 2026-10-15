@@ -189,3 +189,10 @@ mark { background: var(--warn-soft); color: var(--ink); padding: 0 1px; }
   body { background: #fff; }
   .panel, .check-item { break-inside: avoid; }
 }
+
+/* ---- v0.9：爭議主題卡 ---- */
+.positions { display: grid; gap: var(--space-3); }
+@media (min-width: 769px) { .positions { grid-template-columns: 1fr 1fr; } }
+.position { border: 1px solid var(--line); border-top: 4px solid var(--warn); padding: var(--space-3); background: var(--surface); }
+.position p { margin: var(--space-1) 0; }
+.pill--warn { margin-left: var(--space-1); }
