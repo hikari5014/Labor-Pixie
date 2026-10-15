@@ -10,7 +10,10 @@
 | `data/meta.json` | 格式名稱、格式版本、資料版本 |
 | `data/laws/<id>.json` | 法規全文，一部法一個檔，由 `scripts/fetch_laws.py` 自動抓 |
 | `data/rules/<id>.json` | 規則表：最低工資、加班倍率、國定假日、特休、預告期、婚假…，人工維護 |
-| `data/testcases/`、`interpretations/`、`faq/`、`topics/` | 試算驗證範例、函釋、主管機關問答、爭議主題卡（之後才加） |
+| `data/testcases/<id>.json` | 試算器驗證範例，每個至少 10 組 |
+| `data/topics/<id>.json` | 爭議主題卡 |
+| `data/checklists/<id>.json` | 檢查清單（公司體檢） |
+| `data/interpretations/`、`faq/` | 函釋、主管機關問答（之後才加） |
 
 規則：
 - 只能放 `.json`，檔名只用小寫英文、數字、連字號（例 `minimum-wage.json`）。
@@ -79,6 +82,25 @@
   ]
 }
 ```
+
+### 爭議主題卡（topics/）
+
+```json
+{ "id": "probation", "title": "試用期", "question": "可以約定試用期嗎？…", "tags": ["試用"],
+  "summary": ["白話 3 句"], "laws": [["N0030001", "11", "勞動基準法第 11 條"]],
+  "key_points": ["…"], "employer": ["雇主怎麼做"], "worker": ["勞工該留的證據"], "calcs": ["probation"],
+  "disputes": [ { "question": "…", "positions": [
+      { "view": "看法一", "holder": "誰的看法", "refs": [ { "label": "判決字號", "verified": false } ] },
+      { "view": "看法二", "holder": "…", "refs": [] } ], "note": "補充" } ],
+  "sources": [ { "label": "…", "url": "https://…" } ], "checked_on": "2026-10-15" }
+```
+
+- `laws` 每一筆是 [法規代碼, 條號, 顯示文字]；自動測試會確認條文真的存在。
+- 見解不一的題目至少兩種看法；判決字號要標 `verified`（是否已核對原文），未核對的畫面上標「待核對原文」。
+
+### 檢查清單（checklists/）
+
+`states` 是自評選項，`groups[].items[]` 每一項有 `id`、`title`、`why`、`basis`（同上的法條格式），法定義務有人數門檻的加 `min_employees`。
 
 ## 法規資料包
 

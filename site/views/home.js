@@ -37,6 +37,7 @@ export function render(root, params, ctx) {
       h('dl', { class: 'facts' },
         h('dt', {}, '法規資料'), dataVersion,
         h('dt', {}, 'APP 版本'), h('dd', {}, h('a', { href: '#/changelog' }, `v${ctx.version}（本版紀錄）`))),
+      h('p', { class: 'small muted' }, '法規每天自動和全國法規資料庫比對，有修法才會更新日期。'),
       ctx.updateButton()),
   );
 

@@ -12,7 +12,8 @@
 ## 技術（不要加大型框架）
 - PWA：`site/` 是純 HTML＋CSS＋原生 JavaScript（ES module），不用任何 npm 套件或 CDN。
 - 資料工具：`scripts/` 是 Python，只用內建功能（`make_icons.py` 例外，用 Pillow，只在開發電腦跑）。
-- 部署：Vercel 連 GitHub，推到 `main` 就自動上線；建置只做「把 `data/` 複製到 `site/data/`」（`vercel.json`）。
+- 部署：Vercel 專案 `labor-pixie`（Hikari YK's projects），建置只做「把 `data/` 複製到 `site/data/`」（`vercel.json`）。**目前推到 GitHub 不會自動部署**（Vercel 沒收到 GitHub 通知），推送後要用 Vercel 連接器的 create_deployment 指定 commit 部署到 production，或請使用者在 Vercel 專案設定重新連接 GitHub。
+- 網站結構：`site/routes.js` 網址對應畫面；`site/views/` 畫面；`site/calc/` 純計算（可測試）；`site/lib/` 共用元件與資料讀取。
 - 排程：`.github/workflows/data.yml` 每天台灣 03:00 抓法規、資料變動時發行資料包；`ci.yml` 每次推送跑測試。
 
 ## 資料（格式細節見 `docs/data-format.md`）
@@ -41,4 +42,5 @@
   - `python3 -m unittest discover -s tests -t .`
   - `npm test`
 - 本機預覽：`sh -c "rm -rf site/data && cp -R data site/data && python3 -m http.server 8790 -d site"`，或預覽面板的 `labor-pixie`。
-- 試算器上線前，每個至少 10 組驗證範例放 `data/testcases/`，並與勞動部官方試算工具比對。
+- 驗證範例由 `tests/reference/generate.py`（Python 另外實作一次）產生，改了範例或規則後執行它；測試會比對 JS 與 Python 結果。能取得官方算例的（例：勞動部資遣費範例）要收進範例。
+- 主題卡與體檢清單的內容用法條與主管機關資料自己改寫；判決字號未核對原文要標 `verified: false`。
