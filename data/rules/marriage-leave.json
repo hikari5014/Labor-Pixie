@@ -1,0 +1,24 @@
+{
+  "id": "marriage-leave",
+  "title": "婚假",
+  "note": "115/10/1 起由 8 日增為 14 日，工資照給；新增的 6 日工資由雇主先付，再向勞保局申請補助。",
+  "entries": [
+    {
+      "effective_from": "1985-03-20",
+      "status": "active",
+      "days": 8,
+      "source": "勞工請假規則第 2 條（修正前）",
+      "source_url": "https://law.moj.gov.tw/LawClass/LawSingle.aspx?pcode=N0030006&flno=2",
+      "checked_on": "2026-10-15"
+    },
+    {
+      "effective_from": "2026-10-01",
+      "status": "active",
+      "days": 14,
+      "employer_advance_subsidized_days": 6,
+      "source": "勞工請假規則第 2 條；勞動部〈婚假新制 10/1 上路〉",
+      "source_url": "https://www.mol.gov.tw/1607/1632/1633/99216/",
+      "checked_on": "2026-10-15"
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "id": "overtime-rates",
+  "title": "加班費倍率（月薪制）",
+  "note": "倍率是「平日每小時工資額」的倍數。法定為加給三分之一、三分之二以上，一律用 1.34、1.67、2.67，不用 1.33 以免短付。時薪＝月薪÷30÷8。",
+  "entries": [
+    {
+      "effective_from": "2018-03-01",
+      "status": "active",
+      "weekday": [
+        {
+          "hours": "1-2",
+          "rate": 1.34
+        },
+        {
+          "hours": "3-4",
+          "rate": 1.67
+        }
+      ],
+      "rest_day": [
+        {
+          "hours": "1-2",
+          "rate": 1.34
+        },
+        {
+          "hours": "3-8",
+          "rate": 1.67
+        },
+        {
+          "hours": "9-12",
+          "rate": 2.67
+        }
+      ],
+      "national_holiday": {
+        "extra_pay_days": 1,
+        "counted_by": "day",
+        "note": "以日計，上 1 小時也給 1 日；超過 8 小時的部分比照平日延長工時"
+      },
+      "regular_day_off": {
+        "extra_pay_days": 1,
+        "compensatory_leave_days": 1,
+        "note": "例假原則不得出勤，僅限天災、事變、突發事件（勞基法第 40 條）"
+      },
+      "source": "勞動基準法第 24 條、第 39 條、第 40 條",
+      "source_url": "https://law.moj.gov.tw/LawClass/LawSingle.aspx?pcode=N0030001&flno=24",
+      "checked_on": "2026-10-15"
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+# 建置產物（Vercel 建置時才把 data/ 複製進 site/）
+site/data/
+dist/
+__pycache__/
+.DS_Store
+# 計劃書含公司內部內容，只留在本機（公開版見 docs/roadmap.md）
+docs/plans/

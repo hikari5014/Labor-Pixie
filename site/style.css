@@ -1,0 +1,93 @@
+/* 勞資小精靈樣式。設計規則：
+   - 一律直角，只有輸入欄位與小標籤（.pill）是圓角
+   - 有陰影＝可以按：只有 .btn 與可用的 .tile 有陰影，按下往下沉；卡片一律平的
+   - 狀態一定附文字，不只靠顏色；一個畫面最多一個主要按鈕
+   - 顏色只用下面的變數，不在元件裡寫色碼 */
+:root {
+  --bg: #f2f4f3;
+  --surface: #ffffff;
+  --sunken: #e7ebe9;
+  --ink: #1b2320;
+  --muted: #5a6661;
+  --line: #d2d9d5;
+  --line-strong: #7c8883;
+  --accent: #2d4f9e;
+  --accent-ink: #ffffff;
+  --accent-soft: #e2e8f6;
+  --good: #24724a;
+  --good-soft: #e0f1e7;
+  --warn: #9a5a00;
+  --warn-soft: #faeed6;
+  --crit: #b42318;
+  --crit-soft: #fbe3df;
+  --shadow-btn: 0 2px 0 rgba(27, 35, 32, 0.22), 0 3px 5px rgba(27, 35, 32, 0.10);
+  --shadow-btn-primary: 0 2px 0 #1c3470, 0 3px 6px rgba(45, 79, 158, 0.28);
+  --shadow-pressed: inset 0 2px 3px rgba(0, 0, 0, 0.20);
+  --radius-pill: 999px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  /* 電腦尺寸 */
+  --font: 14px;
+  --tap: 34px;
+}
+/* 手機與平板：大按鈕、大字 */
+@media (max-width: 768px), (pointer: coarse) {
+  :root { --font: 17px; --tap: 52px; }
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: var(--font)/1.6 "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", "微軟正黑體", sans-serif;
+}
+a { color: var(--accent); }
+.muted { color: var(--muted); }
+.small { font-size: 0.85em; }
+
+.topbar { background: var(--surface); border-bottom: 1px solid var(--line); padding: var(--space-3) var(--space-4); }
+.topbar__title { font-size: 1.3em; font-weight: 700; }
+.topbar__sub { color: var(--muted); font-size: 0.85em; }
+
+.banner { position: sticky; top: 0; z-index: 20; padding: var(--space-2) var(--space-4); font-weight: 700; }
+.banner--offline, .banner--update { background: var(--warn-soft); color: var(--ink); border-bottom: 1px solid var(--warn); }
+.banner .btn { margin-left: var(--space-3); }
+
+.page { max-width: 720px; margin: 0 auto; padding: var(--space-4); display: grid; gap: var(--space-4); }
+.page > p { margin: 0; }
+
+.panel { background: var(--surface); border: 1px solid var(--line); padding: var(--space-4); }
+.panel > :first-child { margin-top: 0; }
+.panel > :last-child { margin-bottom: 0; }
+.section-title { font-size: 1em; margin: 0 0 var(--space-2); }
+
+.seg { display: flex; border: 1px solid var(--line-strong); background: var(--surface); }
+.seg__btn { flex: 1; min-height: var(--tap); border: 0; background: transparent; color: var(--ink); font: inherit; cursor: pointer; }
+.seg__btn[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); font-weight: 700; }
+
+.tiles { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-3); }
+@media (min-width: 769px) { .tiles { grid-template-columns: repeat(4, 1fr); } }
+.tile { background: var(--surface); border: 1px solid var(--line); min-height: calc(var(--tap) + 32px);
+        padding: var(--space-3); display: flex; flex-direction: column; gap: var(--space-2);
+        box-shadow: var(--shadow-btn); position: relative; top: 0; }
+.tile:active { top: 2px; box-shadow: var(--shadow-pressed); }
+.tile[aria-disabled="true"] { box-shadow: none; color: var(--muted); border-style: dashed; top: 0; }
+
+.pill { align-self: flex-start; font-size: 0.75em; padding: 0 var(--space-2); border-radius: var(--radius-pill);
+        background: var(--sunken); color: var(--muted); }
+.pill--warn { background: var(--warn-soft); color: var(--warn); }
+
+.btn { min-height: var(--tap); padding: 0 var(--space-4); border: 1px solid var(--line-strong); background: var(--surface);
+       color: var(--ink); font: inherit; cursor: pointer; box-shadow: var(--shadow-btn); position: relative; top: 0; }
+.btn:active { top: 2px; box-shadow: var(--shadow-pressed); }
+.btn--primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); font-weight: 700; box-shadow: var(--shadow-btn-primary); }
+.btn--block { width: 100%; }
+.btn:focus-visible, .seg__btn:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+.facts { display: grid; grid-template-columns: auto 1fr; gap: var(--space-1) var(--space-4); margin: 0 0 var(--space-3); }
+.facts dt { color: var(--muted); }
+.facts dd { margin: 0; font-weight: 700; }

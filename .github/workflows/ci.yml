@@ -1,0 +1,22 @@
+# 每次推上來或開 PR 都自動檢查資料格式並跑測試。
+name: 測試
+on:
+  push:
+  pull_request:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: 檢查 data/ 格式
+        run: python scripts/validate_data.py
+      - name: Python 測試
+        run: python -m unittest discover -s tests -t .
+      - name: 網頁測試
+        run: npm test

@@ -1,0 +1,35 @@
+{
+  "id": "minimum-wage",
+  "title": "最低工資（月薪、時薪）",
+  "note": "114 年起由《最低工資法》取代基本工資。status 為 pending 的數字尚未正式核定，試算預設不用。",
+  "entries": [
+    {
+      "effective_from": "2025-01-01",
+      "status": "active",
+      "monthly": 28590,
+      "hourly": 190,
+      "source": "勞動部〈歷年最低工資／基本工資調整〉",
+      "source_url": "https://www.mol.gov.tw/1607/28162/28166/28180/70460/76761/",
+      "checked_on": "2026-10-15"
+    },
+    {
+      "effective_from": "2026-01-01",
+      "status": "active",
+      "monthly": 29500,
+      "hourly": 196,
+      "source": "勞動部〈歷年最低工資／基本工資調整〉",
+      "source_url": "https://www.mol.gov.tw/1607/28162/28166/28180/70460/76761/",
+      "checked_on": "2026-10-15"
+    },
+    {
+      "effective_from": "2027-01-01",
+      "status": "pending",
+      "monthly": 30900,
+      "hourly": 205,
+      "note": "最低工資審議會 115/9/24 決議，待行政院核定",
+      "source": "勞動部新聞稿（115/9/24）",
+      "source_url": "https://www.mol.gov.tw/1607/1632/1633/99195/",
+      "checked_on": "2026-10-15"
+    }
+  ]
+}

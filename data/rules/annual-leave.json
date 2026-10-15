@@ -1,0 +1,44 @@
+{
+  "id": "annual-leave",
+  "title": "特別休假天數",
+  "note": "依年資（月）給假；10 年以上每 1 年加 1 日，加至 30 日為止。未休日數於年度終結或離職時發給工資；遞延須勞雇雙方協商。",
+  "entries": [
+    {
+      "effective_from": "2017-01-01",
+      "status": "active",
+      "tiers": [
+        {
+          "from_months": 6,
+          "days": 3
+        },
+        {
+          "from_months": 12,
+          "days": 7
+        },
+        {
+          "from_months": 24,
+          "days": 10
+        },
+        {
+          "from_months": 36,
+          "days": 14
+        },
+        {
+          "from_months": 60,
+          "days": 15
+        },
+        {
+          "from_months": 120,
+          "days": 16
+        }
+      ],
+      "after_10_years": {
+        "add_days_per_year": 1,
+        "max_days": 30
+      },
+      "source": "勞動基準法第 38 條",
+      "source_url": "https://law.moj.gov.tw/LawClass/LawSingle.aspx?pcode=N0030001&flno=38",
+      "checked_on": "2026-10-15"
+    }
+  ]
+}
