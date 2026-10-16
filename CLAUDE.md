@@ -41,7 +41,9 @@
 - 版本號 SemVer（v0.x＝開發中，v1.0.0＝正式上線）。改版要同時改三處：`package.json`、`site/app.js` 的 `APP_VERSION`、`site/sw.js` 的 `VERSION`（測試會檢查一致）。
 - **本版紀錄**：每一版都要在 `site/changelog.json` 最上面加一筆（version、date、title、changes＝使用者看得懂的變化、technical＝技術變更）。APP 的「本版紀錄」頁直接讀它，測試會檢查第一筆等於目前版本。
 - 新增網站檔案要加進 `site/sw.js` 的 `SHELL`；新畫面加進 `site/routes.js`（測試都會檢查）。
-- 新試算器：計算放 `site/calc/<id>.js`（純函式），畫面放 `site/views/calc-<id>.js`，登記到 `site/calc/registry.js` 與 `tests/calc-functions.js`，驗證範例 `data/testcases/<id>.json` 至少 10 組。
+- 新試算器：計算放 `site/calc/<id>.js`（純函式 `fn(input, rules)`，`rules` 是所有規則表 `{ id: 規則表 }`，用 `ruleOn(rules, id, 日期)` 取當時有效的一筆），畫面放 `site/views/calc-<id>.js`（用 `allRules()` 載入），登記到 `site/calc/registry.js` 與 `tests/calc-functions.js`，驗證範例 `data/testcases/<id>.json` 至少 10 組。
+- 計算裡用到的法定數字（倍率、時段、上限、天數、比例、基數、期限）一律放 `data/rules/`；畫面說明文字能從資料組出來的也從資料組（例：特休天數表、預告天數、加班倍率）。
+- `tests/compat.test.js` 會擋下 Chrome 109 不支援的 JS／CSS 與外部網址。
 - 付給勞工的金額一律用 `ceilMoney` 無條件進位到元，避免短付。
 - 改完任何東西都要全部通過：
   - `python3 scripts/validate_data.py`

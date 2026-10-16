@@ -1,0 +1,35 @@
+{
+  "id": "retirement-rules",
+  "title": "退休條件與舊制退休金",
+  "note": "自請退休：工作 15 年以上滿 55 歲、工作 25 年以上、工作 10 年以上滿 60 歲。舊制退休金：前 15 年每年 2 個基數，之後每年 1 個基數，最高 45 個基數；未滿半年以半年計，滿半年以一年計。因執行職務致身心障礙被強制退休者加給 20%。",
+  "entries": [
+    {
+      "effective_from": "1984-07-30",
+      "status": "active",
+      "voluntary": [
+        {
+          "years": 15,
+          "age": 55
+        },
+        {
+          "years": 25
+        },
+        {
+          "years": 10,
+          "age": 60
+        }
+      ],
+      "forced_age": 65,
+      "pension_first_years": 15,
+      "pension_bases_first": 2,
+      "pension_bases_after": 1,
+      "pension_max_bases": 45,
+      "pension_half_year_months": 6,
+      "duty_disability_bonus": 0.2,
+      "pay_within_days": 30,
+      "source": "勞動基準法第 53、54、55 條",
+      "source_url": "https://law.moj.gov.tw/LawClass/LawSingle.aspx?pcode=N0030001&flno=55",
+      "checked_on": "2026-10-16"
+    }
+  ]
+}

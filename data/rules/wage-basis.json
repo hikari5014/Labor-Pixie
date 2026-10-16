@@ -1,0 +1,17 @@
+{
+  "id": "wage-basis",
+  "title": "月薪換算基準",
+  "note": "月薪制：日薪＝月薪 ÷ 30；時薪＝月薪 ÷ 30 ÷ 8，月薪視為已給付 240 小時的工資。",
+  "entries": [
+    {
+      "effective_from": "1984-07-30",
+      "status": "active",
+      "days_per_month": 30,
+      "hours_per_day": 8,
+      "hours_per_month": 240,
+      "source": "勞動部〈月薪制勞工的權益〉",
+      "source_url": "https://www.mol.gov.tw/topic/3067/5990/5999/14481/",
+      "checked_on": "2026-10-16"
+    }
+  ]
+}

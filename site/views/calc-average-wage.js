@@ -1,8 +1,10 @@
 import { h, pageHead, field, num, alertBox, resultRow, formula, lawLink, basis, disclaimer } from '../lib/ui.js';
+import { allRules } from '../lib/data.js';
 import { rocDate, money, todayTaipei, isDate } from '../format.js';
 import { averageWage } from '../calc/severance.js';
 
 export async function render(root) {
+  const rules = await allRules();
   const event = field({ label: '計算事由發生日', type: 'date', value: todayTaipei(), hint: '例：資遣、退休、職災發生的那一天' });
   const hire = field({ label: '到職日', type: 'date' });
   const wages = field({ label: '這段期間的工資總額', unit: '元', min: 0, hint: '本薪、固定津貼、加班費、經常性獎金都要算；不計入期間的工資要扣掉' });
@@ -17,7 +19,7 @@ export async function render(root) {
     const input = { eventDate: event.input.value, hireDate: hire.input.value, wages: num(wages.input), excludedDays: num(excluded.input) || 0, byDay: byDay.input.checked, workDays: num(workDays.input) || 0 };
     if (!isDate(input.eventDate) || !isDate(input.hireDate)) { out.append(alertBox('info', '請填事由發生日與到職日')); return; }
     if (input.hireDate >= input.eventDate) { out.append(alertBox('crit', '到職日要早於事由發生日')); return; }
-    const res = averageWage({ ...input, wages: input.wages > 0 ? input.wages : 0 });
+    const res = averageWage({ ...input, wages: input.wages > 0 ? input.wages : 0 }, rules);
     period.textContent = `計算期間：${rocDate(res.periodStart)}～${rocDate(res.periodEnd)}，共 ${res.calendarDays} 日。`;
     out.append(resultRow('計算期間', `${rocDate(res.periodStart)}～${rocDate(res.periodEnd)}`), resultRow('計入日數', `${res.days} 日`));
     if (!(input.wages > 0)) { out.append(alertBox('info', '請填這段期間的工資總額')); return; }

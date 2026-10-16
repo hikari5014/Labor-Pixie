@@ -1,0 +1,18 @@
+{
+  "id": "sick-leave-rules",
+  "title": "病假工資與全勤",
+  "note": "未住院普通傷病假一年 30 日內工資折半；全勤獎金按病假日數比例扣（÷30）；一年內未超過 10 日不得不利處分（115/1/1 起）。",
+  "entries": [
+    {
+      "effective_from": "2026-01-01",
+      "status": "active",
+      "half_pay_days_per_year": 30,
+      "half_pay_ratio": 0.5,
+      "bonus_days_divisor": 30,
+      "protected_days": 10,
+      "source": "勞工請假規則第 4、9、9-1 條",
+      "source_url": "https://law.moj.gov.tw/LawClass/LawSingle.aspx?pcode=N0030006&flno=9-1",
+      "checked_on": "2026-10-16"
+    }
+  ]
+}

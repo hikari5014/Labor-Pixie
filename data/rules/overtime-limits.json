@@ -1,0 +1,18 @@
+{
+  "id": "overtime-limits",
+  "title": "延長工時上限",
+  "note": "每日正常工時加延長工時合計不超過 12 小時；每月延長工時 46 小時，經工會或勞資會議同意可到 54 小時，每 3 個月不超過 138 小時。",
+  "entries": [
+    {
+      "effective_from": "2018-03-01",
+      "status": "active",
+      "daily_total_hours": 12,
+      "monthly_hours": 46,
+      "monthly_hours_with_consent": 54,
+      "quarterly_hours_with_consent": 138,
+      "source": "勞動基準法第 32 條",
+      "source_url": "https://law.moj.gov.tw/LawClass/LawSingle.aspx?pcode=N0030001&flno=32",
+      "checked_on": "2026-10-16"
+    }
+  ]
+}

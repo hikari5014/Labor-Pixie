@@ -19,3 +19,11 @@ export const meta = () => getJSON('data/meta.json');
 export function clearCache() {
   cache.clear();
 }
+
+/** 所有規則表 { id: 規則表 }（試算器依需要取用） */
+export async function allRules() {
+  const m = await meta();
+  const ids = m.files.filter((f) => f.startsWith('rules/')).map((f) => f.slice(6, -5));
+  const list = await Promise.all(ids.map((id) => rule(id)));
+  return Object.fromEntries(ids.map((id, i) => [id, list[i]]));
+}

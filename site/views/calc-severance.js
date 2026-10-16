@@ -1,12 +1,14 @@
 import { h, pageHead, field, num, alertBox, resultRow, formula, lawLink, basis, disclaimer } from '../lib/ui.js';
-import { rocDate, money, todayTaipei, isDate, yearsMonths } from '../format.js';
-import { severance, NEW_SYSTEM_START } from '../calc/severance.js';
+import { allRules } from '../lib/data.js';
+import { rocDate, money, todayTaipei, isDate, yearsMonths, ruleOn } from '../format.js';
+import { severance } from '../calc/severance.js';
 
 function part(label, p, unit) {
   return resultRow(`${label}（${rocDate(p.from)}～${rocDate(p.to)}，${yearsMonths(p.months)}${p.days ? ` ${p.days} 日` : ''}）`, `${p.base.toFixed(4)} ${unit}`);
 }
 
 export async function render(root, params, ctx) {
+  const rules = await allRules();
   const hire = field({ label: '到職日', type: 'date' });
   const end = field({ label: '最後工作日（契約終止日）', type: 'date', value: todayTaipei() });
   const avg = field({ label: '月平均工資', unit: '元', min: 0, hint: '不知道的話先用「平均工資」試算器算' });
@@ -19,19 +21,19 @@ export async function render(root, params, ctx) {
     const input = { hireDate: hire.input.value, endDate: end.input.value, avgWage: num(avg.input), keepOld: keepOld.input.checked, birthDate: isDate(birth.input.value) ? birth.input.value : undefined };
     if (!isDate(input.hireDate) || !isDate(input.endDate)) { out.append(alertBox('info', '請填到職日與最後工作日')); return; }
     if (input.endDate < input.hireDate) { out.append(alertBox('crit', '最後工作日早於到職日')); return; }
-    if (input.keepOld && input.hireDate >= NEW_SYSTEM_START) { out.append(alertBox('warn', '2005/7/1 以後到職的人只能適用新制', '請取消勾選。')); return; }
+    if (input.keepOld && input.hireDate >= ruleOn(rules, 'severance-rules', input.endDate).new_system_start) { out.append(alertBox('warn', '2005/7/1 以後到職的人只能適用新制', '請取消勾選。')); return; }
     if (!(input.avgWage > 0)) { out.append(alertBox('info', '請填月平均工資')); return; }
-    const res = severance(input);
+    const res = severance(input, rules);
     if (res.oldPart) out.append(part('舊制年資', res.oldPart, '個月'));
     if (res.newPart) out.append(part('新制年資', res.newPart, '個月'));
     out.append(resultRow('資遣費基數合計', `${res.base.toFixed(4)} 個月`), resultRow('資遣費', `${money(res.amount)} 元`, true));
-    if (res.newPart && res.newPart.capped) out.append(alertBox('info', '新制已到上限', '新制資遣費最多 6 個月平均工資。'));
+    if (res.newPart && res.newPart.capped) out.append(alertBox('info', '新制已到上限', `新制資遣費最多 ${res.maxMonths} 個月平均工資。`));
     if (res.retirementEligible) {
       out.append(alertBox('warn', '已符合自請退休條件：舊制年資應改給退休金', '工作 25 年以上、或 15 年以上滿 55 歲、或 10 年以上滿 60 歲時，舊制年資的部分要依勞基法第 55 條計給退休金（通常比資遣費多），請改用「舊制退休金基數」試算；新制年資的資遣費照上面計算。'),
         h('p', { class: 'small' }, h('a', { href: '#/calc/old-pension' }, '改算舊制退休金 →')));
     }
     out.append(
-      alertBox('info', '要在契約終止後 30 日內付清', '另外還有預告期間（或預告工資）與未休特休折發，要一起結算。'),
+      alertBox('info', `要在契約終止後 ${res.payWithinDays} 日內付清`, '另外還有預告期間（或預告工資）與未休特休折發，要一起結算。'),
       h('p', { class: 'small' }, h('a', { href: '#/calc/notice-period' }, '接著算預告期間 →')),
       formula([
         '年資從到職日算到最後工作日（兩天都算）。',

@@ -1,10 +1,17 @@
 import { h, pageHead, field, num, alertBox, resultRow, formula, lawLink, basis, disclaimer } from '../lib/ui.js';
-import { rule } from '../lib/data.js';
-import { rocDate, money, todayTaipei, isDate, yearsMonths } from '../format.js';
+import { allRules } from '../lib/data.js';
+import { rocDate, money, todayTaipei, isDate, yearsMonths, ruleOn } from '../format.js';
 import { annualLeave } from '../calc/annual-leave.js';
 
+function tierText(e) {
+  const parts = e.tiers.map((t) => `滿 ${yearsMonths(t.from_months)} ${t.days} 日`);
+  const x = e.after_10_years;
+  if (x) parts.push(`之後每滿 1 年加 ${x.add_days_per_year} 日，最多 ${x.max_days} 日`);
+  return parts.join('、');
+}
+
 export async function render(root, params, ctx) {
-  const r = await rule('annual-leave');
+  const rules = await allRules();
   const hire = field({ label: '到職日', type: 'date', value: '' });
   const date = field({ label: '計算日', type: 'date', value: todayTaipei(), hint: '預設今天' });
   const wage = field({ label: '月薪（選填）', unit: '元', min: 0, hint: '要算未休特休折發工資時才填' });
@@ -16,10 +23,10 @@ export async function render(root, params, ctx) {
     const input = { hireDate: hire.input.value, date: date.input.value, monthlyWage: num(wage.input), unusedDays: num(unused.input) };
     if (!isDate(input.hireDate) || !isDate(input.date)) { out.append(alertBox('info', '請填到職日')); return; }
     if (input.date < input.hireDate) { out.append(alertBox('crit', '計算日早於到職日', '請檢查兩個日期。')); return; }
-    const res = annualLeave(input, r);
+    const res = annualLeave(input, rules);
     out.append(resultRow('年資', yearsMonths(res.months)));
-    if (res.months < 6) {
-      out.append(resultRow('目前特休', '0 日', true), alertBox('info', '還沒有特休', `到職滿 6 個月（${rocDate(res.next.date)}）起有 ${res.next.days} 日。`));
+    if (!res.periodStart) {
+      out.append(resultRow('目前特休', '0 日', true), alertBox('info', '還沒有特休', `${rocDate(res.next.date)} 起有 ${res.next.days} 日。`));
     } else {
       out.append(resultRow(`本期特休（${rocDate(res.periodStart)} 起）`, `${res.days} 日`, true));
       if (res.next) out.append(resultRow(`${rocDate(res.next.date)} 起`, `${res.next.days} 日`));
@@ -29,7 +36,7 @@ export async function render(root, params, ctx) {
     }
     const lines = [
       `從到職日 ${rocDate(input.hireDate)} 算到 ${rocDate(input.date)}，已滿 ${yearsMonths(res.months)}。`,
-      '天數：滿 6 個月 3 日、滿 1 年 7 日、2 年 10 日、3 年 14 日、5 年 15 日、10 年 16 日，之後每滿 1 年加 1 日，最多 30 日。',
+      `天數：${tierText(ruleOn(rules, 'annual-leave', input.date))}。`,
       '這裡用「週年制」：每到到職週年就換新的一期。公司若用曆年制（每年 1/1 換期），天數要另外按比例換算，但不能少於週年制。',
     ];
     if (res.payout !== undefined) lines.push(`未休折發：月薪 ${money(input.monthlyWage)} ÷ 30 × ${input.unusedDays} 日 ＝ ${money(res.dailyWage * input.unusedDays)}，無條件進位到元。`);

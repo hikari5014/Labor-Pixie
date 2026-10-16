@@ -1,8 +1,10 @@
 import { h, pageHead, field, num, alertBox, resultRow, formula, lawLink, basis, disclaimer } from '../lib/ui.js';
+import { allRules } from '../lib/data.js';
 import { money } from '../format.js';
 import { hourlyHoliday } from '../calc/hourly-holiday.js';
 
 export async function render(root) {
+  const rules = await allRules();
   const wage = field({ label: '時薪', unit: '元', min: 0, value: '196' });
   const daily = field({ label: '約定每日工時', unit: '小時', min: 0, step: 0.5, value: '8' });
   const scheduled = field({ label: '國定假日當天，原本是約定要上班的日子', type: 'checkbox', value: true });
@@ -13,7 +15,7 @@ export async function render(root) {
     out.replaceChildren();
     const input = { hourlyWage: num(wage.input), dailyHours: num(daily.input), scheduled: scheduled.input.checked, workedHours: num(worked.input) || 0 };
     if (!(input.hourlyWage > 0) || !(input.dailyHours > 0)) { out.append(alertBox('info', '請填時薪與每日工時')); return; }
-    const res = hourlyHoliday(input);
+    const res = hourlyHoliday(input, rules);
     out.append(resultRow('當天應給工資', `${money(res.pay)} 元`, true));
     const msg = {
       'paid-off': ['good', '放假，工資照給', '原約定上班日遇國定假日，應放假並照給約定工時的工資。'],

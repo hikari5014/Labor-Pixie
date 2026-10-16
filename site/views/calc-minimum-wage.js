@@ -1,10 +1,10 @@
 import { h, pageHead, field, num, alertBox, resultRow, formula, lawLink, basis, disclaimer } from '../lib/ui.js';
-import { rule } from '../lib/data.js';
+import { allRules } from '../lib/data.js';
 import { rocDate, money, todayTaipei, isDate } from '../format.js';
 import { checkMinimumWage } from '../calc/minimum-wage.js';
 
 export async function render(root) {
-  const r = await rule('minimum-wage');
+  const rules = await allRules();
   const payType = field({ label: '計薪方式', type: 'select', value: 'monthly', options: [['monthly', '月薪'], ['hourly', '時薪']] });
   const amount = field({ label: '正常工時內的工資', unit: '元', min: 0, hint: '本薪＋固定津貼；不含加班費、休息日或國定假日出勤的加給' });
   const date = field({ label: '哪一天的工資', type: 'date', value: todayTaipei() });
@@ -24,7 +24,7 @@ export async function render(root) {
     out.replaceChildren();
     const value = num(amount.input);
     if (!(value >= 0) || !isDate(date.input.value)) { out.append(alertBox('info', '請填工資金額')); return; }
-    const res = checkMinimumWage({ payType: payType.input.value, amount: value, date: date.input.value }, r);
+    const res = checkMinimumWage({ payType: payType.input.value, amount: value, date: date.input.value }, rules);
     if (!res.current) { out.append(alertBox('warn', '查無這一天的最低工資資料')); return; }
     out.append(resultRow(`${rocDate(res.current.entry.effective_from)} 起的最低${payType.input.value === 'hourly' ? '時薪' : '月薪'}`, `${money(res.current.threshold)} 元`, true), verdict(res.current, '目前'));
     if (res.next) out.append(resultRow(`${rocDate(res.next.entry.effective_from)} 起`, `${money(res.next.threshold)} 元`), verdict(res.next, `${rocDate(res.next.entry.effective_from)} 起`));

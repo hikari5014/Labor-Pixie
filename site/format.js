@@ -85,3 +85,16 @@ export function entryOn(entries, iso) {
 export function nextEntry(entries, iso) {
   return entries.find((e) => e.effective_from > iso && e.status !== 'repealed') || null;
 }
+
+/** 從規則表集合 { id: 規則表 } 取出某一天有效的那一筆；沒有 date 時用今天 */
+export function ruleOn(rules, id, date) {
+  const r = rules[id];
+  if (!r) throw new Error(`缺少規則表 ${id}`);
+  return entryOn(r.entries, date || todayTaipei());
+}
+
+/** "3-8" → [2, 8]：第 3～8 小時，換成從 0 起算的區間 */
+export function hourRange(text) {
+  const [a, b] = String(text).split('-').map(Number);
+  return [a - 1, b];
+}

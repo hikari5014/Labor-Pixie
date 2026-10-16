@@ -1,5 +1,5 @@
 import { h, pageHead, field, num, alertBox, resultRow, formula, lawLink, basis, disclaimer } from '../lib/ui.js';
-import { rule } from '../lib/data.js';
+import { allRules } from '../lib/data.js';
 import { money, todayTaipei, isDate } from '../format.js';
 import { overtimePay, DAY_TYPES } from '../calc/overtime.js';
 
@@ -10,8 +10,10 @@ const HOURS_HINT = {
   dayoff: '當天實際出勤時數',
 };
 
+const rateText = (list) => list.map((t) => `第 ${t.hours} 小時 × ${t.rate}`).join('、');
+
 export async function render(root, params, ctx) {
-  const r = await rule('overtime-rates');
+  const rules = await allRules();
   const wage = field({ label: '月薪（含每月固定津貼）', unit: '元', min: 0, hint: '每月固定發的津貼、獎金屬於工資，要算進加班費基礎' });
   const date = field({ label: '加班的月份（任一天）', type: 'date', value: todayTaipei() });
   const rows = h('div', { class: 'rows' });
@@ -36,18 +38,19 @@ export async function render(root, params, ctx) {
     if (!(w > 0) || !isDate(date.input.value)) { out.append(alertBox('info', '請填月薪')); return; }
     const days = [...rows.children].map((row) => row.read());
     if (!days.length) { out.append(alertBox('info', '請新增加班的日子')); return; }
-    const res = overtimePay({ date: date.input.value, monthlyWage: w, days }, r);
+    const res = overtimePay({ date: date.input.value, monthlyWage: w, days }, rules);
     out.append(resultRow('時薪（月薪 ÷ 240）', `${money(res.hourly.toFixed(2))} 元`));
     res.days.forEach((d, i) => out.append(resultRow(`第 ${i + 1} 天：${DAY_TYPES[d.type]} ${d.hours} 小時`, `${money(d.pay.toFixed(2))} 元`)));
     out.append(resultRow('加班費合計', `${money(res.total)} 元`, true), resultRow('計入每月上限的時數', `${res.countHours} 小時`));
-    if (res.over54) out.append(alertBox('crit', '超過每月 54 小時', '即使經勞資會議同意，每月也不能超過 54 小時，且每 3 個月不超過 138 小時。'));
-    else if (res.over46) out.append(alertBox('warn', '超過每月 46 小時', '要經勞資會議同意才能延長到 54 小時（每 3 個月不超過 138 小時），否則違法。'));
-    else out.append(alertBox('good', '在每月 46 小時內'));
-    if (res.overDaily) out.append(alertBox('crit', '有一天超過 12 小時', '正常工時加延長工時，一天合計不能超過 12 小時。'));
+    const L = res.limits;
+    if (res.over54) out.append(alertBox('crit', `超過每月 ${L.monthly_hours_with_consent} 小時`, `即使經勞資會議同意，每月也不能超過 ${L.monthly_hours_with_consent} 小時，且每 3 個月不超過 ${L.quarterly_hours_with_consent} 小時。`));
+    else if (res.over46) out.append(alertBox('warn', `超過每月 ${L.monthly_hours} 小時`, `要經勞資會議同意才能延長到 ${L.monthly_hours_with_consent} 小時（每 3 個月不超過 ${L.quarterly_hours_with_consent} 小時），否則違法。`));
+    else out.append(alertBox('good', `在每月 ${L.monthly_hours} 小時內`));
+    if (res.overDaily) out.append(alertBox('crit', `有一天超過 ${L.daily_total_hours} 小時`, `正常工時加延長工時，一天合計不能超過 ${L.daily_total_hours} 小時。`));
     if (res.dayoffWork) out.append(alertBox('crit', '例假原則上不能出勤', '只有天災、事變或突發事件才可以，工資加倍並要事後補假休息；平常給錢也不能讓例假出勤合法。'));
     out.append(formula([
-      '平日延長工時：前 2 小時 × 1.34，再 2 小時 × 1.67（月薪已含正常 8 小時的工資）。',
-      '休息日：前 2 小時 × 1.34、第 3–8 小時 × 1.67、第 9–12 小時 × 2.67；出勤時數全部計入每月 46 小時。',
+      `平日延長工時：${rateText(res.rates.weekday)}（月薪已含正常工時的工資）。`,
+      `休息日：${rateText(res.rates.rest_day)}；出勤時數全部計入每月上限。`,
       '國定假日：以「日」計，8 小時內不論做多久都加給 1 日工資（時薪 × 8）；超過 8 小時的部分比照平日延長工時，並計入 46 小時。',
       '例假：限天災、事變、突發事件，加給 1 日並補假，不計入 46 小時。',
       '倍率往上取（1.34、1.67、2.67），合計無條件進位到元，避免短付。勞動部試算系統用 4/3、5/3、8/3 計算，本工具的結果會略高一點，不會短付。',

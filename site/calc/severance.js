@@ -1,7 +1,5 @@
-// K1 平均工資、K2 資遣費（新舊制）、K3 預告期間。純計算，不碰畫面。
-import { addDays, addMonths, anniversary, completedMonths, daysBetween, ceilMoney, entryOn } from '../format.js';
-
-export const NEW_SYSTEM_START = '2005-07-01'; // 勞工退休金條例施行日
+// 平均工資、資遣費（新舊制）、預告期間。純計算；所有法定數字來自 data/rules/。
+import { addDays, addMonths, anniversary, completedMonths, daysBetween, ceilMoney, ruleOn } from '../format.js';
 
 /** 年資：從 start 到 end（兩天都算），回傳 { months, days } */
 export function tenure(start, end) {
@@ -11,91 +9,96 @@ export function tenure(start, end) {
 }
 
 /**
- * K1 平均工資：事由發生當日前 6 個月內的工資總額 ÷ 該期間總日數（當日不算）。
+ * 平均工資：事由發生當日前 N 個月內的工資總額 ÷ 該期間總日數（當日不算）。rules：{ 'average-wage-rules' }
  * input: { eventDate, hireDate, wages, excludedDays?, byDay?, workDays? }
  * excludedDays：不計入的期間日數（職災醫療、普通傷病假、留職停薪…），wages 要先扣掉那段期間的工資。
- * byDay：按日、按時、按件計酬；平均工資不得少於「工資總額 ÷ 實際工作日數」的六成。
  */
-export function averageWage(input) {
-  const sixMonthsBefore = addMonths(input.eventDate, -6);
-  const periodStart = input.hireDate > sixMonthsBefore ? input.hireDate : sixMonthsBefore;
+export function averageWage(input, rules) {
+  const r = ruleOn(rules, 'average-wage-rules', input.eventDate);
+  const before = addMonths(input.eventDate, -r.lookback_months);
+  const periodStart = input.hireDate > before ? input.hireDate : before;
   const periodEnd = addDays(input.eventDate, -1);
   const calendarDays = daysBetween(periodStart, input.eventDate);
   const days = calendarDays - (Number(input.excludedDays) || 0);
   let daily = input.wages / days;
   let floorApplied = false;
   if (input.byDay && input.workDays > 0) {
-    const floor = (input.wages / input.workDays) * 0.6;
+    const floor = (input.wages / input.workDays) * r.piece_rate_floor_ratio;
     if (floor > daily) { daily = floor; floorApplied = true; }
   }
-  return { periodStart, periodEnd, calendarDays, days, daily, monthly: daily * 30, floorApplied, shortPeriod: periodStart === input.hireDate };
+  return { periodStart, periodEnd, calendarDays, days, daily, monthly: daily * r.days_per_month, floorApplied, shortPeriod: periodStart === input.hireDate };
 }
 
-/** 舊制基數：每滿 1 年 1 個月；剩餘月數按比例；未滿 1 個月以 1 個月計（勞基法第 17 條） */
-export function oldBase(t) {
-  return Math.floor(t.months / 12) + ((t.months % 12) + (t.days > 0 ? 1 : 0)) / 12;
+/** 舊制基數：每滿 1 年給一定月數；剩餘月數按比例；未滿 1 個月以 1 個月計 */
+export function oldBase(t, r) {
+  const partial = (t.months % 12) + (r.old_partial_month_counts_as_month && t.days > 0 ? 1 : 0);
+  return (Math.floor(t.months / 12) + partial / 12) * r.old_months_per_year;
 }
 
 /** 新制年資（年）：未滿 1 年的部分，日數 ÷ 30 換算成月、月 ÷ 12 換算成年（勞動部算法） */
-export function newYears(t) {
-  return Math.floor(t.months / 12) + ((t.months % 12) + t.days / 30) / 12;
+export function newYears(t, r) {
+  return Math.floor(t.months / 12) + ((t.months % 12) + t.days / r.days_per_month) / 12;
 }
 
-/** 新制基數：每滿 1 年 1/2 個月，未滿 1 年按比例，最高 6 個月（勞退條例第 12 條） */
-export function newBase(t) {
-  return Math.min(6, newYears(t) * 0.5);
+/** 新制基數：每滿 1 年 0.5 個月，未滿 1 年按比例，有上限 */
+export function newBase(t, r) {
+  return Math.min(r.new_max_months, newYears(t, r) * r.new_months_per_year);
 }
 
 /**
- * K2 資遣費。input: { hireDate, endDate, avgWage, keepOld? }
- * endDate 是最後工作日。2005/7/1 前到職、後來選新制的人，舊制年資算到 2005/6/30，之後算新制。
+ * 資遣費。input: { hireDate, endDate, avgWage, keepOld?, birthDate? }；rules：{ 'severance-rules', 'retirement-rules' }
+ * endDate 是最後工作日。新制施行前到職、後來選新制的人，舊制年資算到施行前一天，之後算新制。
  * keepOld：選擇繼續適用舊制（全部年資照勞基法第 17 條）。
  */
-export function severance(input) {
+export function severance(input, rules) {
+  const r = ruleOn(rules, 'severance-rules', input.endDate);
+  const start = r.new_system_start;
   const { hireDate, endDate, avgWage } = input;
   let oldPart = null;
   let newPart = null;
   if (input.keepOld) {
     const t = tenure(hireDate, endDate);
-    oldPart = { from: hireDate, to: endDate, ...t, base: oldBase(t) };
+    oldPart = { from: hireDate, to: endDate, ...t, base: oldBase(t, r) };
   } else {
-    if (hireDate < NEW_SYSTEM_START) {
-      const to = endDate < NEW_SYSTEM_START ? endDate : addDays(NEW_SYSTEM_START, -1);
+    if (hireDate < start) {
+      const to = endDate < start ? endDate : addDays(start, -1);
       const t = tenure(hireDate, to);
-      oldPart = { from: hireDate, to, ...t, base: oldBase(t) };
+      oldPart = { from: hireDate, to, ...t, base: oldBase(t, r) };
     }
-    if (endDate >= NEW_SYSTEM_START) {
-      const from = hireDate > NEW_SYSTEM_START ? hireDate : NEW_SYSTEM_START;
+    if (endDate >= start) {
+      const from = hireDate > start ? hireDate : start;
       const t = tenure(from, endDate);
-      newPart = { from, to: endDate, ...t, base: newBase(t), capped: newYears(t) * 0.5 > 6 };
+      newPart = { from, to: endDate, ...t, base: newBase(t, r), capped: newYears(t, r) * r.new_months_per_year > r.new_max_months };
     }
   }
   const base = (oldPart ? oldPart.base : 0) + (newPart ? newPart.base : 0);
-  return { oldPart, newPart, base, amount: ceilMoney(avgWage * base), retirementEligible: oldPart ? retirementEligible(input) : false };
+  return {
+    oldPart, newPart, base, amount: ceilMoney(avgWage * base), payWithinDays: r.pay_within_days, maxMonths: r.new_max_months,
+    retirementEligible: oldPart ? retirementEligible(input, rules) : false,
+  };
 }
 
 /**
- * 是否已符合自請退休條件（勞基法第 53 條）：工作 25 年以上；或 15 年以上滿 55 歲；或 10 年以上滿 60 歲。
- * 符合時，舊制年資要改依退休金計給，不是資遣費（勞動部資遣費試算表的做法）。birthDate 沒填時只看 25 年。
+ * 是否已符合自請退休條件（勞基法第 53 條，條件來自 retirement-rules）。
+ * 符合時，舊制年資要改依退休金計給，不是資遣費（勞動部資遣費試算表的做法）。birthDate 沒填時只看不需要年齡的條件。
  */
-export function retirementEligible(input) {
+export function retirementEligible(input, rules) {
+  const r = ruleOn(rules, 'retirement-rules', input.endDate);
   const years = tenure(input.hireDate, input.endDate).months / 12;
-  if (years >= 25) return true;
-  if (!input.birthDate) return false;
-  const age = completedMonths(input.birthDate, addDays(input.endDate, 1)) / 12;
-  return (years >= 15 && age >= 55) || (years >= 10 && age >= 60);
+  const age = input.birthDate ? completedMonths(input.birthDate, addDays(input.endDate, 1)) / 12 : null;
+  return r.voluntary.some((c) => years >= c.years && (c.age === undefined || (age !== null && age >= c.age)));
 }
 
 /**
- * K3 預告期間。input: { hireDate, endDate, monthlyWage? }，rule：notice-period
+ * 預告期間。input: { hireDate, endDate, monthlyWage? }；rules：{ 'notice-period', 'wage-basis' }
  * 回傳應預告天數、最晚要預告的日子、未預告時應付的預告工資。
  */
-export function noticePeriod(input, rule) {
-  const entry = entryOn(rule.entries, input.endDate);
+export function noticePeriod(input, rules) {
+  const entry = ruleOn(rules, 'notice-period', input.endDate);
   const t = tenure(input.hireDate, input.endDate);
   let days = 0;
   for (const tier of entry.tiers) if (t.months >= tier.from_months) days = tier.days;
   const result = { months: t.months, days, latestNoticeDate: days ? addDays(input.endDate, -days) : null, jobSearchPerWeek: entry.job_search_leave_days_per_week };
-  if (input.monthlyWage > 0) result.noticePay = ceilMoney((input.monthlyWage / 30) * days);
+  if (input.monthlyWage > 0) result.noticePay = ceilMoney((input.monthlyWage / ruleOn(rules, 'wage-basis', input.endDate).days_per_month) * days);
   return result;
 }

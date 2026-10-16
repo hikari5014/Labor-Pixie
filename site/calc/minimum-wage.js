@@ -1,4 +1,4 @@
-// K14 最低工資檢查。純計算，不碰畫面。
+// 最低工資檢查。純計算，不碰畫面。
 import { entryOn, nextEntry } from '../format.js';
 
 function compare(payType, amount, entry) {
@@ -7,13 +7,13 @@ function compare(payType, amount, entry) {
 }
 
 /**
- * input: { payType: 'monthly' | 'hourly', amount, date }
+ * input: { payType: 'monthly' | 'hourly', amount, date }；rules：{ 'minimum-wage' }
  * amount 是正常工作時間內的工資（不含加班費與假日出勤加給）。
- * 回傳當時的比較結果，以及下一次調整（含待核定）的比較結果。
  */
-export function checkMinimumWage(input, rule) {
-  const now = entryOn(rule.entries, input.date);
-  const upcoming = nextEntry(rule.entries, input.date);
+export function checkMinimumWage(input, rules) {
+  const entries = rules['minimum-wage'].entries;
+  const now = entryOn(entries, input.date);
+  const upcoming = nextEntry(entries, input.date);
   return {
     current: now ? compare(input.payType, input.amount, now) : null,
     next: upcoming ? compare(input.payType, input.amount, upcoming) : null,

@@ -1,5 +1,5 @@
 import { h, pageHead, field, num, alertBox, resultRow, formula, lawLink, basis, disclaimer } from '../lib/ui.js';
-import { rule } from '../lib/data.js';
+import { allRules } from '../lib/data.js';
 import { money, todayTaipei, isDate, entryOn } from '../format.js';
 import { packagePay, ratesFrom, HOUR_KEYS, sundaysIn } from '../calc/package-pay.js';
 
@@ -24,8 +24,8 @@ function readHours(fields) {
 }
 
 export async function render(root, params, ctx) {
-  const [overtime, minimumWage] = await Promise.all([rule('overtime-rates'), rule('minimum-wage')]);
-  const rules = { 'overtime-rates': overtime, 'minimum-wage': minimumWage };
+  const rules = await allRules();
+  const overtime = rules['overtime-rates'];
   const total = field({ label: '統包月薪（含加班費的總額）', unit: '元', min: 0 });
   const date = field({ label: '適用日期', type: 'date', value: todayTaipei(), hint: '用來選當時的最低工資與倍率' });
   const planned = hourFields('預估 ');
@@ -63,8 +63,8 @@ export async function render(root, params, ctx) {
         ? alertBox('crit', `底薪低於最低工資 ${money(res.minimumWage)} 元`, '統包總額不夠涵蓋這麼多加班，請提高總額或減少預估時數。')
         : alertBox('good', '底薪沒有低於最低工資', `最低月薪 ${money(res.minimumWage)} 元。也請確認底薪和職位相稱。`),
       res.hoursOk
-        ? alertBox('good', '預估加班在每月 46 小時內')
-        : alertBox('crit', '預估加班超過每月 46 小時', '經勞資會議同意可延長到 54 小時，但每 3 個月不能超過 138 小時。'),
+        ? alertBox('good', `預估加班在每月 ${res.cap} 小時內`)
+        : alertBox('crit', `預估加班超過每月 ${res.cap} 小時`, '經勞資會議同意可以延長，但有每月與每 3 個月的上限（見速查表）。'),
       h('div', { class: 'alert alert--info' }, h('b', {}, '薪資單建議寫法'),
         h('div', {}, `本薪與固定津貼 ${money(res.base)} 元＋固定加班費 ${money(res.fixedOvertime)} 元（含平日加班 ${input.hours.weekday12 + input.hours.weekday34} 小時、休息日 ${input.hours.rest12 + input.hours.rest38 + input.hours.rest912} 小時，以時薪 ${res.hourly.toFixed(2)} 元計）＝ ${money(t)} 元。實際加班超過時依法補發差額；未達時固定加班費照付、不扣減。`)),
     );
@@ -89,7 +89,7 @@ export async function render(root, params, ctx) {
           ? alertBox('warn', `本月要補發 ${money(res.topUp)} 元`, '實際加班費比固定加班費多，差額必須補足。')
           : alertBox('good', '本月不用補發', '實際加班比預估少時，固定加班費仍要全額照付，不能扣減。'),
       );
-      if (!res.actualHoursOk) settle.append(alertBox('crit', '當月實際加班超過 46 小時', '超過法定上限，可能被裁罰。'));
+      if (!res.actualHoursOk) settle.append(alertBox('crit', `當月實際加班超過 ${res.cap} 小時`, '超過法定上限，可能被裁罰。'));
     }
 
     const missing = checks.filter((c) => !c.input.checked).length;

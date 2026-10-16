@@ -1,8 +1,10 @@
 import { h, pageHead, field, alertBox, resultRow, lawLink, basis, disclaimer } from '../lib/ui.js';
+import { allRules } from '../lib/data.js';
 import { rocDate, isDate, todayTaipei } from '../format.js';
 import { authorityDeadline, internalTimeline } from '../calc/bullying.js';
 
 export async function render(root) {
+  const rules = await allRules();
   const received = field({ label: '公司收到申訴的日期', type: 'date', value: todayTaipei() });
   const ended = field({ label: '霸凌行為終了日', type: 'date' });
   const left = field({ label: '離職日（還在職就空白）', type: 'date' });
@@ -12,7 +14,7 @@ export async function render(root) {
   function update() {
     outA.replaceChildren(); outB.replaceChildren();
     if (isDate(received.input.value)) {
-      const t = internalTimeline(received.input.value);
+      const t = internalTimeline(received.input.value, rules);
       outA.append(resultRow('完成受理審查', rocDate(t.accept)), resultRow('成立調查小組', rocDate(t.team)),
         resultRow('完成調查報告（必要時可延 1 個月）', `${rocDate(t.report)}（延長至 ${rocDate(t.reportExtended)}）`),
         resultRow('作成決定', rocDate(t.decision)),
@@ -21,7 +23,7 @@ export async function render(root) {
           h('p', { class: 'small' }, '以上時程以企業依《職場霸凌防治措施準則》訂定的常見規範為範例，各公司的規範可能不同，請以公司公開揭示的規範為準。')));
     }
     if (isDate(ended.input.value)) {
-      const d = authorityDeadline({ endedOn: ended.input.value, leftOn: isDate(left.input.value) ? left.input.value : null });
+      const d = authorityDeadline({ endedOn: ended.input.value, leftOn: isDate(left.input.value) ? left.input.value : null }, rules);
       outB.append(resultRow('行為終了起 3 年', rocDate(d.threeYears)));
       if (d.afterLeaving) outB.append(resultRow('離職後 1 年', rocDate(d.afterLeaving)));
       outB.append(resultRow('最晚申訴日', rocDate(d.deadline), true));

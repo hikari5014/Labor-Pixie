@@ -1,5 +1,5 @@
-// K18 統包（包裹式）薪資反推與每月多退少補。純計算，不碰畫面。
-import { ceilMoney, entryOn } from '../format.js';
+// 統包（包裹式）薪資反推與每月多退少補。純計算；倍率、240 小時、每月上限都來自 data/rules/。
+import { ceilMoney, entryOn, ruleOn } from '../format.js';
 
 export const HOUR_KEYS = ['weekday12', 'weekday34', 'rest12', 'rest38', 'rest912'];
 
@@ -25,15 +25,17 @@ export function totalHours(hours) {
 
 /**
  * input: { total, date, hours: {weekday12…}, buffer?, actual?: {weekday12…} }
- * rules: { 'overtime-rates', 'minimum-wage' }
- * 反推：時薪 ＝ 統包總額 ÷（240 ＋ 加權時數）；底薪（含固定津貼）＝ 時薪 × 240，取整數；固定加班費 ＝ 總額 − 底薪。
+ * rules：{ 'overtime-rates', 'minimum-wage', 'wage-basis', 'overtime-limits' }
+ * 反推：時薪 ＝ 統包總額 ÷（每月工時 ＋ 加權時數）；底薪（含固定津貼）＝ 時薪 × 每月工時，取整數；固定加班費 ＝ 總額 − 底薪。
  * 多退少補：當月依實際時數算出的加班費比固定加班費多，就補差額；比較少，固定加班費照付。
  */
 export function packagePay(input, rules) {
-  const rates = ratesFrom(entryOn(rules['overtime-rates'].entries, input.date));
+  const rates = ratesFrom(ruleOn(rules, 'overtime-rates', input.date));
+  const monthHours = ruleOn(rules, 'wage-basis', input.date).hours_per_month;
+  const cap = ruleOn(rules, 'overtime-limits', input.date).monthly_hours;
   const weighted = weightedHours(input.hours, rates) + (Number(input.buffer) || 0);
-  const hourly = input.total / (240 + weighted);
-  const base = Math.floor(hourly * 240 + 1e-9);
+  const hourly = input.total / (monthHours + weighted);
+  const base = Math.floor(hourly * monthHours + 1e-9);
   const fixedOvertime = input.total - base;
   const plannedHours = totalHours(input.hours);
   const wageEntry = entryOn(rules['minimum-wage'].entries, input.date);
@@ -43,7 +45,9 @@ export function packagePay(input, rules) {
     base,
     fixedOvertime,
     plannedHours,
-    hoursOk: plannedHours <= 46,
+    monthHours,
+    cap,
+    hoursOk: plannedHours <= cap,
     minimumWage: wageEntry ? wageEntry.monthly : null,
     minWageOk: wageEntry ? base >= wageEntry.monthly : null,
   };
@@ -51,7 +55,7 @@ export function packagePay(input, rules) {
     const actualWeighted = weightedHours(input.actual, rates);
     const legalOvertime = ceilMoney(hourly * actualWeighted);
     result.actualHours = totalHours(input.actual);
-    result.actualHoursOk = result.actualHours <= 46;
+    result.actualHoursOk = result.actualHours <= cap;
     result.legalOvertime = legalOvertime;
     result.topUp = Math.max(0, legalOvertime - fixedOvertime);
   }

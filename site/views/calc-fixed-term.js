@@ -1,10 +1,11 @@
 import { h, pageHead, field, alertBox, resultRow, formula, lawLink, basis, disclaimer } from '../lib/ui.js';
-import { rule } from '../lib/data.js';
+import { allRules } from '../lib/data.js';
 import { isDate, entryOn, todayTaipei } from '../format.js';
 import { fixedTermCheck } from '../calc/contracts.js';
 
 export async function render(root, params, ctx) {
-  const r = await rule('fixed-term-contracts');
+  const rules = await allRules();
+  const r = rules['fixed-term-contracts'];
   const kinds = entryOn(r.entries, todayTaipei()).kinds;
   const kind = field({ label: '工作性質', type: 'select', value: 'short', options: [...kinds.map((k) => [k.id, `${k.name}工作`]), ['continuous', '繼續性工作（長期需要的職位）']] });
   const aStart = field({ label: '第一份契約開始', type: 'date' });
@@ -24,7 +25,7 @@ export async function render(root, params, ctx) {
     if (aEnd.input.value < aStart.input.value) { out.append(alertBox('crit', '結束日早於開始日')); return; }
     const hasB = isDate(bStart.input.value) && isDate(bEnd.input.value);
     if (hasB && bStart.input.value <= aEnd.input.value) { out.append(alertBox('crit', '第二份契約要在第一份結束之後')); return; }
-    const res = fixedTermCheck({ kind: kind.input.value, a: { start: aStart.input.value, end: aEnd.input.value }, b: hasB ? { start: bStart.input.value, end: bEnd.input.value } : undefined, continued: continued.input.checked }, r);
+    const res = fixedTermCheck({ kind: kind.input.value, a: { start: aStart.input.value, end: aEnd.input.value }, b: hasB ? { start: bStart.input.value, end: bEnd.input.value } : undefined, continued: continued.input.checked }, rules);
     const k = kinds.find((x) => x.id === kind.input.value);
     out.append(resultRow('第一份契約', `${res.daysA} 日`));
     if (hasB) out.append(resultRow('第二份契約', `${res.daysB} 日`), resultRow('前後合計', `${res.totalDays} 日`), resultRow('中間間斷', `${res.gapDays} 日`));

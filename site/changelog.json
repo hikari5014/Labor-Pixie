@@ -1,5 +1,20 @@
 [
   {
+    "version": "1.6.0",
+    "date": "2026-10-16",
+    "title": "計算規則全部改成資料（為離線版做準備）",
+    "changes": [
+      "所有試算器用到的法定數字（加班倍率與時段、每月加班上限、月薪換算 240 小時、資遣費上限、退休條件、舊制退休金基數、病假天數、霸凌申訴期限等）都改成從法規資料讀取；修法時只要更新資料，不用改程式。",
+      "畫面上的說明（特休天數表、預告天數、加班倍率）改成直接從資料產生，不會和實際計算不一致。",
+      "試算結果和上一版完全相同（全部驗證範例重新比對通過）。"
+    ],
+    "technical": [
+      "新增 data/rules/：wage-basis、overtime-limits、severance-rules、retirement-rules、average-wage-rules、sick-leave-rules、bullying-deadlines。",
+      "所有試算函式改為 fn(input, rules)，以 ruleOn() 依日期取有效規則；新增 allRules()。",
+      "新增 tests/compat.test.js：檢查 Chrome 109 相容與不引用外部網址（配合離線版規則）。"
+    ]
+  },
+  {
     "version": "1.5.0",
     "date": "2026-10-16",
     "title": "判決核對與官方試算比對",

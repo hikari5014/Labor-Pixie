@@ -1,10 +1,10 @@
 import { h, pageHead, field, num, alertBox, resultRow, formula, lawLink, basis, disclaimer } from '../lib/ui.js';
-import { rule } from '../lib/data.js';
-import { rocDate, money, todayTaipei, isDate, yearsMonths } from '../format.js';
+import { allRules } from '../lib/data.js';
+import { rocDate, money, todayTaipei, isDate, yearsMonths, ruleOn } from '../format.js';
 import { noticePeriod } from '../calc/severance.js';
 
 export async function render(root, params, ctx) {
-  const r = await rule('notice-period');
+  const rules = await allRules();
   const hire = field({ label: '到職日', type: 'date' });
   const end = field({ label: '契約終止日', type: 'date', value: todayTaipei() });
   const wage = field({ label: '月薪（選填）', unit: '元', min: 0, hint: '要算「沒有預告時要付的預告工資」才填' });
@@ -15,7 +15,7 @@ export async function render(root, params, ctx) {
     const input = { hireDate: hire.input.value, endDate: end.input.value, monthlyWage: num(wage.input) };
     if (!isDate(input.hireDate) || !isDate(input.endDate)) { out.append(alertBox('info', '請填到職日與契約終止日')); return; }
     if (input.endDate < input.hireDate) { out.append(alertBox('crit', '契約終止日早於到職日')); return; }
-    const res = noticePeriod(input, r);
+    const res = noticePeriod(input, rules);
     out.append(resultRow('年資', yearsMonths(res.months)), resultRow('應預告期間', res.days ? `${res.days} 日` : '不用預告', true));
     if (res.days) {
       out.append(
@@ -30,7 +30,7 @@ export async function render(root, params, ctx) {
       h('p', { class: 'small' }, h('a', { href: '#/calc/severance' }, '算資遣費 →')),
       formula([
         '雇主依第 11 條或第 13 條但書終止契約時才要預告；年資算到契約終止日。',
-        '滿 3 個月未滿 1 年：10 日；滿 1 年未滿 3 年：20 日；滿 3 年以上：30 日。',
+        ruleOn(rules, 'notice-period', input.endDate).tiers.map((t) => `滿 ${yearsMonths(t.from_months)}：${t.days} 日`).join('；') + '。',
         '沒有依規定預告就終止契約，要付預告期間的工資：月薪 ÷ 30 × 預告日數，無條件進位到元。',
       ]),
     );

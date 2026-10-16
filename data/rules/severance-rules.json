@@ -1,0 +1,21 @@
+{
+  "id": "severance-rules",
+  "title": "資遣費計算規則",
+  "note": "新制（勞退條例施行後的年資）每滿 1 年 0.5 個月，未滿 1 年依日數 ÷ 30 換算成月按比例，最高 6 個月；舊制每滿 1 年 1 個月，剩餘月數按比例，未滿 1 個月以 1 個月計。",
+  "entries": [
+    {
+      "effective_from": "1984-07-30",
+      "status": "active",
+      "new_system_start": "2005-07-01",
+      "new_months_per_year": 0.5,
+      "new_max_months": 6,
+      "days_per_month": 30,
+      "old_months_per_year": 1,
+      "old_partial_month_counts_as_month": true,
+      "pay_within_days": 30,
+      "source": "勞動基準法第 17 條；勞工退休金條例第 12 條；勞動部〈資遣費給付標準〉",
+      "source_url": "https://www.mol.gov.tw/1607/28162/28296/81778/81793/81935/",
+      "checked_on": "2026-10-16"
+    }
+  ]
+}

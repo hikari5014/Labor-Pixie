@@ -1,12 +1,12 @@
 import { h, pageHead, field, num, alertBox, resultRow, formula, lawLink, basis, disclaimer } from '../lib/ui.js';
-import { rule } from '../lib/data.js';
+import { allRules } from '../lib/data.js';
 import { money, todayTaipei, isDate } from '../format.js';
 import { compLeave } from '../calc/comp-leave.js';
 
 const TYPES = [['weekday', '平日延長工時'], ['rest', '休息日出勤']];
 
 export async function render(root, params, ctx) {
-  const r = await rule('overtime-rates');
+  const rules = await allRules();
   const wage = field({ label: '月薪（含每月固定津貼）', unit: '元', min: 0 });
   const date = field({ label: '計算日', type: 'date', value: todayTaipei() });
   const rows = h('div', { class: 'rows' });
@@ -27,7 +27,7 @@ export async function render(root, params, ctx) {
     out.replaceChildren();
     const w = num(wage.input);
     if (!(w > 0) || !isDate(date.input.value)) { out.append(alertBox('info', '請填月薪')); return; }
-    const res = compLeave({ date: date.input.value, monthlyWage: w, days: [...rows.children].map((x) => x.read()) }, r);
+    const res = compLeave({ date: date.input.value, monthlyWage: w, days: [...rows.children].map((x) => x.read()) }, rules);
     out.append(resultRow('可補休時數合計', `${res.compHours} 小時`), resultRow('還沒補休的時數', `${res.unusedHours} 小時`),
       resultRow('到期或離職沒休完要折發', `${money(res.payout)} 元`, true),
       formula([

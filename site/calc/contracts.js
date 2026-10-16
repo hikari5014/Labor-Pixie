@@ -1,13 +1,12 @@
-// 定期契約檢查、試用期時程。純計算，不碰畫面。
-import { addDays, anniversary, daysBetween, entryOn } from '../format.js';
+// 定期契約檢查、試用期時程。純計算；期限都來自 data/rules/。
+import { addDays, anniversary, daysBetween, ruleOn } from '../format.js';
 
 /**
- * 定期契約檢查。input: { kind, a: {start, end}, b?: {start, end}, continued? }
+ * 定期契約檢查。input: { kind, a: {start, end}, b?: {start, end}, continued? }；rules：{ 'fixed-term-contracts' }
  * continued：期滿後勞工繼續工作、雇主沒有立刻反對。
- * 回傳 是否視為不定期契約、年資是否合併、期限是否超過。
  */
-export function fixedTermCheck(input, rule) {
-  const entry = entryOn(rule.entries, input.a.start);
+export function fixedTermCheck(input, rules) {
+  const entry = ruleOn(rules, 'fixed-term-contracts', input.a.start);
   const kind = entry.kinds.find((k) => k.id === input.kind);
   const daysA = daysBetween(input.a.start, input.a.end) + 1;
   const after = addDays(input.a.end, 1);
@@ -34,12 +33,14 @@ export function fixedTermCheck(input, rule) {
 }
 
 /**
- * 試用期時程。input: { hireDate, probationDays }
- * 年資算到最後工作日（兩天都算）：最後工作日落在 completesThreeMonths 當天或之後，就已滿 3 個月，終止要預告 10 日。
+ * 試用期時程。input: { hireDate, probationDays }；rules：{ 'notice-period' }（第一級：滿幾個月要預告幾日）
+ * 年資算到最後工作日（兩天都算）：最後工作日落在 completesThreeMonths 當天或之後，就要預告。
+ * 內部確認時點（期滿前 20 日、10 日）是建議做法，不是法定期限。
  */
-export function probationPlan(input) {
+export function probationPlan(input, rules) {
+  const first = ruleOn(rules, 'notice-period', input.hireDate).tiers[0];
   const end = addDays(input.hireDate, input.probationDays - 1);
-  const completesThreeMonths = addDays(anniversary(input.hireDate, 3), -1);
+  const completesThreeMonths = addDays(anniversary(input.hireDate, first.from_months), -1);
   const check1 = addDays(end, -20);
   const check2 = addDays(end, -10);
   const endsAfterThreeMonths = end >= completesThreeMonths;
@@ -47,10 +48,10 @@ export function probationPlan(input) {
     end,
     completesThreeMonths,
     lastNoNotice: addDays(completesThreeMonths, -1),
+    noticeDays: first.days,
     check1: check1 > input.hireDate ? check1 : null,
     check2: check2 > input.hireDate ? check2 : null,
     endsAfterThreeMonths,
-    // 試用期滿才終止、而且已滿 3 個月時，最晚要在這天預告
-    noticeBy: endsAfterThreeMonths ? addDays(end, -10) : null,
+    noticeBy: endsAfterThreeMonths ? addDays(end, -first.days) : null,
   };
 }
