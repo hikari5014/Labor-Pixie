@@ -33,7 +33,7 @@ export async function render(root, params) {
   input.addEventListener('input', draw);
   root.append(
     h('div', { class: 'page-head' },
-      h('a', { class: 'back', href: '#/laws' }, '← 看法條'),
+      h('a', { class: 'back', href: '#/laws' }, '返回看法條'),
       h('h1', { class: 'page-head__title' }, l.name),
       h('p', { class: 'page-head__sub' }, `${l.level}・最後修正 ${rocDate(l.modified_on)}・`, h('a', { href: l.url, target: '_blank', rel: 'noopener' }, '全國法規資料庫原文')),
       l.abandon_note ? h('p', { class: 'alert alert--crit' }, `本法規已廢止：${l.abandon_note}`) : null),

@@ -21,7 +21,7 @@ export async function render(root, params, ctx) {
   const calcs = t.calcs.map((id) => CALCULATORS.find((c) => c.id === id)).filter(Boolean);
   root.append(...[
     h('div', { class: 'page-head' },
-      h('a', { class: 'back', href: '#/topics' }, '← 查爭議'),
+      h('a', { class: 'back', href: '#/topics' }, '返回查爭議'),
       h('h1', { class: 'page-head__title' }, t.question),
       h('p', { class: 'page-head__sub' }, t.title)),
     h('section', { class: 'panel' }, h('h2', { class: 'section-title' }, '白話說明'), bullets(t.summary)),

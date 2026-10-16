@@ -17,7 +17,7 @@ export async function render(root, params, ctx) {
   const siblings = all.filter((x) => x.category.id === category.id && x.case.id !== c.id);
   root.append(...[
     h('div', { class: 'page-head' },
-      h('a', { class: 'back', href: '#/cases' }, '← 看案例'),
+      h('a', { class: 'back', href: '#/cases' }, '返回看案例'),
       h('h1', { class: 'page-head__title' }, c.title),
       h('p', { class: 'page-head__sub' }, h('span', { class: 'pill' }, '課堂情境（改寫）'), ' ', category.title)),
     h('section', { class: 'panel case' },

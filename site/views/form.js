@@ -28,7 +28,7 @@ export async function render(root, params) {
   inputs.forEach(({ input }) => input.addEventListener('input', draw));
   root.append(
     h('div', { class: 'page-head' },
-      h('a', { class: 'back', href: '#/forms' }, '← 表單範本'),
+      h('a', { class: 'back', href: '#/forms' }, '返回表單範本'),
       h('h1', { class: 'page-head__title' }, form.title),
       h('p', { class: 'page-head__sub' }, form.purpose)),
     h('div', { class: 'calc' },

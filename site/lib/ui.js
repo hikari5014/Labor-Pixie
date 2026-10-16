@@ -20,7 +20,7 @@ export function h(tag, attrs = {}, ...children) {
 /** 頁首：標題＋說明 */
 export function pageHead(title, sub) {
   return h('div', { class: 'page-head' },
-    h('a', { class: 'back', href: '#/' }, '← 首頁'),
+    h('a', { class: 'back', href: '#/' }, '返回首頁'),
     h('h1', { class: 'page-head__title' }, title),
     sub && h('p', { class: 'page-head__sub' }, sub));
 }
