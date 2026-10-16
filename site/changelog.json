@@ -1,5 +1,23 @@
 [
   {
+    "version": "1.17.0",
+    "date": "2026-10-16",
+    "title": "休假月曆",
+    "changes": [
+      "新增「休假月曆」：一次看一整年 12 個月的國定假日、補假、例假日與休息日，可以前後翻年度；點任何一天看這天的規定（例假日能不能上班、國定假日工資怎麼算）。",
+      "可以設定公司的例假日、休息日是星期幾（不一定是週日、週六），月曆跟著變；國定假日落在例假日或休息日時會提醒要補假。",
+      "可以列印成一張 A4 橫式年曆。",
+      "每天自動到政府資料開放平台檢查人事行政總處的辦公日曆表，新年度公布或舊年度修正時自動更新；內容不合理（天數、星期、假日名稱不對）就不更新，並發出警告。",
+      "115、116 年的資料補上落在週末的國定假日（例：和平紀念日、國慶日）。"
+    ],
+    "technical": [
+      "新增 scripts/fetch_calendar.py（data.gov.tw 資料集 14718，每年取最新修正版，含內容檢查與合併）與 tests/test_calendar_fetch.py（10 組，含 116 年官方 CSV）。",
+      "holiday-calendar 每年加 weekend_holidays、workdays 欄位；days 維持週一到週五的放假日（連續病假試算不受影響）。",
+      "新增 site/lib/holiday-calendar.js、site/views/calendar.js 與 tests/holiday-calendar.test.js；列印用 @page 具名頁面（A4 橫式）。",
+      "data.yml 每天加跑行事曆抓取。"
+    ]
+  },
+  {
     "version": "1.16.0",
     "date": "2026-10-16",
     "title": "新的畫面設計",

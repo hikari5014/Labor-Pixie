@@ -75,7 +75,34 @@
       ],
       "source": "人事行政總處〈115 年政府行政機關辦公日曆表〉附表 3",
       "source_url": "https://www.dgpa.gov.tw/FileConversion?filename=dgpa%2Ffiles%2F202506%2F105f965b-c3e3-49e8-9e67-dadedccb2052.pdf&name=%E9%99%84%E8%A1%A83.pdf&nfix=",
-      "checked_on": "2026-10-16"
+      "checked_on": "2026-10-16",
+      "weekend_holidays": [
+        {
+          "date": "2026-02-15",
+          "name": "小年夜"
+        },
+        {
+          "date": "2026-02-28",
+          "name": "和平紀念日"
+        },
+        {
+          "date": "2026-04-04",
+          "name": "兒童節"
+        },
+        {
+          "date": "2026-04-05",
+          "name": "清明節"
+        },
+        {
+          "date": "2026-10-10",
+          "name": "國慶日"
+        },
+        {
+          "date": "2026-10-25",
+          "name": "臺灣光復暨金門古寧頭大捷紀念日"
+        }
+      ],
+      "workdays": []
     },
     {
       "effective_from": "2027-01-01",
@@ -153,7 +180,38 @@
       ],
       "source": "人事行政總處〈116 年政府行政機關辦公日曆表〉附表 1、2",
       "source_url": "https://www.dgpa.gov.tw/information?pid=12983&uid=82",
-      "checked_on": "2026-10-16"
+      "checked_on": "2026-10-16",
+      "weekend_holidays": [
+        {
+          "date": "2027-02-06",
+          "name": "春節"
+        },
+        {
+          "date": "2027-02-07",
+          "name": "春節"
+        },
+        {
+          "date": "2027-02-28",
+          "name": "和平紀念日"
+        },
+        {
+          "date": "2027-04-04",
+          "name": "兒童節"
+        },
+        {
+          "date": "2027-05-01",
+          "name": "勞動節"
+        },
+        {
+          "date": "2027-10-10",
+          "name": "國慶日"
+        },
+        {
+          "date": "2027-12-25",
+          "name": "行憲紀念日"
+        }
+      ],
+      "workdays": []
     }
   ]
 }

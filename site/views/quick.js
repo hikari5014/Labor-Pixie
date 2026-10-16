@@ -32,7 +32,8 @@ export async function render(root) {
       lawLink('D0020095', '4', '紀念日及節日實施條例')),
     thisYear ? h('section', { class: 'panel' }, h('h2', { class: 'section-title' }, `${Number(today.slice(0, 4)) - 1911} 年週一到週五的國定假日與補假`),
       table(thisYear.days.map((d) => [rocDate(d.date), `星期${WEEK[new Date(Date.parse(d.date)).getUTCDay()]}`, d.name])),
-      h('p', { class: 'small muted' }, '依人事行政總處辦公日曆表；勞工的補假日期可由勞雇雙方協商。')) : null,
+      h('p', { class: 'small muted' }, '依人事行政總處辦公日曆表；勞工的補假日期可由勞雇雙方協商。'),
+      h('p', { class: 'small' }, h('a', { href: '#/calendar' }, '看整年的休假月曆 →'))) : null,
     h('section', { class: 'panel' }, h('h2', { class: 'section-title' }, '其他假別'),
       table([['婚假', `${mar.days} 日，工資照給（${rocDate(mar.effective_from)} 起）`, lawLink('N0030006', '2', '勞工請假規則第 2 條')]])),
   ].filter(Boolean));

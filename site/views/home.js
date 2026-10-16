@@ -46,6 +46,7 @@ export function render(root, params, ctx) {
       lawsTile,
       tile('看案例', '#/cases', '41 個常見情境：怎麼看、怎麼做'),
       tile('速查表', '#/quick', '常用數字、期限、國定假日'),
+      tile('休假月曆', '#/calendar', '每年的國定假日、例假日、休息日'),
       tile('表單範本', '#/forms', '加班確認表、特休遞延、減班協議…')),
     h('section', { class: 'panel' }, h('h2', { class: 'section-title' }, '目前最低工資'), wage, wageNext),
     h('section', { class: 'panel' },
