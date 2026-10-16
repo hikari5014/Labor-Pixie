@@ -1,0 +1,189 @@
+{
+  "id": "injury-death",
+  "title": "職災死亡補償",
+  "source": "勞動基準法第 59 條第 4 款；勞工職業災害保險及保護法第 51、90 條",
+  "cases": [
+    {
+      "name": "已依法投保、投保薪資等於平均工資：雇主不用另付",
+      "input": {
+        "averageWage": 45800,
+        "insuredSalary": 45800,
+        "insured": true
+      },
+      "expected": {
+        "basis": 0,
+        "funeral": 0,
+        "death": 0,
+        "employerTotal": 0,
+        "fullWithoutInsurance": 2061000,
+        "insFuneral": 229000,
+        "insSurvivorLump": 1832000,
+        "insSurvivorAnnuity": 22900
+      }
+    },
+    {
+      "name": "已投保、投保薪資低於平均工資：雇主付差額 45 個月",
+      "input": {
+        "averageWage": 60000,
+        "insuredSalary": 45800,
+        "insured": true
+      },
+      "expected": {
+        "basis": 14200,
+        "funeral": 71000,
+        "death": 568000,
+        "employerTotal": 639000,
+        "fullWithoutInsurance": 2700000,
+        "insFuneral": 229000,
+        "insSurvivorLump": 1832000,
+        "insSurvivorAnnuity": 22900
+      }
+    },
+    {
+      "name": "沒有投保：雇主全額 45 個月",
+      "input": {
+        "averageWage": 40000,
+        "insuredSalary": 0,
+        "insured": false
+      },
+      "expected": {
+        "basis": 40000,
+        "funeral": 200000,
+        "death": 1600000,
+        "employerTotal": 1800000,
+        "fullWithoutInsurance": 1800000,
+        "insFuneral": 0,
+        "insSurvivorLump": 0,
+        "insSurvivorAnnuity": 0
+      }
+    },
+    {
+      "name": "有投保但未經核定為職災：雇主全額",
+      "input": {
+        "averageWage": 40000,
+        "insuredSalary": 40100,
+        "insured": false
+      },
+      "expected": {
+        "basis": 40000,
+        "funeral": 200000,
+        "death": 1600000,
+        "employerTotal": 1800000,
+        "fullWithoutInsurance": 1800000,
+        "insFuneral": 0,
+        "insSurvivorLump": 0,
+        "insSurvivorAnnuity": 0
+      }
+    },
+    {
+      "name": "平均工資有小數",
+      "input": {
+        "averageWage": 38765.43,
+        "insuredSalary": 36300,
+        "insured": true
+      },
+      "expected": {
+        "basis": 2465.4300000000003,
+        "funeral": 12328,
+        "death": 98618,
+        "employerTotal": 110946,
+        "fullWithoutInsurance": 1744446,
+        "insFuneral": 181500,
+        "insSurvivorLump": 1452000,
+        "insSurvivorAnnuity": 18150
+      }
+    },
+    {
+      "name": "投保薪資高於平均工資：雇主差額為 0",
+      "input": {
+        "averageWage": 30000,
+        "insuredSalary": 31800,
+        "insured": true
+      },
+      "expected": {
+        "basis": 0,
+        "funeral": 0,
+        "death": 0,
+        "employerTotal": 0,
+        "fullWithoutInsurance": 1350000,
+        "insFuneral": 159000,
+        "insSurvivorLump": 1272000,
+        "insSurvivorAnnuity": 15900
+      }
+    },
+    {
+      "name": "高薪：投保薪資最高 72,800",
+      "input": {
+        "averageWage": 120000,
+        "insuredSalary": 72800,
+        "insured": true
+      },
+      "expected": {
+        "basis": 47200,
+        "funeral": 236000,
+        "death": 1888000,
+        "employerTotal": 2124000,
+        "fullWithoutInsurance": 5400000,
+        "insFuneral": 364000,
+        "insSurvivorLump": 2912000,
+        "insSurvivorAnnuity": 36400
+      }
+    },
+    {
+      "name": "沒有遺屬：只有喪葬費，保險喪葬津貼 10 個月",
+      "input": {
+        "averageWage": 50000,
+        "insuredSalary": 45800,
+        "insured": true,
+        "hasSurvivors": false
+      },
+      "expected": {
+        "basis": 4200,
+        "funeral": 21000,
+        "death": 0,
+        "employerTotal": 21000,
+        "fullWithoutInsurance": 2250000,
+        "insFuneral": 458000,
+        "insSurvivorLump": 0,
+        "insSurvivorAnnuity": 0
+      }
+    },
+    {
+      "name": "最低工資",
+      "input": {
+        "averageWage": 29500,
+        "insuredSalary": 29500,
+        "insured": true
+      },
+      "expected": {
+        "basis": 0,
+        "funeral": 0,
+        "death": 0,
+        "employerTotal": 0,
+        "fullWithoutInsurance": 1327500,
+        "insFuneral": 147500,
+        "insSurvivorLump": 1180000,
+        "insSurvivorAnnuity": 14750
+      }
+    },
+    {
+      "name": "沒有投保、沒有遺屬",
+      "input": {
+        "averageWage": 35000,
+        "insuredSalary": 0,
+        "insured": false,
+        "hasSurvivors": false
+      },
+      "expected": {
+        "basis": 35000,
+        "funeral": 175000,
+        "death": 0,
+        "employerTotal": 175000,
+        "fullWithoutInsurance": 1575000,
+        "insFuneral": 0,
+        "insSurvivorLump": 0,
+        "insSurvivorAnnuity": 0
+      }
+    }
+  ]
+}

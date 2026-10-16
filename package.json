@@ -1,6 +1,6 @@
 {
   "name": "labor-pixie",
-  "version": "1.11.1",
+  "version": "1.12.0",
   "private": true,
   "type": "module",
   "description": "勞資小精靈：勞動法規查詢與試算 PWA",

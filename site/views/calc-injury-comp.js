@@ -23,7 +23,7 @@ export async function render(root, params, ctx) {
       resultRow('　其中 70% 給付', `${res.reducedDays} 日`),
       resultRow('雇主要補的差額', `${money(res.topUp)} 元`, true),
     );
-    if (!(num(insured.input) > 0)) out.append(alertBox('crit', '沒有投保', '雇主未依法投保時，保險不給付的部分全部由雇主負擔，另有罰鍰。'));
+    if (!(num(insured.input) > 0)) out.append(alertBox('crit', '沒有投保', '雇主未依法投保時，原領工資補償全部由雇主負擔；勞保局先發給勞工的保險給付，也會向公司追繳，另有罰鍰。'));
     else if (res.topUp > 0) out.append(alertBox('warn', `保險給付不夠，雇主要補 ${money(res.topUp)} 元`, '常見原因：前 3 日保險不給付、投保薪資低於實際薪資、第 3 個月起只給 70%。'));
     else out.append(alertBox('good', '保險給付已足夠抵充', '雇主不用另外補差額。'));
     if (res.overMax) out.append(alertBox('warn', '已超過 2 年', `醫療滿 2 年仍未痊癒、經認定喪失原有工作能力，又不合失能給付標準時，雇主可以一次給付 ${res.lumpSumMonths} 個月平均工資，免除之後的工資補償責任。`));

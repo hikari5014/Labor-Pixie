@@ -14,6 +14,7 @@ import { employmentCost } from '../site/calc/employment-cost.js';
 import { sickPeriod } from '../site/calc/sick-period.js';
 import { pensionProjection } from '../site/calc/pension-new.js';
 import { injuryCompensation } from '../site/calc/injury-comp.js';
+import { deathCompensation } from '../site/calc/injury-death.js';
 
 export const CALC_FUNCTIONS = {
   'annual-leave': annualLeave,
@@ -34,4 +35,5 @@ export const CALC_FUNCTIONS = {
   'sick-period': sickPeriod,
   'pension-new': pensionProjection,
   'injury-comp': injuryCompensation,
+  'injury-death': deathCompensation,
 };

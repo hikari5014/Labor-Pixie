@@ -20,4 +20,5 @@ export const CALCULATORS = [
   { id: 'sick-period', title: '連續請病假的天數', summary: '扣掉例假與國定假日，算出真正算病假的天數' },
   { id: 'pension-new', title: '勞退新制專戶推估', summary: '推估退休時個人專戶的本金與收益' },
   { id: 'injury-comp', title: '職災醫療期間工資補償', summary: '雇主補償、保險傷病給付與要補的差額' },
+  { id: 'injury-death', title: '職災死亡補償', summary: '喪葬費、死亡補償與職災保險遺屬給付' },
 ];

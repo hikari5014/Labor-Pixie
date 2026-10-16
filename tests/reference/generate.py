@@ -652,9 +652,40 @@ def injury_cases():
     return {"id": "injury-comp", "title": "職災醫療期間工資補償", "source": "勞動基準法第 59 條；勞工職業災害保險及保護法第 42 條", "cases": out}
 
 
+# ---- 職災死亡補償（勞基法第 59 條第 4 款；職災保險法第 51、90 條） ----
+def injury_death(avg, ins_salary, insured, survivors=True):
+    sal = ins_salary if insured else 0
+    basis = max(0, avg - sal)
+    funeral = ceil_money(basis * 5)
+    death = ceil_money(basis * 40) if survivors else 0
+    return {"basis": basis, "funeral": funeral, "death": death, "employerTotal": funeral + death,
+            "fullWithoutInsurance": ceil_money(avg * 5) + ceil_money(avg * 40),
+            "insFuneral": _r(sal * (5 if survivors else 10)), "insSurvivorLump": _r(sal * 40) if survivors else 0,
+            "insSurvivorAnnuity": _r(sal * 0.5) if survivors else 0}
+
+
+def injury_death_cases():
+    out = []
+
+    def add(name, inp):
+        out.append(case(name, inp, injury_death(inp["averageWage"], inp["insuredSalary"], inp["insured"], inp.get("hasSurvivors", True))))
+
+    add("已依法投保、投保薪資等於平均工資：雇主不用另付", {"averageWage": 45800, "insuredSalary": 45800, "insured": True})
+    add("已投保、投保薪資低於平均工資：雇主付差額 45 個月", {"averageWage": 60000, "insuredSalary": 45800, "insured": True})
+    add("沒有投保：雇主全額 45 個月", {"averageWage": 40000, "insuredSalary": 0, "insured": False})
+    add("有投保但未經核定為職災：雇主全額", {"averageWage": 40000, "insuredSalary": 40100, "insured": False})
+    add("平均工資有小數", {"averageWage": 38765.43, "insuredSalary": 36300, "insured": True})
+    add("投保薪資高於平均工資：雇主差額為 0", {"averageWage": 30000, "insuredSalary": 31800, "insured": True})
+    add("高薪：投保薪資最高 72,800", {"averageWage": 120000, "insuredSalary": 72800, "insured": True})
+    add("沒有遺屬：只有喪葬費，保險喪葬津貼 10 個月", {"averageWage": 50000, "insuredSalary": 45800, "insured": True, "hasSurvivors": False})
+    add("最低工資", {"averageWage": 29500, "insuredSalary": 29500, "insured": True})
+    add("沒有投保、沒有遺屬", {"averageWage": 35000, "insuredSalary": 0, "insured": False, "hasSurvivors": False})
+    return {"id": "injury-death", "title": "職災死亡補償", "source": "勞動基準法第 59 條第 4 款；勞工職業災害保險及保護法第 51、90 條", "cases": out}
+
+
 GENERATORS = {"package-pay": package_cases, "severance": severance_cases, "average-wage": average_cases, "notice-period": notice_cases, "overtime": overtime_cases, "fixed-term": fixed_term_cases, "probation": probation_cases, "sick-leave": leave_cases, "comp-leave": comp_cases, "hourly-holiday": hourly_cases,
               "old-pension": pension_cases, "bullying-deadline": bullying_cases, "employment-cost": cost_cases, "sick-period": sick_period_cases, "pension-new": pension_new_cases,
-              "injury-comp": injury_cases}
+              "injury-comp": injury_cases, "injury-death": injury_death_cases}
 
 if __name__ == "__main__":
     for name, gen in GENERATORS.items():
