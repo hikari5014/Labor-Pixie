@@ -4,7 +4,7 @@ from pathlib import Path
 
 from PIL import Image, ImageDraw
 
-ACCENT = (45, 79, 158)
+ACCENT = (2, 84, 166)
 OUT = Path(__file__).resolve().parent.parent / "site" / "icons"
 
 
@@ -29,7 +29,7 @@ def draw(size, scale):
 
 
 SVG = """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-<rect width="100" height="100" fill="#2d4f9e"/>
+<rect width="100" height="100" fill="#0254A6"/>
 <polygon fill="#fff" points="{a}"/>
 <polygon fill="#fff" points="{b}"/>
 </svg>

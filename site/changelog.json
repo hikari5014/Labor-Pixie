@@ -1,5 +1,21 @@
 [
   {
+    "version": "1.16.0",
+    "date": "2026-10-16",
+    "title": "新的畫面設計",
+    "changes": [
+      "全站換上新的畫面設計：象牙白底、品牌藍、標題改用宋體，金額大字改用英文襯線字體，畫面更好讀。",
+      "按鈕改成圓角膠囊形，可以按的卡片滑過會微微浮起；提示框改成淡底細框。",
+      "新增深色主題：手機或電腦設成深色模式時，自動換成午夜藍。表單範本仍維持白紙黑字，方便列印。",
+      "App 圖示換成新的品牌藍。"
+    ],
+    "technical": [
+      "site/style.css 改用新設計系統的色彩、字體、間距與圓角，class 名稱不變；加入 prefers-color-scheme 深色主題與 prefers-reduced-motion。",
+      "新增 site/fonts/：Playfair Display 700、JetBrains Mono 400／500（latin 子集，OFL 授權，來自 fontsource 5.1.0），已加入離線快取。",
+      "index.html 加 theme-color（淺／深）與英文小標；manifest 與 App 圖示改用新品牌藍。"
+    ]
+  },
+  {
     "version": "1.15.0",
     "date": "2026-10-16",
     "title": "職災失能補償",

@@ -1,6 +1,6 @@
 // 離線快取：網站外殼先用快取；data/ 先上網拿最新，沒網路才用快取。
 // 安裝時把網站檔案（SHELL）和 data/meta.json 列出的所有資料檔一起存下來，離線也能用每個功能。
-const VERSION = '1.15.0';
+const VERSION = '1.16.0';
 const CACHE = `labor-pixie-${VERSION}`;
 const SHELL = [
   './',
@@ -15,6 +15,11 @@ const SHELL = [
   'icons/icon-192.png',
   'icons/icon-512.png',
   'icons/icon-maskable-512.png',
+  'fonts/playfair-display-latin-700-normal.woff2',
+  'fonts/jetbrains-mono-latin-400-normal.woff2',
+  'fonts/jetbrains-mono-latin-500-normal.woff2',
+  'fonts/OFL-playfair-display.txt',
+  'fonts/OFL-jetbrains-mono.txt',
   'lib/ui.js',
   'lib/data.js',
   'calc/registry.js',
