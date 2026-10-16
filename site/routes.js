@@ -33,4 +33,5 @@ export const ROUTES = [
   { prefix: '/check/', title: '檢查清單', load: () => import('./views/checklist.js') },
   { path: '/forms', title: '表單範本', load: () => import('./views/forms.js') },
   { prefix: '/forms/', title: '表單範本', load: () => import('./views/form.js') },
+  { path: '/calc/employment-cost', title: '用人總成本', load: () => import('./views/calc-employment-cost.js') },
 ];

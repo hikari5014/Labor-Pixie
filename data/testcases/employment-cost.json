@@ -1,0 +1,366 @@
+{
+  "id": "employment-cost",
+  "title": "用人總成本",
+  "source": "勞保局、健保署 115 年分級表與保費公式",
+  "cases": [
+    {
+      "name": "勞保局官方試算：月薪 29,500、職災費率 0.21%",
+      "input": {
+        "salary": 29500,
+        "occupationalRate": 0.0021
+      },
+      "expected": {
+        "grades": {
+          "labor": 29500,
+          "occupational": 29500,
+          "health": 29500,
+          "pension": 29500
+        },
+        "employer": {
+          "labor": 2375,
+          "employment": 207,
+          "occupational": 62,
+          "health": 1428,
+          "pension": 1770,
+          "arrears": 7
+        },
+        "employerTotal": 5849,
+        "totalCost": 35349,
+        "employee": {
+          "labor": 679,
+          "employment": 59,
+          "health": 458,
+          "pension": 0
+        },
+        "employeeTotal": 1196,
+        "takeHome": 28304
+      },
+      "note": "勞保局試算結果：單位負擔勞保 2,375、職災 62、就保 207；個人負擔勞保 679、就保 59"
+    },
+    {
+      "name": "月薪 40,000：級距 40,100",
+      "input": {
+        "salary": 40000
+      },
+      "expected": {
+        "grades": {
+          "labor": 40100,
+          "occupational": 40100,
+          "health": 40100,
+          "pension": 40100
+        },
+        "employer": {
+          "labor": 3228,
+          "employment": 281,
+          "occupational": 84,
+          "health": 1940,
+          "pension": 2406,
+          "arrears": 10
+        },
+        "employerTotal": 7949,
+        "totalCost": 47949,
+        "employee": {
+          "labor": 922,
+          "employment": 80,
+          "health": 622,
+          "pension": 0
+        },
+        "employeeTotal": 1624,
+        "takeHome": 38376
+      }
+    },
+    {
+      "name": "月薪 36,000，員工有 2 名健保眷屬",
+      "input": {
+        "salary": 36000,
+        "dependents": 2
+      },
+      "expected": {
+        "grades": {
+          "labor": 36300,
+          "occupational": 36300,
+          "health": 36300,
+          "pension": 36300
+        },
+        "employer": {
+          "labor": 2922,
+          "employment": 254,
+          "occupational": 76,
+          "health": 1757,
+          "pension": 2178,
+          "arrears": 9
+        },
+        "employerTotal": 7196,
+        "totalCost": 43196,
+        "employee": {
+          "labor": 835,
+          "employment": 73,
+          "health": 1689,
+          "pension": 0
+        },
+        "employeeTotal": 2597,
+        "takeHome": 33403
+      }
+    },
+    {
+      "name": "月薪 50,000：勞保到最高級 45,800，職災 50,600",
+      "input": {
+        "salary": 50000
+      },
+      "expected": {
+        "grades": {
+          "labor": 45800,
+          "occupational": 50600,
+          "health": 50600,
+          "pension": 50600
+        },
+        "employer": {
+          "labor": 3687,
+          "employment": 321,
+          "occupational": 106,
+          "health": 2449,
+          "pension": 3036,
+          "arrears": 11
+        },
+        "employerTotal": 9610,
+        "totalCost": 59610,
+        "employee": {
+          "labor": 1053,
+          "employment": 92,
+          "health": 785,
+          "pension": 0
+        },
+        "employeeTotal": 1930,
+        "takeHome": 48070
+      }
+    },
+    {
+      "name": "月薪 80,000：職災最高 72,800",
+      "input": {
+        "salary": 80000
+      },
+      "expected": {
+        "grades": {
+          "labor": 45800,
+          "occupational": 72800,
+          "health": 80200,
+          "pension": 80200
+        },
+        "employer": {
+          "labor": 3687,
+          "employment": 321,
+          "occupational": 153,
+          "health": 3881,
+          "pension": 4812,
+          "arrears": 11
+        },
+        "employerTotal": 12865,
+        "totalCost": 92865,
+        "employee": {
+          "labor": 1053,
+          "employment": 92,
+          "health": 1244,
+          "pension": 0
+        },
+        "employeeTotal": 2389,
+        "takeHome": 77611
+      }
+    },
+    {
+      "name": "月薪 160,000：勞退最高 150,000、健保 162,800",
+      "input": {
+        "salary": 160000
+      },
+      "expected": {
+        "grades": {
+          "labor": 45800,
+          "occupational": 72800,
+          "health": 162800,
+          "pension": 150000
+        },
+        "employer": {
+          "labor": 3687,
+          "employment": 321,
+          "occupational": 153,
+          "health": 7878,
+          "pension": 9000,
+          "arrears": 11
+        },
+        "employerTotal": 21050,
+        "totalCost": 181050,
+        "employee": {
+          "labor": 1053,
+          "employment": 92,
+          "health": 2525,
+          "pension": 0
+        },
+        "employeeTotal": 3670,
+        "takeHome": 156330
+      }
+    },
+    {
+      "name": "月薪 350,000：健保最高 313,000",
+      "input": {
+        "salary": 350000
+      },
+      "expected": {
+        "grades": {
+          "labor": 45800,
+          "occupational": 72800,
+          "health": 313000,
+          "pension": 150000
+        },
+        "employer": {
+          "labor": 3687,
+          "employment": 321,
+          "occupational": 153,
+          "health": 15146,
+          "pension": 9000,
+          "arrears": 11
+        },
+        "employerTotal": 28318,
+        "totalCost": 378318,
+        "employee": {
+          "labor": 1053,
+          "employment": 92,
+          "health": 4855,
+          "pension": 0
+        },
+        "employeeTotal": 6000,
+        "takeHome": 344000
+      }
+    },
+    {
+      "name": "員工自願提繳勞退 6%",
+      "input": {
+        "salary": 45000,
+        "voluntaryRate": 0.06
+      },
+      "expected": {
+        "grades": {
+          "labor": 45800,
+          "occupational": 45800,
+          "health": 45800,
+          "pension": 45800
+        },
+        "employer": {
+          "labor": 3687,
+          "employment": 321,
+          "occupational": 96,
+          "health": 2216,
+          "pension": 2748,
+          "arrears": 11
+        },
+        "employerTotal": 9079,
+        "totalCost": 54079,
+        "employee": {
+          "labor": 1053,
+          "employment": 92,
+          "health": 710,
+          "pension": 2748
+        },
+        "employeeTotal": 4603,
+        "takeHome": 40397
+      }
+    },
+    {
+      "name": "雇主多提繳勞退 8%",
+      "input": {
+        "salary": 45000,
+        "pensionRate": 0.08
+      },
+      "expected": {
+        "grades": {
+          "labor": 45800,
+          "occupational": 45800,
+          "health": 45800,
+          "pension": 45800
+        },
+        "employer": {
+          "labor": 3687,
+          "employment": 321,
+          "occupational": 96,
+          "health": 2216,
+          "pension": 3664,
+          "arrears": 11
+        },
+        "employerTotal": 9995,
+        "totalCost": 54995,
+        "employee": {
+          "labor": 1053,
+          "employment": 92,
+          "health": 710,
+          "pension": 0
+        },
+        "employeeTotal": 1855,
+        "takeHome": 43145
+      }
+    },
+    {
+      "name": "職災費率較高的行業 0.57%",
+      "input": {
+        "salary": 42000,
+        "occupationalRate": 0.0057
+      },
+      "expected": {
+        "grades": {
+          "labor": 42000,
+          "occupational": 42000,
+          "health": 42000,
+          "pension": 42000
+        },
+        "employer": {
+          "labor": 3381,
+          "employment": 294,
+          "occupational": 239,
+          "health": 2032,
+          "pension": 2520,
+          "arrears": 11
+        },
+        "employerTotal": 8477,
+        "totalCost": 50477,
+        "employee": {
+          "labor": 966,
+          "employment": 84,
+          "health": 651,
+          "pension": 0
+        },
+        "employeeTotal": 1701,
+        "takeHome": 40299
+      }
+    },
+    {
+      "name": "健保眷屬 5 人以 3 人計",
+      "input": {
+        "salary": 33000,
+        "dependents": 5
+      },
+      "expected": {
+        "grades": {
+          "labor": 33300,
+          "occupational": 33300,
+          "health": 33300,
+          "pension": 33300
+        },
+        "employer": {
+          "labor": 2681,
+          "employment": 233,
+          "occupational": 70,
+          "health": 1611,
+          "pension": 1998,
+          "arrears": 8
+        },
+        "employerTotal": 6601,
+        "totalCost": 39601,
+        "employee": {
+          "labor": 766,
+          "employment": 67,
+          "health": 2064,
+          "pension": 0
+        },
+        "employeeTotal": 2897,
+        "takeHome": 30103
+      }
+    }
+  ]
+}

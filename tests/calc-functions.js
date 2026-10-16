@@ -10,6 +10,7 @@ import { compLeave } from '../site/calc/comp-leave.js';
 import { hourlyHoliday } from '../site/calc/hourly-holiday.js';
 import { oldPension } from '../site/calc/pension.js';
 import { authorityDeadline } from '../site/calc/bullying.js';
+import { employmentCost } from '../site/calc/employment-cost.js';
 
 export const CALC_FUNCTIONS = {
   'annual-leave': annualLeave,
@@ -26,4 +27,5 @@ export const CALC_FUNCTIONS = {
   'hourly-holiday': hourlyHoliday,
   'old-pension': oldPension,
   'bullying-deadline': authorityDeadline,
+  'employment-cost': employmentCost,
 };

@@ -495,8 +495,50 @@ def bullying_cases():
     return {"id": "bullying-deadline", "title": "職場霸凌向主管機關申訴期限", "source": "職業安全衛生法第 22-3 條", "cases": out}
 
 
+# ---- 用人總成本（勞保局與健保署公式；各項四捨五入） ----
+def _r(x):
+    import decimal
+    return int(decimal.Decimal(str(round(x, 6))).quantize(decimal.Decimal("1"), rounding=decimal.ROUND_HALF_UP))
+
+
+def employment_cost(salary, occ=None, deps=0, vol=0, prate=0):
+    rule = __import__("json").loads((Path(__file__).resolve().parents[2] / "data" / "rules" / "social-insurance.json").read_text())["entries"][0]
+    g = lambda grades: next((x for x in grades if x >= salary), grades[-1])
+    li, oi, hi, lp = g(rule["labor_insurance"]["grades"]), g(rule["occupational_insurance"]["grades"]), g(rule["health_insurance"]["grades"]), g(rule["labor_pension"]["grades"])
+    occ = occ or 0.0021
+    emp = {"labor": _r(li * 0.115 * 0.7), "employment": _r(li * 0.01 * 0.7), "occupational": _r(oi * occ),
+           "health": _r(hi * 0.0517 * 0.6 * 1.56), "pension": _r(lp * max(0.06, prate)), "arrears": _r(li * 0.00025)}
+    ee = {"labor": _r(li * 0.115 * 0.2), "employment": _r(li * 0.01 * 0.2), "health": _r(hi * 0.0517 * 0.3) * (1 + min(3, deps)),
+          "pension": _r(lp * min(0.06, vol))}
+    return {"grades": {"labor": li, "occupational": oi, "health": hi, "pension": lp}, "employer": emp,
+            "employerTotal": sum(emp.values()), "totalCost": salary + sum(emp.values()), "employee": ee,
+            "employeeTotal": sum(ee.values()), "takeHome": salary - sum(ee.values())}
+
+
+def cost_cases():
+    out = []
+
+    def add(name, inp, note=None):
+        out.append(case(name, inp, employment_cost(inp["salary"], inp.get("occupationalRate"), inp.get("dependents", 0),
+                                                   inp.get("voluntaryRate", 0), inp.get("pensionRate", 0)), note))
+
+    add("勞保局官方試算：月薪 29,500、職災費率 0.21%", {"salary": 29500, "occupationalRate": 0.0021},
+        "勞保局試算結果：單位負擔勞保 2,375、職災 62、就保 207；個人負擔勞保 679、就保 59")
+    add("月薪 40,000：級距 40,100", {"salary": 40000})
+    add("月薪 36,000，員工有 2 名健保眷屬", {"salary": 36000, "dependents": 2})
+    add("月薪 50,000：勞保到最高級 45,800，職災 50,600", {"salary": 50000})
+    add("月薪 80,000：職災最高 72,800", {"salary": 80000})
+    add("月薪 160,000：勞退最高 150,000、健保 162,800", {"salary": 160000})
+    add("月薪 350,000：健保最高 313,000", {"salary": 350000})
+    add("員工自願提繳勞退 6%", {"salary": 45000, "voluntaryRate": 0.06})
+    add("雇主多提繳勞退 8%", {"salary": 45000, "pensionRate": 0.08})
+    add("職災費率較高的行業 0.57%", {"salary": 42000, "occupationalRate": 0.0057})
+    add("健保眷屬 5 人以 3 人計", {"salary": 33000, "dependents": 5})
+    return {"id": "employment-cost", "title": "用人總成本", "source": "勞保局、健保署 115 年分級表與保費公式", "cases": out}
+
+
 GENERATORS = {"package-pay": package_cases, "severance": severance_cases, "average-wage": average_cases, "notice-period": notice_cases, "overtime": overtime_cases, "fixed-term": fixed_term_cases, "probation": probation_cases, "sick-leave": leave_cases, "comp-leave": comp_cases, "hourly-holiday": hourly_cases,
-              "old-pension": pension_cases, "bullying-deadline": bullying_cases}
+              "old-pension": pension_cases, "bullying-deadline": bullying_cases, "employment-cost": cost_cases}
 
 if __name__ == "__main__":
     for name, gen in GENERATORS.items():

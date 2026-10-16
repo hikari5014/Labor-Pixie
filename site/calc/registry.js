@@ -16,4 +16,5 @@ export const CALCULATORS = [
   { id: 'old-pension', title: '舊制退休金基數', summary: '2005/7/1 前年資的退休金，最高 45 個基數' },
   { id: 'bullying', title: '職場霸凌申訴期限', summary: '公司內部時程與向主管機關申訴的最晚日期' },
   { id: 'contract-check', title: '勞動契約條款檢查', summary: '一份契約逐項對照有沒有寫、寫得清不清楚' },
+  { id: 'employment-cost', title: '用人總成本', summary: '月薪之外公司要負擔的勞健保、勞退等，以及員工自付保費' },
 ];
