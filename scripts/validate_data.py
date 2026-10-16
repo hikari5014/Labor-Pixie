@@ -195,6 +195,10 @@ def validate(data_dir=DATA):
             found = check_form(obj, path.stem)
         elif rel.startswith("topics/"):
             found = check_topic(obj, path.stem)
+        elif rel == "status.json":
+            found = [] if isinstance(obj.get("problems"), list) and isinstance(obj.get("summary"), dict) else ["要有 problems 清單與 summary"]
+        elif rel == "update-log.json":
+            found = [] if isinstance(obj.get("entries"), list) and isinstance(obj.get("tracked"), dict) else ["要有 entries 清單與 tracked"]
         elif rel.startswith("testcases/"):
             found = check_testcases(obj, path.stem)
         else:

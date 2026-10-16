@@ -1,6 +1,7 @@
 # 每天台灣時間凌晨 3:00 抓法規與政府行事曆；有變動就存檔推上（Vercel 會自動上線）。
 # 資料版本還沒有對應的發行版時，匯出法規資料包放到 GitHub「Releases」頁。
-# 抓取失敗時這個流程會亮紅燈，GitHub 會寄信通知；網站繼續用舊資料。
+# 抓取失敗時這個流程會亮紅燈，GitHub 會寄信通知；網站繼續用舊資料，並在「資料更新紀錄」顯示警告。
+# 每天都會更新 data/status.json（檢查時間與結果），所以每天會有一筆「每日資料檢查」存檔。
 name: 法規資料更新
 on:
   schedule:
@@ -22,25 +23,47 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      # 法條、行事曆各自抓；其中一項失敗也繼續，把結果寫進 data/status.json（App 會顯示警告）
       - name: 抓法規
+        id: laws
         if: github.event_name != 'push'
-        run: python scripts/fetch_laws.py
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          python scripts/fetch_laws.py 2>&1 | tee "$RUNNER_TEMP/laws.log"
       - name: 抓行事曆
+        id: calendar
         if: github.event_name != 'push'
-        run: python scripts/fetch_calendar.py
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          python scripts/fetch_calendar.py 2>&1 | tee "$RUNNER_TEMP/calendar.log"
+      - name: 寫入檢查結果
+        id: status
+        if: github.event_name != 'push'
+        continue-on-error: true
+        run: >
+          python scripts/write_status.py
+          --laws "${{ steps.laws.outcome }}" --calendar "${{ steps.calendar.outcome }}"
+          --laws-log "$RUNNER_TEMP/laws.log" --calendar-log "$RUNNER_TEMP/calendar.log"
       - name: 檢查格式
         run: python scripts/validate_data.py
-      - name: 有變動就存檔推上
+      - name: 存檔推上
         if: github.event_name != 'push'
         run: |
           if [ -n "$(git status --porcelain data)" ]; then
             git config user.name "labor-pixie-bot"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            if [ -z "$(git status --porcelain data | grep -v ' data/status.json$')" ]; then
+              MSG="每日資料檢查：$(TZ=Asia/Taipei date +%F)"
+            else
+              MSG="法規資料更新：$(python -c "import json;print(json.load(open('data/meta.json'))['data_version'])")"
+            fi
             git add data
-            git commit -m "法規資料更新：$(python -c "import json;print(json.load(open('data/meta.json'))['data_version'])")"
+            git commit -m "$MSG"
             git push
           else
-            echo "法規沒有變動"
+            echo "資料沒有變動"
           fi
       - name: 產生資料包並發行
         env:
@@ -66,3 +89,8 @@ jobs:
       - name: 檢查規則表有沒有過期
         # 有過期的規則表時這一步亮紅燈並寄信；放在最後，不影響上面的法規更新與資料包
         run: python scripts/check_freshness.py
+      - name: 法條或行事曆抓取失敗就亮紅燈
+        if: steps.status.outcome == 'failure'
+        run: |
+          echo "法條或行事曆沒有更新成功，原因已寫入 data/status.json，請到 App 的「資料更新紀錄」或上面的步驟查看。"
+          exit 1

@@ -41,4 +41,5 @@ export const ROUTES = [
   { path: '/calc/injury-disability', title: '職災失能補償', load: () => import('./views/calc-injury-disability.js') },
   { path: '/calendar', title: '休假月曆', load: () => import('./views/calendar.js') },
   { prefix: '/calendar/', title: '休假月曆', load: () => import('./views/calendar.js') },
+  { path: '/updates', title: '資料更新紀錄', load: () => import('./views/updates.js') },
 ];

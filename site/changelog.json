@@ -1,5 +1,22 @@
 [
   {
+    "version": "1.18.0",
+    "date": "2026-10-16",
+    "title": "資料更新紀錄與警告",
+    "changes": [
+      "新增「資料更新紀錄」頁（頁尾也有連結）：最上面的健康狀態看板，一眼看出法條、計算規則、休假行事曆、自動更新是不是都正常。",
+      "每一部法規的最新修正日、每張計算規則表的查證日與待生效數字都列出來，可以確認是不是最新的。",
+      "所有更新紀錄（哪一天、哪一部法條或規則表改了什麼）依時間排列，可以篩選法條、計算規則、行事曆。",
+      "自動更新失敗、超過 3 天沒有檢查、規則表過期或待生效的數字到期沒核定時，首頁最上面會跳出警告，按一下就看得到原因與建議做法。"
+    ],
+    "technical": [
+      "新增 data/status.json（每天的檢查結果、摘要與問題）與 data/update-log.json（更新紀錄與規則表檢查碼），scripts/statuslib.py、scripts/write_status.py。",
+      "fetch_laws.py、fetch_calendar.py 有變動時寫入紀錄；refresh_meta.py 會發現人工修改的規則表並記錄。",
+      "data.yml：法條、行事曆其中一項失敗也會寫入狀態檔再亮紅燈；每天會有一筆「每日資料檢查」存檔。",
+      "新增 site/lib/health.js、site/views/updates.js 與測試（tests/health.test.js、tests/test_status.py）。"
+    ]
+  },
+  {
     "version": "1.17.0",
     "date": "2026-10-16",
     "title": "休假月曆",

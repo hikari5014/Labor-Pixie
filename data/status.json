@@ -1,0 +1,211 @@
+{
+  "checked_at": "",
+  "checks": {},
+  "problems": [],
+  "summary": {
+    "laws": [
+      {
+        "id": "commemoration-days-and-holidays-act",
+        "name": "紀念日及節日實施條例",
+        "modified_on": "2025-05-28"
+      },
+      {
+        "id": "employment-insurance-act",
+        "name": "就業保險法",
+        "modified_on": "2022-01-12"
+      },
+      {
+        "id": "employment-service-act",
+        "name": "就業服務法",
+        "modified_on": "2025-01-20"
+      },
+      {
+        "id": "gender-equality-in-employment-act",
+        "name": "性別平等工作法",
+        "modified_on": "2023-08-16"
+      },
+      {
+        "id": "labor-incident-act",
+        "name": "勞動事件法",
+        "modified_on": "2023-12-15"
+      },
+      {
+        "id": "labor-pension-act",
+        "name": "勞工退休金條例",
+        "modified_on": "2019-05-15"
+      },
+      {
+        "id": "labor-standards-act-enforcement-rules",
+        "name": "勞動基準法施行細則",
+        "modified_on": "2024-03-27"
+      },
+      {
+        "id": "labor-standards-act",
+        "name": "勞動基準法",
+        "modified_on": "2024-07-31"
+      },
+      {
+        "id": "leave-rules",
+        "name": "勞工請假規則",
+        "modified_on": "2026-09-30"
+      },
+      {
+        "id": "middle-aged-and-elderly-employment-act",
+        "name": "中高齡者及高齡者就業促進法",
+        "modified_on": "2024-07-31"
+      },
+      {
+        "id": "minimum-wage-act",
+        "name": "最低工資法",
+        "modified_on": "2023-12-27"
+      },
+      {
+        "id": "occupational-accident-insurance-act",
+        "name": "勞工職業災害保險及保護法",
+        "modified_on": "2021-04-30"
+      },
+      {
+        "id": "occupational-safety-and-health-act",
+        "name": "職業安全衛生法",
+        "modified_on": "2025-12-19"
+      }
+    ],
+    "rules": [
+      {
+        "id": "annual-leave",
+        "title": "特別休假天數",
+        "checked_on": "2026-10-15",
+        "effective_from": "2017-01-01",
+        "pending": []
+      },
+      {
+        "id": "average-wage-rules",
+        "title": "平均工資計算規則",
+        "checked_on": "2026-10-16",
+        "effective_from": "1984-07-30",
+        "pending": []
+      },
+      {
+        "id": "bullying-deadlines",
+        "title": "職場霸凌申訴期限",
+        "checked_on": "2026-10-16",
+        "effective_from": "2026-07-01",
+        "pending": []
+      },
+      {
+        "id": "fixed-term-contracts",
+        "title": "定期契約的種類與期限",
+        "checked_on": "2026-10-15",
+        "effective_from": "2019-05-15",
+        "pending": []
+      },
+      {
+        "id": "injury-compensation",
+        "title": "職災醫療期間的工資補償",
+        "checked_on": "2026-10-16",
+        "effective_from": "2022-05-01",
+        "pending": []
+      },
+      {
+        "id": "key-numbers",
+        "title": "重要數字速查",
+        "checked_on": "2026-10-16",
+        "effective_from": "2026-10-16",
+        "pending": []
+      },
+      {
+        "id": "marriage-leave",
+        "title": "婚假",
+        "checked_on": "2026-10-15",
+        "effective_from": "2026-10-01",
+        "pending": []
+      },
+      {
+        "id": "minimum-wage",
+        "title": "最低工資（月薪、時薪）",
+        "checked_on": "2026-10-15",
+        "effective_from": "2026-01-01",
+        "pending": [
+          "2027-01-01"
+        ]
+      },
+      {
+        "id": "national-holidays",
+        "title": "勞工國定假日",
+        "checked_on": "2026-10-15",
+        "effective_from": "2025-05-28",
+        "pending": []
+      },
+      {
+        "id": "notice-period",
+        "title": "資遣預告期間",
+        "checked_on": "2026-10-15",
+        "effective_from": "1984-07-30",
+        "pending": []
+      },
+      {
+        "id": "overtime-limits",
+        "title": "延長工時上限",
+        "checked_on": "2026-10-16",
+        "effective_from": "2018-03-01",
+        "pending": []
+      },
+      {
+        "id": "overtime-rates",
+        "title": "加班費倍率（月薪制）",
+        "checked_on": "2026-10-15",
+        "effective_from": "2018-03-01",
+        "pending": []
+      },
+      {
+        "id": "retirement-rules",
+        "title": "退休條件與舊制退休金",
+        "checked_on": "2026-10-16",
+        "effective_from": "1984-07-30",
+        "pending": []
+      },
+      {
+        "id": "separation-obligations",
+        "title": "離職時雇主的四件事",
+        "checked_on": "2026-10-15",
+        "effective_from": "2026-10-15",
+        "pending": []
+      },
+      {
+        "id": "severance-rules",
+        "title": "資遣費計算規則",
+        "checked_on": "2026-10-16",
+        "effective_from": "1984-07-30",
+        "pending": []
+      },
+      {
+        "id": "sick-leave-rules",
+        "title": "病假工資與全勤",
+        "checked_on": "2026-10-16",
+        "effective_from": "2026-01-01",
+        "pending": []
+      },
+      {
+        "id": "social-insurance",
+        "title": "勞保、就保、職災保險、健保、勞退與墊償基金",
+        "checked_on": "2026-10-16",
+        "effective_from": "2026-01-01",
+        "pending": []
+      },
+      {
+        "id": "wage-basis",
+        "title": "月薪換算基準",
+        "checked_on": "2026-10-16",
+        "effective_from": "1984-07-30",
+        "pending": []
+      }
+    ],
+    "calendar": {
+      "years": [
+        2026,
+        2027
+      ],
+      "checked_on": "2026-10-16"
+    }
+  }
+}

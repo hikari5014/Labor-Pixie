@@ -13,6 +13,7 @@ import time
 import urllib.request
 import zipfile
 
+import statuslib
 from datalib import DATA, refresh_meta, write_json
 
 SOURCES = {
@@ -103,7 +104,19 @@ def main():
             raise ValueError(f"{item['id']} 沒有任何條文，可能是官方格式改了")
         results.append(law)
 
+    before = {}
+    for law in results:
+        path = DATA / "laws" / f"{law['id']}.json"
+        before[law["id"]] = json.loads(path.read_text(encoding="utf-8"))["modified_on"] if path.is_file() else None
     changed = [law["id"] for law in results if write_json(DATA / "laws" / f"{law['id']}.json", law)]
+    for law in results:
+        if law["id"] not in changed:
+            continue
+        old = before[law["id"]]
+        roc = lambda iso: f"{int(iso[:4]) - 1911}.{iso[5:7]}.{iso[8:10]}"
+        text = (f"首次收錄（最新修正 {roc(law['modified_on'])}）" if old is None
+                else f"修正（{roc(old)} → {roc(law['modified_on'])}）" if old != law["modified_on"] else "條文內容更新（修正日期未變）")
+        statuslib.log_update("laws", law["name"], text)
     if changed:
         meta = refresh_meta(bump=True)
         print("有更新：", "、".join(changed), "→ 資料版本", meta["data_version"])

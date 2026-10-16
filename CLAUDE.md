@@ -20,7 +20,9 @@
 - 法規資料只放 `data/`，只能是 `.json`，檔名小寫連字號。
 - `data/rules/` 每一筆都要有 `effective_from`、`status`（active／pending／repealed）、`source`、`source_url`（法條或主管機關）、`checked_on`。數字改了＝新增一筆，不覆蓋舊的。
 - `scripts/check_freshness.py` 每天在 `data.yml` 檢查規則表是否過期（查證日超過一年、pending 已到生效日、缺今年或明年的國定假日）；亮紅燈時照訊息更新 `data/rules/`。
-- 人工改 `data/` 後執行 `python3 scripts/refresh_meta.py`（更新檔案清單、資料版本改成當天；只想更新清單加 `--keep`）。
+- 國定假日行事曆由 `scripts/fetch_calendar.py` 每天從政府資料開放平台（人事行政總處辦公日曆表）自動更新，不要手改 `holiday-calendar.json` 的日期；內容檢查不通過時不更新並亮紅燈。
+- `data/status.json`（每天的檢查結果與摘要）、`data/update-log.json`（更新紀錄）由程式寫入，不要手改；App 的「資料更新紀錄」頁與首頁警告讀它們。
+- 人工改 `data/` 後執行 `python3 scripts/refresh_meta.py`（更新檔案清單、資料版本改成當天、把改過的規則表記進更新紀錄；只想更新清單加 `--keep`）。
 - 法院或主管機關見解不一的題目，兩派並列附出處，不寫成確定答案。
 - 加班倍率一律 1.34／1.67／2.67（法定是「以上」，往上取；不用 1.33）。
 - 資料包格式改版：`format_version` 加 1，同步改 `scripts/verify_bundle.py` 與說明文件。

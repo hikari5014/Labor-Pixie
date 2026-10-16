@@ -1,5 +1,6 @@
-import { h } from '../lib/ui.js';
-import { rule, meta } from '../lib/data.js';
+import { h, alertBox } from '../lib/ui.js';
+import { rule, meta, getJSON } from '../lib/data.js';
+import { assess } from '../lib/health.js';
 import { rocDate, money, todayTaipei, entryOn, nextEntry } from '../format.js';
 
 const intro = {
@@ -35,7 +36,9 @@ export function render(root, params, ctx) {
   const searchBox = h('form', { class: 'home-search', role: 'search', onsubmit: (e) => { e.preventDefault(); location.hash = `#/search/${encodeURIComponent(q.value.trim())}`; } },
     q, h('button', { type: 'submit', class: 'btn' }, '搜尋'));
 
+  const healthBox = h('div', { class: 'home-health', 'aria-live': 'polite' });
   root.append(
+    healthBox,
     searchBox,
     seg,
     h('p', { class: 'muted' }, intro[role]),
@@ -56,6 +59,15 @@ export function render(root, params, ctx) {
       h('p', { class: 'small muted' }, '法規每天自動和全國法規資料庫比對，有修法才會更新日期。'),
       ctx.updateButton()),
   );
+
+  // 資料過期或自動更新失敗時，在最上面提醒
+  getJSON('data/status.json').catch(() => null).then((status) => {
+    const health = assess(status);
+    if (health.level === 'ok') return;
+    const first = health.items.find((i) => i.level === health.level);
+    healthBox.append(h('a', { class: 'home-health__link', href: '#/updates' },
+      alertBox(health.level, health.level === 'crit' ? `資料可能不是最新的：${first.title}` : `資料提醒：${first.title}`, `${first.text} 按這裡看資料更新紀錄。`)));
+  });
 
   const today = todayTaipei();
   meta().then((m) => {

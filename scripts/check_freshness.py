@@ -7,6 +7,7 @@
 3. 國定假日行事曆：要有今年；10 月起還要有明年（人事行政總處通常年中公布）。
 """
 import sys
+from pathlib import Path
 from datetime import date, datetime, timedelta, timezone
 
 from datalib import DATA, read_json
@@ -34,8 +35,8 @@ def problems(rules, today):
     return out
 
 
-def load_rules():
-    return {p.stem: read_json(p) for p in sorted((DATA / "rules").glob("*.json"))}
+def load_rules(data_dir=DATA):
+    return {p.stem: read_json(p) for p in sorted((Path(data_dir) / "rules").glob("*.json"))}
 
 
 def main(argv):

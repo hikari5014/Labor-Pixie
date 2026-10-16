@@ -13,6 +13,7 @@ import time
 import urllib.request
 from datetime import date, datetime
 
+import statuslib
 from datalib import DATA, TAIPEI, read_json, refresh_meta, write_json
 
 DATASET_API = "https://data.gov.tw/api/v2/rest/dataset/14718"
@@ -176,6 +177,9 @@ def main():
     today = datetime.now(TAIPEI).date().isoformat()
     rule, changes = merge(read_json(path), parsed, today)
     if changes and write_json(path, rule):
+        kinds = {"新增": "新增（政府公布新年度）", "修正": "政府修正，已改用新版", "補充": "補上週末國定假日與補行上班資料"}
+        for y, kind in changes:
+            statuslib.log_update("calendar", f"{y - 1911} 年辦公日曆表", kinds[kind], path="rules/holiday-calendar.json")
         meta = refresh_meta(bump=True)
         print("行事曆有更新：", "、".join(f"{y} 年{kind}" for y, kind in changes), "→ 資料版本", meta["data_version"])
     else:

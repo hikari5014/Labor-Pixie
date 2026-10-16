@@ -51,6 +51,7 @@
     "rules/sick-leave-rules.json",
     "rules/social-insurance.json",
     "rules/wage-basis.json",
+    "status.json",
     "testcases/annual-leave.json",
     "testcases/average-wage.json",
     "testcases/bullying-deadline.json",
@@ -94,6 +95,7 @@
     "topics/wage-definition.json",
     "topics/worker-status.json",
     "topics/workplace-bullying.json",
-    "topics/year-end-bonus.json"
+    "topics/year-end-bonus.json",
+    "update-log.json"
   ]
 }

@@ -14,6 +14,9 @@
 | `data/topics/<id>.json` | 爭議主題卡 |
 | `data/checklists/<id>.json` | 檢查清單（公司體檢） |
 | `data/interpretations/`、`faq/` | 函釋、主管機關問答（之後才加） |
+| `data/rules/holiday-calendar.json` | 每年的國定假日與補假：`days`（週一到週五的放假日）、`weekend_holidays`（落在週末的國定假日）、`workdays`（公務機關補行上班）；由 `scripts/fetch_calendar.py` 自動抓 |
+| `data/status.json` | 最近一次自動檢查的結果（`checked_at`、`checks.laws`／`checks.calendar` 的 `ok`、`message`、`last_success`）、`problems`（過期或待確認的規則）、`summary`（法規修正日、規則表查證日、行事曆年度）；程式寫入 |
+| `data/update-log.json` | `entries`：更新紀錄（`date`、`category`＝laws／rules／calendar／system、`item`、`summary`，最新在前）；`tracked`：規則表檢查碼；程式寫入 |
 
 規則：
 - 只能放 `.json`，檔名只用小寫英文、數字、連字號（例 `minimum-wage.json`）。

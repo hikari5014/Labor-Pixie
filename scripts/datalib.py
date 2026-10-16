@@ -48,9 +48,13 @@ def listed_files(data_dir=DATA):
 
 
 def refresh_meta(bump=False, data_dir=DATA):
-    """更新 meta.json 的檔案清單；bump=True 時把資料版本改成今天（台灣日期）。回傳 meta。"""
+    """更新 meta.json 的檔案清單、更新紀錄與狀態摘要；bump=True 時把資料版本改成今天（台灣日期）。回傳 meta。"""
+    import statuslib  # 延後載入，避免互相引用
+
     path = Path(data_dir) / "meta.json"
     meta = read_json(path)
+    statuslib.track_rule_changes(data_dir)  # 人工改過的規則表記進更新紀錄
+    statuslib.write_status(data_dir)  # 更新 App 看板用的摘要與問題清單
     meta["files"] = listed_files(data_dir)
     if bump:
         meta["data_version"] = datetime.now(TAIPEI).date().isoformat()

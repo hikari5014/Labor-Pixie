@@ -1,0 +1,31 @@
+{
+  "entries": [
+    {
+      "date": "2026-10-16",
+      "category": "system",
+      "item": "開始記錄",
+      "summary": "從這天起記錄資料更新。起始狀態：13 部法規、18 張計算規則表、政府行事曆。"
+    }
+  ],
+  "tracked": {
+    "rules/annual-leave.json": "255b43fb387fb32b222e14abf4a7754498389e7e888c9e3eb694a4d2806cfde9",
+    "rules/average-wage-rules.json": "49fd8c751c739d63020a9a7619055cb8dcb88889a3f44e7306435e2af4741256",
+    "rules/bullying-deadlines.json": "6c9e88ab77b0b9e1e22452529360294f5339947dfbcabdf8cc216ef9ab13084f",
+    "rules/fixed-term-contracts.json": "9957e37864b484157026f1aeca367e0944ad3dd8618d868c2e85776cd98eb5ef",
+    "rules/holiday-calendar.json": "eee018dcb2366838c78a53997d8216500aae94ed83ee7bf1dca13b76d247833a",
+    "rules/injury-compensation.json": "2fa8479fb5dc81b20a3c11382d041dd9beb20c90091ce6940bb61f929204340c",
+    "rules/key-numbers.json": "5b1b7aa5d265c8b97a67a4b0583db8e6251500a995fb2a57e593675ca709758a",
+    "rules/marriage-leave.json": "9419176aa7fedbaa80de97d3613dc630417bc706fceb7976cbcfb39c728cc582",
+    "rules/minimum-wage.json": "4cd9b668cf95b9c2da3c3ac57e244ed275318f710da3dbc7f63c67260d623240",
+    "rules/national-holidays.json": "9809f23ecf3c7ef84325387667d70d1475a764f2ae52ae8d9f0c425276d8502f",
+    "rules/notice-period.json": "e2e40de64392df65dd02789dc4d3214de2a715ba48f76860cc6ac91f45ea2c23",
+    "rules/overtime-limits.json": "5355949f39cfa7fb3b97e5db1b0a1d176c154c0ff132d60bc24d732d8141b6d4",
+    "rules/overtime-rates.json": "c1d953bf7616ea7435be426f9831a2146e976c30992df78beda5c6467f4c83ba",
+    "rules/retirement-rules.json": "a7c7ca6b8008e4763e1341f53a77bbd9d4256578610b4482dde520c4862c4424",
+    "rules/separation-obligations.json": "9ff0501bd4ccf95d8fae5f30451e883459d6f906f57b0a5207ef2a46a52ade2e",
+    "rules/severance-rules.json": "82a5d75c0e4bf88c594d9f30c11b22bdd46fbe77112ed7ca9dad2530fd9645c7",
+    "rules/sick-leave-rules.json": "5baef434de9f7f92f5b4da3e9e5b9f3cca7e20f6874d9c6073aac2f151274b3f",
+    "rules/social-insurance.json": "91876be13a060b48f8495415b30d0561f634f7f8d04d052b8340f501a504dde5",
+    "rules/wage-basis.json": "7b8dd3c52dda250aabf7b2488da1ec3fc513d9e0267d9756f493392768174dd3"
+  }
+}
