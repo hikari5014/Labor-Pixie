@@ -60,3 +60,6 @@ jobs:
             --target "$(git rev-parse HEAD)" \
             --title "法規資料包 $VERSION" \
             --notes "勞資小精靈法規資料包（完整快照）。下載 .zip 與 .zip.sha256，用 scripts/verify_bundle.py 驗證後再匯入。"
+      - name: 檢查規則表有沒有過期
+        # 有過期的規則表時這一步亮紅燈並寄信；放在最後，不影響上面的法規更新與資料包
+        run: python scripts/check_freshness.py

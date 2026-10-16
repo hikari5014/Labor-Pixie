@@ -1,5 +1,17 @@
 [
   {
+    "version": "1.14.0",
+    "date": "2026-10-16",
+    "title": "規則表過期自動檢查",
+    "changes": [
+      "每天自動檢查計算用的規則（最低工資、投保級距、國定假日等）有沒有過期：超過一年沒重新查證、尚未核定的新數字已到生效日、缺今年或明年的國定假日，都會在 GitHub 亮紅燈並寄信通知維護者，避免試算用到舊數字。"
+    ],
+    "technical": [
+      "新增 scripts/check_freshness.py 與 tests/test_freshness.py；data.yml 最後一步執行。",
+      "更新 README、docs/roadmap.md、CLAUDE.md。"
+    ]
+  },
+  {
     "version": "1.13.0",
     "date": "2026-10-16",
     "title": "勞資會議與外籍勞工主題卡",
