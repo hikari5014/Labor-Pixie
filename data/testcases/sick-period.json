@@ -1,0 +1,171 @@
+{
+  "id": "sick-period",
+  "title": "連續請病假的天數",
+  "source": "勞工請假規則第 4 條；內政部台內勞字第 315405 號函；人事行政總處辦公日曆表",
+  "cases": [
+    {
+      "name": "上課例子：115 年 10 月整月請病假",
+      "input": {
+        "start": "2026-10-01",
+        "end": "2026-10-31",
+        "monthlyWage": 36000
+      },
+      "expected": {
+        "calendarDays": 31,
+        "sickDays": 20,
+        "offDays": 11,
+        "halfPayDays": 20,
+        "unpaidDays": 0,
+        "longLeave": false,
+        "wageDeduction": 12000
+      },
+      "note": "週六日 9 天＋國慶日補假 10/9、光復節補假 10/26，非工作日 11 天，病假 20 天"
+    },
+    {
+      "name": "春節前後連續請病假",
+      "input": {
+        "start": "2026-02-09",
+        "end": "2026-02-27"
+      },
+      "expected": {
+        "calendarDays": 19,
+        "sickDays": 9,
+        "offDays": 10,
+        "halfPayDays": 9,
+        "unpaidDays": 0,
+        "longLeave": false
+      }
+    },
+    {
+      "name": "一週病假（週一到週五）",
+      "input": {
+        "start": "2026-03-02",
+        "end": "2026-03-06",
+        "monthlyWage": 30000
+      },
+      "expected": {
+        "calendarDays": 5,
+        "sickDays": 5,
+        "offDays": 0,
+        "halfPayDays": 5,
+        "unpaidDays": 0,
+        "longLeave": false,
+        "wageDeduction": 2500
+      }
+    },
+    {
+      "name": "跨週末：週四到下週二",
+      "input": {
+        "start": "2026-03-05",
+        "end": "2026-03-10"
+      },
+      "expected": {
+        "calendarDays": 6,
+        "sickDays": 4,
+        "offDays": 2,
+        "halfPayDays": 4,
+        "unpaidDays": 0,
+        "longLeave": false
+      }
+    },
+    {
+      "name": "連續超過 30 日：之後的例假也算病假",
+      "input": {
+        "start": "2026-03-02",
+        "end": "2026-05-15",
+        "monthlyWage": 40000
+      },
+      "expected": {
+        "calendarDays": 75,
+        "sickDays": 61,
+        "offDays": 14,
+        "halfPayDays": 30,
+        "unpaidDays": 31,
+        "longLeave": true,
+        "wageDeduction": 61333
+      }
+    },
+    {
+      "name": "今年已請 25 日，再連請 10 個工作日",
+      "input": {
+        "start": "2026-06-01",
+        "end": "2026-06-12",
+        "usedThisYear": 25,
+        "monthlyWage": 32000
+      },
+      "expected": {
+        "calendarDays": 12,
+        "sickDays": 10,
+        "offDays": 2,
+        "halfPayDays": 5,
+        "unpaidDays": 5,
+        "longLeave": false,
+        "wageDeduction": 8000
+      }
+    },
+    {
+      "name": "排班是週日、週一休",
+      "input": {
+        "start": "2026-03-01",
+        "end": "2026-03-14",
+        "restWeekdays": [
+          0,
+          1
+        ]
+      },
+      "expected": {
+        "calendarDays": 14,
+        "sickDays": 10,
+        "offDays": 4,
+        "halfPayDays": 10,
+        "unpaidDays": 0,
+        "longLeave": false
+      }
+    },
+    {
+      "name": "116 年春節期間",
+      "input": {
+        "start": "2027-02-01",
+        "end": "2027-02-12"
+      },
+      "expected": {
+        "calendarDays": 12,
+        "sickDays": 5,
+        "offDays": 7,
+        "halfPayDays": 5,
+        "unpaidDays": 0,
+        "longLeave": false
+      }
+    },
+    {
+      "name": "跨年：115/12/28 到 116/1/8",
+      "input": {
+        "start": "2026-12-28",
+        "end": "2027-01-08"
+      },
+      "expected": {
+        "calendarDays": 12,
+        "sickDays": 9,
+        "offDays": 3,
+        "halfPayDays": 9,
+        "unpaidDays": 0,
+        "longLeave": false
+      }
+    },
+    {
+      "name": "只請週末不上班的日子：都不算病假",
+      "input": {
+        "start": "2026-03-07",
+        "end": "2026-03-08"
+      },
+      "expected": {
+        "calendarDays": 2,
+        "sickDays": 0,
+        "offDays": 2,
+        "halfPayDays": 0,
+        "unpaidDays": 0,
+        "longLeave": false
+      }
+    }
+  ]
+}

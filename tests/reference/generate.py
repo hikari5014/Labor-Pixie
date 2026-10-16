@@ -537,8 +537,56 @@ def cost_cases():
     return {"id": "employment-cost", "title": "用人總成本", "source": "勞保局、健保署 115 年分級表與保費公式", "cases": out}
 
 
+# ---- 連續請病假一段期間 ----
+def sick_period(start, end, rest=(0, 6), used=0, wage=None):
+    cal = __import__("json").loads((Path(__file__).resolve().parents[2] / "data" / "rules" / "holiday-calendar.json").read_text())
+    hol = {x["date"] for e in cal["entries"] for x in e["days"]}
+    sick = off = 0
+    d = D(start)
+    while d <= D(end):
+        wd = (d.weekday() + 1) % 7  # Python 星期一＝0 → 改成星期日＝0
+        if (wd in rest or d.isoformat() in hol) and sick < 30:
+            off += 1
+        else:
+            sick += 1
+        d += dt.timedelta(1)
+    half = min(sick, max(0, 30 - used))
+    r = {"calendarDays": off + sick, "sickDays": sick, "offDays": off, "halfPayDays": half, "unpaidDays": sick - half, "longLeave": sick > 30}
+    if wage:
+        daily = wage / 30
+        r["wageDeduction"] = math.floor(round((daily * 0.5 * half + daily * (sick - half)) * 1e6) / 1e6)
+    return r
+
+
+def sick_period_cases():
+    out = []
+
+    def add(name, start, end, rest=None, used=0, wage=None, note=None):
+        inp = {"start": start, "end": end}
+        if rest is not None:
+            inp["restWeekdays"] = list(rest)
+        if used:
+            inp["usedThisYear"] = used
+        if wage:
+            inp["monthlyWage"] = wage
+        out.append(case(name, inp, sick_period(start, end, tuple(rest) if rest is not None else (0, 6), used, wage), note))
+
+    add("上課例子：115 年 10 月整月請病假", "2026-10-01", "2026-10-31", wage=36000,
+        note="週六日 9 天＋國慶日補假 10/9、光復節補假 10/26，非工作日 11 天，病假 20 天")
+    add("春節前後連續請病假", "2026-02-09", "2026-02-27")
+    add("一週病假（週一到週五）", "2026-03-02", "2026-03-06", wage=30000)
+    add("跨週末：週四到下週二", "2026-03-05", "2026-03-10")
+    add("連續超過 30 日：之後的例假也算病假", "2026-03-02", "2026-05-15", wage=40000)
+    add("今年已請 25 日，再連請 10 個工作日", "2026-06-01", "2026-06-12", used=25, wage=32000)
+    add("排班是週日、週一休", "2026-03-01", "2026-03-14", rest=(0, 1))
+    add("116 年春節期間", "2027-02-01", "2027-02-12")
+    add("跨年：115/12/28 到 116/1/8", "2026-12-28", "2027-01-08")
+    add("只請週末不上班的日子：都不算病假", "2026-03-07", "2026-03-08")
+    return {"id": "sick-period", "title": "連續請病假的天數", "source": "勞工請假規則第 4 條；內政部台內勞字第 315405 號函；人事行政總處辦公日曆表", "cases": out}
+
+
 GENERATORS = {"package-pay": package_cases, "severance": severance_cases, "average-wage": average_cases, "notice-period": notice_cases, "overtime": overtime_cases, "fixed-term": fixed_term_cases, "probation": probation_cases, "sick-leave": leave_cases, "comp-leave": comp_cases, "hourly-holiday": hourly_cases,
-              "old-pension": pension_cases, "bullying-deadline": bullying_cases, "employment-cost": cost_cases}
+              "old-pension": pension_cases, "bullying-deadline": bullying_cases, "employment-cost": cost_cases, "sick-period": sick_period_cases}
 
 if __name__ == "__main__":
     for name, gen in GENERATORS.items():

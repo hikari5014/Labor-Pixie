@@ -34,4 +34,5 @@ export const ROUTES = [
   { path: '/forms', title: '表單範本', load: () => import('./views/forms.js') },
   { prefix: '/forms/', title: '表單範本', load: () => import('./views/form.js') },
   { path: '/calc/employment-cost', title: '用人總成本', load: () => import('./views/calc-employment-cost.js') },
+  { path: '/calc/sick-period', title: '連續請病假的天數', load: () => import('./views/calc-sick-period.js') },
 ];

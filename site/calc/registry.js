@@ -17,4 +17,5 @@ export const CALCULATORS = [
   { id: 'bullying', title: '職場霸凌申訴期限', summary: '公司內部時程與向主管機關申訴的最晚日期' },
   { id: 'contract-check', title: '勞動契約條款檢查', summary: '一份契約逐項對照有沒有寫、寫得清不清楚' },
   { id: 'employment-cost', title: '用人總成本', summary: '月薪之外公司要負擔的勞健保、勞退等，以及員工自付保費' },
+  { id: 'sick-period', title: '連續請病假的天數', summary: '扣掉例假與國定假日，算出真正算病假的天數' },
 ];
