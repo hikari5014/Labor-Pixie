@@ -1,5 +1,17 @@
 [
   {
+    "version": "1.10.0",
+    "date": "2026-10-16",
+    "title": "主題卡第三批",
+    "changes": [
+      "新增 4 張主題卡：離職後競業禁止（四個條件、最長 2 年、補償標準）、職場性騷擾防治與申訴（雇主義務、申訴期限）、加班換補休（勞工選擇、到期折發）、勞資爭議怎麼處理（勞工局調解與法院勞動調解）。",
+      "主題卡共 22 張，都附法條連結。"
+    ],
+    "technical": [
+      "新增 data/topics/non-compete、sexual-harassment、comp-leave-rules、labor-dispute。"
+    ]
+  },
+  {
     "version": "1.9.0",
     "date": "2026-10-16",
     "title": "勞退新制推估與職災補償",
