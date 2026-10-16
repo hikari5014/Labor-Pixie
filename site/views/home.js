@@ -12,6 +12,11 @@ function tile(label, href, sub) {
   return h('a', { class: 'tile', href }, h('b', {}, label), sub && h('span', { class: 'tile__sub' }, sub));
 }
 
+/** 主題卡、法規的數量從資料清單算，不寫死 */
+function countFiles(m, dir) {
+  return m.files.filter((f) => f.startsWith(`${dir}/`)).length;
+}
+
 export function render(root, params, ctx) {
   const role = ctx.role();
   const seg = h('div', { class: 'seg', role: 'group', 'aria-label': '選擇身分' },
@@ -23,6 +28,8 @@ export function render(root, params, ctx) {
   const wage = h('p', { class: 'muted' }, '讀取中…');
   const wageNext = h('p', { class: 'small', hidden: true });
   const dataVersion = h('dd', {}, '讀取中…');
+  const topicsTile = tile('查爭議', '#/topics', '主題卡：加班、試用、年終、職災…');
+  const lawsTile = tile('看法條', '#/laws', '勞基法等勞動法規，可搜尋');
 
   const q = h('input', { class: 'input', type: 'search', placeholder: '搜尋：加班、試用期、資遣費…', 'aria-label': '全站搜尋' });
   const searchBox = h('form', { class: 'home-search', role: 'search', onsubmit: (e) => { e.preventDefault(); location.hash = `#/search/${encodeURIComponent(q.value.trim())}`; } },
@@ -33,10 +40,10 @@ export function render(root, params, ctx) {
     seg,
     h('p', { class: 'muted' }, intro[role]),
     h('section', { class: 'tiles', 'aria-label': '功能' },
-      tile('查爭議', '#/topics', '18 張主題卡：加班、試用、年終、職災…'),
+      topicsTile,
       tile('算金額', '#/calc', '加班費、資遣費、試用期、離職…'),
       role === 'employer' ? tile('檢查公司', '#/check', '27 項制度與紀錄自我檢查') : tile('準備證據', '#/topics', '依爭議看該留哪些證據'),
-      tile('看法條', '#/laws', '勞基法等 12 部法規，可搜尋'),
+      lawsTile,
       tile('看案例', '#/cases', '41 個常見情境：怎麼看、怎麼做'),
       tile('速查表', '#/quick', '常用數字、期限、國定假日'),
       tile('表單範本', '#/forms', '加班確認表、特休遞延、減班協議…')),
@@ -50,7 +57,11 @@ export function render(root, params, ctx) {
   );
 
   const today = todayTaipei();
-  meta().then((m) => { dataVersion.textContent = rocDate(m.data_version); }).catch(() => { dataVersion.textContent = '讀取失敗'; });
+  meta().then((m) => {
+    dataVersion.textContent = rocDate(m.data_version);
+    topicsTile.querySelector('.tile__sub').textContent = `${countFiles(m, 'topics')} 張主題卡：加班、試用、年終、職災…`;
+    lawsTile.querySelector('.tile__sub').textContent = `勞基法等 ${countFiles(m, 'laws')} 部法規，可搜尋`;
+  }).catch(() => { dataVersion.textContent = '讀取失敗'; });
   rule('minimum-wage').then((w) => {
     const now = entryOn(w.entries, today);
     wage.textContent = now ? `月薪 ${money(now.monthly)} 元／時薪 ${money(now.hourly)} 元（${rocDate(now.effective_from)} 起）` : '查無資料';

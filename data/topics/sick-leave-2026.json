@@ -50,7 +50,8 @@
     "病假後考績或獎金被影響時，可以要求說明理由。"
   ],
   "calcs": [
-    "sick-leave"
+    "sick-leave",
+    "sick-period"
   ],
   "sources": [
     {

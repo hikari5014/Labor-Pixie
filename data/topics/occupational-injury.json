@@ -46,7 +46,8 @@
     "復工安排或降薪有疑問時，可以向勞工局諮詢。"
   ],
   "calcs": [
-    "average-wage"
+    "average-wage",
+    "injury-comp"
   ],
   "sources": [
     {

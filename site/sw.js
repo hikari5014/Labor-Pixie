@@ -1,6 +1,6 @@
 // 離線快取：網站外殼先用快取；data/ 先上網拿最新，沒網路才用快取。
 // 安裝時把網站檔案（SHELL）和 data/meta.json 列出的所有資料檔一起存下來，離線也能用每個功能。
-const VERSION = '1.10.0';
+const VERSION = '1.11.0';
 const CACHE = `labor-pixie-${VERSION}`;
 const SHELL = [
   './',
@@ -75,11 +75,13 @@ const SHELL = [
 
 async function precache() {
   const cache = await caches.open(CACHE);
-  await cache.addAll(SHELL);
+  // no-cache：換版時一定向伺服器確認，不拿瀏覽器暫存的舊檔
+  const fresh = (url) => new Request(url, { cache: 'no-cache' });
+  await cache.addAll(SHELL.map(fresh));
   const res = await fetch('data/meta.json', { cache: 'no-cache' });
   const meta = await res.clone().json();
   await cache.put('data/meta.json', res);
-  await cache.addAll(meta.files.map((f) => `data/${f}`));
+  await cache.addAll(meta.files.map((f) => fresh(`data/${f}`)));
 }
 
 self.addEventListener('install', (event) => {
