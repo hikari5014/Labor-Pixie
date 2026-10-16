@@ -1,0 +1,21 @@
+{
+  "id": "injury-compensation",
+  "title": "職災醫療期間的工資補償",
+  "note": "雇主按原領工資補償（勞基法第 59 條第 2 款）；職災保險傷病給付自不能工作第 4 日起，前 2 個月按平均月投保薪資、第 3 個月起 70%，最長 2 年（職災保險法第 42 條）；保險給付可抵充雇主補償。",
+  "entries": [
+    {
+      "effective_from": "2022-05-01",
+      "status": "active",
+      "employer_daily_divisor": 30,
+      "waiting_days": 3,
+      "full_benefit_days": 60,
+      "reduced_ratio": 0.7,
+      "max_benefit_days": 730,
+      "insured_daily_divisor": 30,
+      "lump_sum_months": 40,
+      "source": "勞動基準法第 59 條；勞工職業災害保險及保護法第 42 條",
+      "source_url": "https://law.moj.gov.tw/LawClass/LawSingle.aspx?pcode=N0050031&flno=42",
+      "checked_on": "2026-10-16"
+    }
+  ]
+}

@@ -35,4 +35,6 @@ export const ROUTES = [
   { prefix: '/forms/', title: '表單範本', load: () => import('./views/form.js') },
   { path: '/calc/employment-cost', title: '用人總成本', load: () => import('./views/calc-employment-cost.js') },
   { path: '/calc/sick-period', title: '連續請病假的天數', load: () => import('./views/calc-sick-period.js') },
+  { path: '/calc/pension-new', title: '勞退新制專戶推估', load: () => import('./views/calc-pension-new.js') },
+  { path: '/calc/injury-comp', title: '職災醫療期間工資補償', load: () => import('./views/calc-injury-comp.js') },
 ];

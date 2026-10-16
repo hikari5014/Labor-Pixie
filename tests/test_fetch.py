@@ -44,3 +44,42 @@ class LawListSyncTest(unittest.TestCase):
         self.assertEqual(site, {x["pcode"]: x["id"] for x in LAWS})
         for x in LAWS:
             self.assertTrue((ROOT / "data" / "laws" / f"{x['id']}.json").is_file(), x["id"])
+
+
+class DownloadRetryTest(unittest.TestCase):
+    def test_retries_then_succeeds(self):
+        import io
+        import json
+        import zipfile
+        from unittest import mock
+        import fetch_laws
+        buf = io.BytesIO()
+        with zipfile.ZipFile(buf, "w") as zf:
+            zf.writestr("ChLaw.json", json.dumps({"Laws": [RAW]}, ensure_ascii=False))
+
+        class Resp(io.BytesIO):
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *a):
+                return False
+
+        calls = {"n": 0}
+
+        def fake_urlopen(req, timeout=None):
+            calls["n"] += 1
+            if calls["n"] == 1:
+                raise OSError("連線中斷")
+            return Resp(buf.getvalue())
+
+        with mock.patch("urllib.request.urlopen", fake_urlopen), mock.patch("time.sleep"):
+            laws = fetch_laws.download_laws("https://example.invalid")
+        self.assertEqual(calls["n"], 2)
+        self.assertEqual(laws[0]["LawName"], "勞動基準法")
+
+    def test_gives_up_after_attempts(self):
+        from unittest import mock
+        import fetch_laws
+        with mock.patch("urllib.request.urlopen", side_effect=OSError("斷線")), mock.patch("time.sleep"):
+            with self.assertRaises(OSError):
+                fetch_laws.download_laws("https://example.invalid", attempts=2)

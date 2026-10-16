@@ -12,6 +12,7 @@ export const LAW_IDS = {
   N0090001: 'employment-service-act',
   N0090055: 'middle-aged-and-elderly-employment-act',
   D0020095: 'commemoration-days-and-holidays-act',
+  N0050031: 'occupational-accident-insurance-act',
 };
 
 /** 「第 9-1 條」→「9-1」 */

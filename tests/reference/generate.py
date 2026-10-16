@@ -585,8 +585,76 @@ def sick_period_cases():
     return {"id": "sick-period", "title": "連續請病假的天數", "source": "勞工請假規則第 4 條；內政部台內勞字第 315405 號函；人事行政總處辦公日曆表", "cases": out}
 
 
+# ---- 勞退新制個人專戶推估 ----
+def pension_new(salary, years, balance=0, er=0.06, vol=0, ret=0, growth=0):
+    rule = __import__("json").loads((Path(__file__).resolve().parents[2] / "data" / "rules" / "social-insurance.json").read_text())["entries"][0]["labor_pension"]
+    grade = lambda s: next((x for x in rule["grades"] if x >= s), rule["grades"][-1])
+    er = max(0.06, er)
+    vol = min(0.06, max(0, vol))
+    bal = balance
+    sal = salary
+    contributed = 0
+    for m in range(round(years * 12)):
+        if m > 0 and m % 12 == 0:
+            sal *= 1 + growth
+        c = _r(grade(sal) * (er + vol))
+        bal = bal * (1 + ret / 12) + c
+        contributed += c
+    return {"firstGrade": grade(salary), "contributed": contributed, "earnings": _r(bal - contributed - balance), "balance": _r(bal)}
+
+
+def pension_new_cases():
+    out = []
+
+    def add(name, inp):
+        out.append(case(name, inp, pension_new(inp["salary"], inp["years"], inp.get("balance", 0), inp.get("employerRate", 0.06),
+                                              inp.get("voluntaryRate", 0), inp.get("annualReturn", 0), inp.get("salaryGrowth", 0))))
+
+    add("月薪 40,000 提繳 1 年、不計收益：40,100 × 6% × 12", {"salary": 40000, "years": 1})
+    add("月薪 40,000 提繳 30 年、年收益 3%", {"salary": 40000, "years": 30, "annualReturn": 0.03})
+    add("加上員工自願提繳 6%", {"salary": 40000, "years": 30, "voluntaryRate": 0.06, "annualReturn": 0.03})
+    add("已有專戶餘額 50 萬", {"salary": 50000, "years": 20, "balance": 500000, "annualReturn": 0.03})
+    add("薪資每年成長 2%", {"salary": 35000, "years": 25, "annualReturn": 0.03, "salaryGrowth": 0.02})
+    add("高薪：提繳工資最高 150,000", {"salary": 200000, "years": 10, "annualReturn": 0.02})
+    add("自願提繳填超過 6% 以 6% 計", {"salary": 40000, "years": 5, "voluntaryRate": 0.1})
+    add("雇主多提繳 8%", {"salary": 45000, "years": 15, "employerRate": 0.08, "annualReturn": 0.025})
+    add("最低工資 29,500、收益 0", {"salary": 29500, "years": 40})
+    add("半年", {"salary": 30000, "years": 0.5, "annualReturn": 0.04})
+    return {"id": "pension-new", "title": "勞退新制個人專戶推估", "source": "勞工退休金條例第 14 條；勞工退休金月提繳分級表", "cases": out}
+
+
+# ---- 職災醫療期間工資補償（勞基法第 59 條；職災保險法第 42 條） ----
+def injury_comp(wage, insured, days):
+    employer = ceil_money(wage / 30 * days)
+    bdays = min(730, max(0, days - 3))
+    full = min(bdays, 60)
+    reduced = bdays - full
+    ins = _r(insured / 30 * full + insured / 30 * 0.7 * reduced)
+    return {"employerTotal": employer, "benefitDays": bdays, "fullDays": full, "reducedDays": reduced, "insurance": ins, "topUp": max(0, employer - ins), "overMax": days > 730}
+
+
+def injury_cases():
+    out = []
+
+    def add(name, inp):
+        out.append(case(name, inp, injury_comp(inp["originalWage"], inp["insuredSalary"], inp["days"])))
+
+    add("只休 3 日：保險不給付，雇主全額", {"originalWage": 36000, "insuredSalary": 36300, "days": 3})
+    add("休 4 日：保險給付第 4 日", {"originalWage": 36000, "insuredSalary": 36300, "days": 4})
+    add("休 30 日", {"originalWage": 36000, "insuredSalary": 36300, "days": 30})
+    add("休 63 日：剛好領滿 60 日全額", {"originalWage": 45000, "insuredSalary": 45800, "days": 63})
+    add("休 90 日：之後改 70%", {"originalWage": 45000, "insuredSalary": 45800, "days": 90})
+    add("投保薪資低報：雇主差額變大", {"originalWage": 60000, "insuredSalary": 29500, "days": 60})
+    add("投保薪資高於原領工資：不用補", {"originalWage": 30000, "insuredSalary": 33300, "days": 45})
+    add("休 1 年", {"originalWage": 50000, "insuredSalary": 50000, "days": 365})
+    add("滿 2 年後：保險最多 730 日", {"originalWage": 40000, "insuredSalary": 40100, "days": 800})
+    add("沒有投保：全部由雇主負擔", {"originalWage": 32000, "insuredSalary": 0, "days": 20})
+    return {"id": "injury-comp", "title": "職災醫療期間工資補償", "source": "勞動基準法第 59 條；勞工職業災害保險及保護法第 42 條", "cases": out}
+
+
 GENERATORS = {"package-pay": package_cases, "severance": severance_cases, "average-wage": average_cases, "notice-period": notice_cases, "overtime": overtime_cases, "fixed-term": fixed_term_cases, "probation": probation_cases, "sick-leave": leave_cases, "comp-leave": comp_cases, "hourly-holiday": hourly_cases,
-              "old-pension": pension_cases, "bullying-deadline": bullying_cases, "employment-cost": cost_cases, "sick-period": sick_period_cases}
+              "old-pension": pension_cases, "bullying-deadline": bullying_cases, "employment-cost": cost_cases, "sick-period": sick_period_cases, "pension-new": pension_new_cases,
+              "injury-comp": injury_cases}
 
 if __name__ == "__main__":
     for name, gen in GENERATORS.items():

@@ -4,10 +4,12 @@
 - 法條有變動才改檔案，並把 data/meta.json 的 data_version 改成今天（台灣日期）。
 - 抓不到或格式不對就以代碼 1 結束，不動任何檔案（網站繼續用舊資料）。
 """
+import http.client
 import io
 import json
 import re
 import sys
+import time
 import urllib.request
 import zipfile
 
@@ -32,14 +34,23 @@ LAWS = [
     {"id": "employment-service-act", "pcode": "N0090001", "source": "law"},
     {"id": "middle-aged-and-elderly-employment-act", "pcode": "N0090055", "source": "law"},
     {"id": "commemoration-days-and-holidays-act", "pcode": "D0020095", "source": "law"},
+    {"id": "occupational-accident-insurance-act", "pcode": "N0050031", "source": "law"},
 ]
 
 
-def download_laws(url):
-    """下載整包 zip，回傳裡面 JSON 的 Laws 清單。"""
+def download_laws(url, attempts=3):
+    """下載整包 zip，回傳裡面 JSON 的 Laws 清單。網路中斷時最多重試 attempts 次。"""
     req = urllib.request.Request(url, headers={"User-Agent": "labor-pixie-data-bot"})
-    with urllib.request.urlopen(req, timeout=300) as resp:
-        raw = resp.read()
+    for i in range(attempts):
+        try:
+            with urllib.request.urlopen(req, timeout=300) as resp:
+                raw = resp.read()
+            break
+        except (OSError, http.client.HTTPException) as e:
+            if i == attempts - 1:
+                raise
+            print(f"下載中斷（{e}），{10 * (i + 1)} 秒後重試…", file=sys.stderr)
+            time.sleep(10 * (i + 1))
     with zipfile.ZipFile(io.BytesIO(raw)) as zf:
         name = next(n for n in zf.namelist() if n.lower().endswith(".json"))
         return json.loads(zf.read(name).decode("utf-8-sig"))["Laws"]

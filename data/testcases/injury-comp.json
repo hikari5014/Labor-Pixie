@@ -1,0 +1,177 @@
+{
+  "id": "injury-comp",
+  "title": "職災醫療期間工資補償",
+  "source": "勞動基準法第 59 條；勞工職業災害保險及保護法第 42 條",
+  "cases": [
+    {
+      "name": "只休 3 日：保險不給付，雇主全額",
+      "input": {
+        "originalWage": 36000,
+        "insuredSalary": 36300,
+        "days": 3
+      },
+      "expected": {
+        "employerTotal": 3600,
+        "benefitDays": 0,
+        "fullDays": 0,
+        "reducedDays": 0,
+        "insurance": 0,
+        "topUp": 3600,
+        "overMax": false
+      }
+    },
+    {
+      "name": "休 4 日：保險給付第 4 日",
+      "input": {
+        "originalWage": 36000,
+        "insuredSalary": 36300,
+        "days": 4
+      },
+      "expected": {
+        "employerTotal": 4800,
+        "benefitDays": 1,
+        "fullDays": 1,
+        "reducedDays": 0,
+        "insurance": 1210,
+        "topUp": 3590,
+        "overMax": false
+      }
+    },
+    {
+      "name": "休 30 日",
+      "input": {
+        "originalWage": 36000,
+        "insuredSalary": 36300,
+        "days": 30
+      },
+      "expected": {
+        "employerTotal": 36000,
+        "benefitDays": 27,
+        "fullDays": 27,
+        "reducedDays": 0,
+        "insurance": 32670,
+        "topUp": 3330,
+        "overMax": false
+      }
+    },
+    {
+      "name": "休 63 日：剛好領滿 60 日全額",
+      "input": {
+        "originalWage": 45000,
+        "insuredSalary": 45800,
+        "days": 63
+      },
+      "expected": {
+        "employerTotal": 94500,
+        "benefitDays": 60,
+        "fullDays": 60,
+        "reducedDays": 0,
+        "insurance": 91600,
+        "topUp": 2900,
+        "overMax": false
+      }
+    },
+    {
+      "name": "休 90 日：之後改 70%",
+      "input": {
+        "originalWage": 45000,
+        "insuredSalary": 45800,
+        "days": 90
+      },
+      "expected": {
+        "employerTotal": 135000,
+        "benefitDays": 87,
+        "fullDays": 60,
+        "reducedDays": 27,
+        "insurance": 120454,
+        "topUp": 14546,
+        "overMax": false
+      }
+    },
+    {
+      "name": "投保薪資低報：雇主差額變大",
+      "input": {
+        "originalWage": 60000,
+        "insuredSalary": 29500,
+        "days": 60
+      },
+      "expected": {
+        "employerTotal": 120000,
+        "benefitDays": 57,
+        "fullDays": 57,
+        "reducedDays": 0,
+        "insurance": 56050,
+        "topUp": 63950,
+        "overMax": false
+      }
+    },
+    {
+      "name": "投保薪資高於原領工資：不用補",
+      "input": {
+        "originalWage": 30000,
+        "insuredSalary": 33300,
+        "days": 45
+      },
+      "expected": {
+        "employerTotal": 45000,
+        "benefitDays": 42,
+        "fullDays": 42,
+        "reducedDays": 0,
+        "insurance": 46620,
+        "topUp": 0,
+        "overMax": false
+      }
+    },
+    {
+      "name": "休 1 年",
+      "input": {
+        "originalWage": 50000,
+        "insuredSalary": 50000,
+        "days": 365
+      },
+      "expected": {
+        "employerTotal": 608334,
+        "benefitDays": 362,
+        "fullDays": 60,
+        "reducedDays": 302,
+        "insurance": 452333,
+        "topUp": 156001,
+        "overMax": false
+      }
+    },
+    {
+      "name": "滿 2 年後：保險最多 730 日",
+      "input": {
+        "originalWage": 40000,
+        "insuredSalary": 40100,
+        "days": 800
+      },
+      "expected": {
+        "employerTotal": 1066667,
+        "benefitDays": 730,
+        "fullDays": 60,
+        "reducedDays": 670,
+        "insurance": 707097,
+        "topUp": 359570,
+        "overMax": true
+      }
+    },
+    {
+      "name": "沒有投保：全部由雇主負擔",
+      "input": {
+        "originalWage": 32000,
+        "insuredSalary": 0,
+        "days": 20
+      },
+      "expected": {
+        "employerTotal": 21334,
+        "benefitDays": 17,
+        "fullDays": 17,
+        "reducedDays": 0,
+        "insurance": 0,
+        "topUp": 21334,
+        "overMax": false
+      }
+    }
+  ]
+}
