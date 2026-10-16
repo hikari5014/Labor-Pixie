@@ -38,4 +38,5 @@ export const ROUTES = [
   { path: '/calc/pension-new', title: '勞退新制專戶推估', load: () => import('./views/calc-pension-new.js') },
   { path: '/calc/injury-comp', title: '職災醫療期間工資補償', load: () => import('./views/calc-injury-comp.js') },
   { path: '/calc/injury-death', title: '職災死亡補償', load: () => import('./views/calc-injury-death.js') },
+  { path: '/calc/injury-disability', title: '職災失能補償', load: () => import('./views/calc-injury-disability.js') },
 ];

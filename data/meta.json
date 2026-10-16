@@ -60,6 +60,7 @@
     "testcases/hourly-holiday.json",
     "testcases/injury-comp.json",
     "testcases/injury-death.json",
+    "testcases/injury-disability.json",
     "testcases/minimum-wage.json",
     "testcases/notice-period.json",
     "testcases/old-pension.json",

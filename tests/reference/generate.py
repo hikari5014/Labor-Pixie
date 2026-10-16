@@ -683,9 +683,42 @@ def injury_death_cases():
     return {"id": "injury-death", "title": "職災死亡補償", "source": "勞動基準法第 59 條第 4 款；勞工職業災害保險及保護法第 51、90 條", "cases": out}
 
 
+# ---- 職災失能補償（勞基法第 59 條第 3 款；勞工職業災害保險失能給付標準第 4 條） ----
+DIS_DAYS = [1800, 1500, 1260, 1110, 960, 810, 660, 540, 420, 330, 240, 150, 90, 60, 45]
+DIS_BASE = [1200, 1000, 840, 740, 640, 540, 440, 360, 280, 220, 160, 100, 60, 40, 30]
+
+
+def injury_disability(grade, avg, ins_salary, insured):
+    sal = ins_salary if insured else 0
+    diff = max(0, avg - sal)
+    d, b = DIS_DAYS[grade - 1], DIS_BASE[grade - 1]
+    return {"days": d, "baseDays": b, "employer": ceil_money(diff / 30 * d), "employerFull": ceil_money(avg / 30 * d),
+            "employerBaseDays": ceil_money(diff / 30 * b), "insLump": _r(sal / 30 * d),
+            "annuity": {"complete": _r(sal * 0.7), "severe": _r(sal * 0.5), "partial": _r(sal * 0.2)}}
+
+
+def injury_disability_cases():
+    out = []
+
+    def add(name, inp):
+        out.append(case(name, inp, injury_disability(inp["grade"], inp["averageWage"], inp["insuredSalary"], inp["insured"])))
+
+    add("第 1 等級、已投保、投保薪資低於平均工資", {"grade": 1, "averageWage": 60000, "insuredSalary": 45800, "insured": True})
+    add("第 15 等級、已投保", {"grade": 15, "averageWage": 40000, "insuredSalary": 36300, "insured": True})
+    add("第 7 等級、沒有投保：雇主全額", {"grade": 7, "averageWage": 45000, "insuredSalary": 0, "insured": False})
+    add("第 10 等級、投保薪資等於平均工資：雇主差額 0", {"grade": 10, "averageWage": 45800, "insuredSalary": 45800, "insured": True})
+    add("第 3 等級、高薪：投保薪資最高 72,800", {"grade": 3, "averageWage": 100000, "insuredSalary": 72800, "insured": True})
+    add("第 8 等級、平均工資有小數", {"grade": 8, "averageWage": 38765.43, "insuredSalary": 36300, "insured": True})
+    add("第 2 等級、最低工資", {"grade": 2, "averageWage": 29500, "insuredSalary": 29500, "insured": True})
+    add("第 12 等級、有投保但未核定為職災：雇主全額", {"grade": 12, "averageWage": 50000, "insuredSalary": 50600, "insured": False})
+    add("第 5 等級、投保薪資高於平均工資", {"grade": 5, "averageWage": 30000, "insuredSalary": 31800, "insured": True})
+    add("第 13 等級", {"grade": 13, "averageWage": 52000, "insuredSalary": 45800, "insured": True})
+    return {"id": "injury-disability", "title": "職災失能補償", "source": "勞動基準法第 59 條第 3 款；勞工職業災害保險失能給付標準第 4 條；勞工保險條例第 54 條", "cases": out}
+
+
 GENERATORS = {"package-pay": package_cases, "severance": severance_cases, "average-wage": average_cases, "notice-period": notice_cases, "overtime": overtime_cases, "fixed-term": fixed_term_cases, "probation": probation_cases, "sick-leave": leave_cases, "comp-leave": comp_cases, "hourly-holiday": hourly_cases,
               "old-pension": pension_cases, "bullying-deadline": bullying_cases, "employment-cost": cost_cases, "sick-period": sick_period_cases, "pension-new": pension_new_cases,
-              "injury-comp": injury_cases, "injury-death": injury_death_cases}
+              "injury-comp": injury_cases, "injury-death": injury_death_cases, "injury-disability": injury_disability_cases}
 
 if __name__ == "__main__":
     for name, gen in GENERATORS.items():

@@ -21,4 +21,5 @@ export const CALCULATORS = [
   { id: 'pension-new', title: '勞退新制專戶推估', summary: '推估退休時個人專戶的本金與收益' },
   { id: 'injury-comp', title: '職災醫療期間工資補償', summary: '雇主補償、保險傷病給付與要補的差額' },
   { id: 'injury-death', title: '職災死亡補償', summary: '喪葬費、死亡補償與職災保險遺屬給付' },
+  { id: 'injury-disability', title: '職災失能補償', summary: '依失能等級算雇主補償與保險失能給付' },
 ];

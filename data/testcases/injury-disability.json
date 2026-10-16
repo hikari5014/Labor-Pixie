@@ -1,0 +1,227 @@
+{
+  "id": "injury-disability",
+  "title": "職災失能補償",
+  "source": "勞動基準法第 59 條第 3 款；勞工職業災害保險失能給付標準第 4 條；勞工保險條例第 54 條",
+  "cases": [
+    {
+      "name": "第 1 等級、已投保、投保薪資低於平均工資",
+      "input": {
+        "grade": 1,
+        "averageWage": 60000,
+        "insuredSalary": 45800,
+        "insured": true
+      },
+      "expected": {
+        "days": 1800,
+        "baseDays": 1200,
+        "employer": 852000,
+        "employerFull": 3600000,
+        "employerBaseDays": 568000,
+        "insLump": 2748000,
+        "annuity": {
+          "complete": 32060,
+          "severe": 22900,
+          "partial": 9160
+        }
+      }
+    },
+    {
+      "name": "第 15 等級、已投保",
+      "input": {
+        "grade": 15,
+        "averageWage": 40000,
+        "insuredSalary": 36300,
+        "insured": true
+      },
+      "expected": {
+        "days": 45,
+        "baseDays": 30,
+        "employer": 5550,
+        "employerFull": 60000,
+        "employerBaseDays": 3700,
+        "insLump": 54450,
+        "annuity": {
+          "complete": 25410,
+          "severe": 18150,
+          "partial": 7260
+        }
+      }
+    },
+    {
+      "name": "第 7 等級、沒有投保：雇主全額",
+      "input": {
+        "grade": 7,
+        "averageWage": 45000,
+        "insuredSalary": 0,
+        "insured": false
+      },
+      "expected": {
+        "days": 660,
+        "baseDays": 440,
+        "employer": 990000,
+        "employerFull": 990000,
+        "employerBaseDays": 660000,
+        "insLump": 0,
+        "annuity": {
+          "complete": 0,
+          "severe": 0,
+          "partial": 0
+        }
+      }
+    },
+    {
+      "name": "第 10 等級、投保薪資等於平均工資：雇主差額 0",
+      "input": {
+        "grade": 10,
+        "averageWage": 45800,
+        "insuredSalary": 45800,
+        "insured": true
+      },
+      "expected": {
+        "days": 330,
+        "baseDays": 220,
+        "employer": 0,
+        "employerFull": 503800,
+        "employerBaseDays": 0,
+        "insLump": 503800,
+        "annuity": {
+          "complete": 32060,
+          "severe": 22900,
+          "partial": 9160
+        }
+      }
+    },
+    {
+      "name": "第 3 等級、高薪：投保薪資最高 72,800",
+      "input": {
+        "grade": 3,
+        "averageWage": 100000,
+        "insuredSalary": 72800,
+        "insured": true
+      },
+      "expected": {
+        "days": 1260,
+        "baseDays": 840,
+        "employer": 1142400,
+        "employerFull": 4200000,
+        "employerBaseDays": 761600,
+        "insLump": 3057600,
+        "annuity": {
+          "complete": 50960,
+          "severe": 36400,
+          "partial": 14560
+        }
+      }
+    },
+    {
+      "name": "第 8 等級、平均工資有小數",
+      "input": {
+        "grade": 8,
+        "averageWage": 38765.43,
+        "insuredSalary": 36300,
+        "insured": true
+      },
+      "expected": {
+        "days": 540,
+        "baseDays": 360,
+        "employer": 44378,
+        "employerFull": 697778,
+        "employerBaseDays": 29586,
+        "insLump": 653400,
+        "annuity": {
+          "complete": 25410,
+          "severe": 18150,
+          "partial": 7260
+        }
+      }
+    },
+    {
+      "name": "第 2 等級、最低工資",
+      "input": {
+        "grade": 2,
+        "averageWage": 29500,
+        "insuredSalary": 29500,
+        "insured": true
+      },
+      "expected": {
+        "days": 1500,
+        "baseDays": 1000,
+        "employer": 0,
+        "employerFull": 1475000,
+        "employerBaseDays": 0,
+        "insLump": 1475000,
+        "annuity": {
+          "complete": 20650,
+          "severe": 14750,
+          "partial": 5900
+        }
+      }
+    },
+    {
+      "name": "第 12 等級、有投保但未核定為職災：雇主全額",
+      "input": {
+        "grade": 12,
+        "averageWage": 50000,
+        "insuredSalary": 50600,
+        "insured": false
+      },
+      "expected": {
+        "days": 150,
+        "baseDays": 100,
+        "employer": 250000,
+        "employerFull": 250000,
+        "employerBaseDays": 166667,
+        "insLump": 0,
+        "annuity": {
+          "complete": 0,
+          "severe": 0,
+          "partial": 0
+        }
+      }
+    },
+    {
+      "name": "第 5 等級、投保薪資高於平均工資",
+      "input": {
+        "grade": 5,
+        "averageWage": 30000,
+        "insuredSalary": 31800,
+        "insured": true
+      },
+      "expected": {
+        "days": 960,
+        "baseDays": 640,
+        "employer": 0,
+        "employerFull": 960000,
+        "employerBaseDays": 0,
+        "insLump": 1017600,
+        "annuity": {
+          "complete": 22260,
+          "severe": 15900,
+          "partial": 6360
+        }
+      }
+    },
+    {
+      "name": "第 13 等級",
+      "input": {
+        "grade": 13,
+        "averageWage": 52000,
+        "insuredSalary": 45800,
+        "insured": true
+      },
+      "expected": {
+        "days": 90,
+        "baseDays": 60,
+        "employer": 18600,
+        "employerFull": 156000,
+        "employerBaseDays": 12400,
+        "insLump": 137400,
+        "annuity": {
+          "complete": 32060,
+          "severe": 22900,
+          "partial": 9160
+        }
+      }
+    }
+  ]
+}

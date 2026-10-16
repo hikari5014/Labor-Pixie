@@ -48,7 +48,8 @@
   "calcs": [
     "average-wage",
     "injury-comp",
-    "injury-death"
+    "injury-death",
+    "injury-disability"
   ],
   "sources": [
     {
